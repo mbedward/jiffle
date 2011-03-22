@@ -2,10 +2,10 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.googlecode.jaitools</groupId>
-        <artifactId>jaitools</artifactId>
-        <version>1.2-SNAPSHOT</version>
+        <artifactId>jiffle</artifactId>
+        <version>0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>jt-jiffle</artifactId>
+    <artifactId>jt-jiffle-language</artifactId>
     <packaging>jar</packaging>
     <name>Jiffle: a language for raster image processing</name>
     <description>Jiffle is a raster algebra language that can be used to
@@ -34,20 +34,12 @@
         <dependency>
             <groupId>com.googlecode.jaitools</groupId>
             <artifactId>jt-utils</artifactId>
-            <version>${project.version}</version>
+            <version>1.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr</artifactId>
             <version>3.3</version>
-            <!-- Adding StringTemplate back in for code generation
-            <exclusions>
-                <exclusion>
-                    <groupId>org.antlr</groupId>
-                    <artifactId>stringtemplate</artifactId>
-                </exclusion>
-            </exclusions>
-            -->
         </dependency>
         <dependency>
             <groupId>org.codehaus.janino</groupId>
