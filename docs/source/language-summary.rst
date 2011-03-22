@@ -1,6 +1,209 @@
 Language Summary
 ================
 
+Structure of a Jiffle script
+----------------------------
+
+Each script has the following elements:
+
+  **options block**
+     Sets values for script options that control Jiffle's compile-time and run-time behaviour.
+     It is optional but, if present, must be the first element in the script (other than comments).
+
+  **init block**
+     Declares variables that will have *image-scope*, ie. their values will persist between processing
+     each destination pixel.
+     It is optional but, if present, must precede the script body.
+
+  **body**
+     The general script code.
+
+The following example script uses all of the above elements::
+
+  // This script implements a max filter with a 3x3
+  // neighbourhood (kernel)
+
+  // Set option to treat locations outside the source image
+  // area as null values
+  options { outside = null; }
+  
+  // Declare a variable to record the global max value
+  init { 
+      hiVal = 0;
+  }
+
+  // The body of script is everything below this line
+
+  values = [];
+  foreach (dy in -1:1) {
+      foreach (dx in -1:1) {
+          values << src[dx, dy];
+      }
+  }
+
+  outVal = max(values);
+  hiVal = max(hiVal, outVal);
+
+  // Write the value to the destination image
+  dest = outVal;
+
+
+Variables
+---------
+
+Types and variable declaration
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Jiffle supports the following types of variables:
+
+  **Scalar**
+    A single value. In Jiffle all scalar values correspond to Java type Double.
+
+  **Array**
+    A dynamically sized array of scalar values.
+
+  **Image**
+    A variables that stands for a source or destination image in a script.
+
+.. note::
+   Support for multi-dimensional arrays is yet to be added.
+
+Jiffle uses lazy declaration for scalar variables. In other words, you can just start using a variable name in the
+script body. In this snippet::
+
+  // The variable val required no prior declaration
+  val = max(0, image1 - image2);
+
+In contrast, array variables must be declared before use so that Jiffle can distinguish them from scalars::
+
+  // declares an empty array 
+  foo = [];
+
+  // declares an array with initial values
+  bar = [1, 2, 42];
+
+Unlike languages such as Ruby, it is invalid to change the type type of a variable within a script::
+
+  // Create an array variable
+  foo = [1, 2, 3];
+
+  // Now if you try to use it as a scalar you will get a compile-time error
+  foo = 42;
+  
+  // Creating a scalar variable bar, then attempting to do an array operation
+  // with it (<< is the append operator) will also make the compiler unhappy
+  bar = 42;
+  bar << 43; // error
+
+
+Names
+~~~~~
+
+Variable names must begin with a letter, optionally followed by any combination of letters, digits, underscores and
+dots. Letters can be upper or lower case. Variable names are case-sensitive.
+
+Scope
+~~~~~
+
+All scalar and list variables which first appear in the body of the script have *pixel-scope*: their values are
+discarded after each destination pixel is processed. Variables declared in the init block, when present, have
+*image-scope*: their values persist between pixels::
+
+  init {
+      // An image-scope variable with an initial value
+      foo = 0;
+  }
+
+  // A variable which first appears in the script body
+  // has pixel scope
+  bar = 0;
+
+
+Loops
+-----
+
+One of the features of Jiffle that makes for concise scripts is that you don't need to write the code to loop through
+source and destination images because the runtime system does that for you. So many of your scripts will not need any
+loop statements. However, Jiffle does provide loop constructs which are useful when working with pixel neighbourhoods or
+performing iterative calculations.
+
+foreach loop
+~~~~~~~~~~~~
+
+Probably most of the times when you need to use a loop in a Jiffle script it will be a foreach loop. The general form
+is:
+
+    foreach (*var* in *elements*) *target*
+
+where: 
+  *var* is a scalar variable that will be set to each value of *elements* in turn;
+
+  *elements* is an array or sequence (see below);
+  
+  *target* is a single statement or a block of code delimited by curly brackets.
+
+This example iterates through a 3x3 pixel neighbourhood and counts the number of values that are greater than a
+threshold value. It uses **sequence** notation, which has the form **lowValue:highValue**. Each loop variable is set
+to -1, 0, 1 in turn. The loop variables are then used to access a *relative pixel position* in the source image
+(see :ref:`relative-pixel-position`)::
+
+  // Iterate through pixels in a 3x3 neighbourhood
+  n = 0;
+  foreach (dy in -1:1) {
+      foreach (dx in -1:1) {
+          n += srcimage[dx, dy] > someValue;
+      }
+  }
+
+Here is the same example, but this time using the **array** form of the foreach loop::
+
+  // Iterate through pixels in a 3x3 neighbourhood
+  delta = [-1, 0, 1];
+  n = 0;
+  foreach (dy in delta) {
+      foreach (dx in delta) {
+          n += srcimage[dx, dy] > someValue;
+      }
+  }
+
+
+while loop
+~~~~~~~~~~
+
+A conditional loop which executes the target statement or block while its conditional expression is non-zero.  Examples::
+
+  // code example here
+
+until loop
+~~~~~~~~~~
+
+A conditional loop which executes the target statement or block until its conditional expression is non-zero.  Examples::
+
+  // code example here
+
+break and breakif statements
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Jiffle provides the **break** statement to unconditionally exit a loop as well as **breakif** for conditional exit::
+
+  // code example here
+
+Specifying source image position
+--------------------------------
+
+.. _relative-pixel-position:
+
+Relative pixel position
+~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+Absolute pixel position
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Specified band 
+~~~~~~~~~~~~~~
+
 Functions
 ---------
 

@@ -13,6 +13,7 @@ Contents:
    
    introduction
    language-summary
+   glossary
 
 Indices and tables
 ==================
