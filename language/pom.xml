@@ -7,7 +7,7 @@
     </parent>
     <artifactId>jt-jiffle-language</artifactId>
     <packaging>jar</packaging>
-    <name>Jiffle: a language for raster image processing</name>
+    <name>Jiffle language</name>
     <description>Jiffle is a raster algebra language that can be used to
     create new images from logical and mathematical expressions involving
     source images and user defined variables. It is intended to let users

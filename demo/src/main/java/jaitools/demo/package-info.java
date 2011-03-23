@@ -19,8 +19,7 @@
  */
 
 /**
- * Example applications for jai-tools image operators and the jiffle
- * scripting language.
+ * Support classes for Jiffle example programs.
  */
 
 package jaitools.demo;
