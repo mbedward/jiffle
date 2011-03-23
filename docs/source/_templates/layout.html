@@ -1,9 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-{%- set gcprj='jiffle' %}
-{%- set gcusedownloads=1 %}
+{%- set gcprj='Jiffle' %}
+{%- set gcusedownloads=0 %}
 {%- set gcusewiki=0 %}
-{%- set gcuseissues=1 %}
+{%- set gcuseissues=0 %}
 {%- set gcusesource=1 %}
 <html>
 <head>
@@ -162,7 +162,7 @@
  
  
  {% if gcusesource %}
- <th onclick="if (!cancelBubble) _go('http://code.google.com/p/{{ gcprj }}/source/list');">
+ <th onclick="if (!cancelBubble) _go('http://code.google.com/p/{{ gcprj }}/source/browse');">
  <div class="tab inactive">
  <div class="round4"></div>
  <div class="round2"></div>
