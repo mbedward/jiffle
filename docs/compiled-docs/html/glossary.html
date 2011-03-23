@@ -1,0 +1,132 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Glossary &mdash; Jiffle v0.1-SNAPSHOT documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1-SNAPSHOT',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Jiffle v0.1-SNAPSHOT documentation" href="index.html" />
+    <link rel="prev" title="Language Summary" href="language-summary.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="language-summary.html" title="Language Summary"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Jiffle v0.1-SNAPSHOT documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="glossary">
+<h1>Glossary<a class="headerlink" href="#glossary" title="Permalink to this headline">¶</a></h1>
+<dl class="docutils" id="image-scope">
+<dt>image scope</dt>
+<dd><p class="first">Refers to variables whose values persist throughout processing. You create an image-scope variable by declaring it
+within the <a class="reference internal" href="#init-block"><em>init block</em></a>.</p>
+<p class="last">See also <a class="reference internal" href="#pixel-scope"><em>pixel scope</em></a></p>
+</dd>
+</dl>
+<dl class="docutils" id="init-block">
+<dt>init block</dt>
+<dd><p class="first">A script element used to declare non-image variables that will have <a class="reference internal" href="#image-scope"><em>image scope</em></a>. It takes the
+following form:</p>
+<div class="highlight-python"><pre>init {
+    foo = 0;
+    bar = 2 * M_PI + sqrt(42);
+    baz;
+}</pre>
+</div>
+<p class="last">The init block is optional. When present, it must precede the body of the script and appear after the options block.
+There can only be one init block.</p>
+</dd>
+</dl>
+<dl class="docutils" id="pixel-scope">
+<dt>pixel scope</dt>
+<dd><p class="first">This is the default scope for non-image variables. Any value assigned to a pixel-scope variable is lost after each
+pixel is processed.</p>
+<p class="last">See also <a class="reference internal" href="#image-scope"><em>image scope</em></a>.</p>
+</dd>
+</dl>
+<dl class="docutils" id="runtime-object">
+<dt>runtime object</dt>
+<dd>The executable version of a Jiffle script. This is a <a class="reference external" href="http://en.wikipedia.org/wiki/Plain_Old_Java_Object">POJO</a> that
+implements the JiffleRuntime interface.</dd>
+</dl>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="language-summary.html"
+                        title="previous chapter">Language Summary</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/glossary.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="language-summary.html" title="Language Summary"
+             >previous</a> |</li>
+        <li><a href="index.html">Jiffle v0.1-SNAPSHOT documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Michael Bedward.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>
