@@ -16,8 +16,8 @@ equivalent Jiffle script.  The function we'll use is this:
 
     where: :math:`D_{x y}` is the distance between pixel position :math:`(x, y)` and the image center.
 
-It produces concentric sinusoidal waves or, if you prefer more poetic descriptions, ripples on the sunlit surface of a
-still pond...
+It produces concentric sinusoidal waves or, if you prefer more poetic descriptions, *ripples on the sunlit surface of a
+still pond...*
 
 .. image:: ripples-image.png
    :align: center
