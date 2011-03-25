@@ -63,4 +63,36 @@ public class SpecialBlocksTest extends ParserTestBase {
                 
         getAST(script);
     }
+    
+    @Test
+    public void validlockPlacement() throws Exception {
+        System.out.println("   any order of blocks should be valid");
+        
+        String[] blocks = {
+            "options { outside = 0; }\n",
+            "init { foo = 42; }\n",
+            "images { src=read; dest=write; }\n"
+        };
+        
+        String body = "dest = src + foo;";
+        
+        int[][] blockPos = {
+            {0, 1, 2},
+            {0, 2, 1},
+            {1, 0, 2},
+            {1, 2, 0},
+            {2, 0, 1},
+            {2, 1, 0}
+        };
+
+        for (int[] pos : blockPos) {
+            String script = 
+                    blocks[pos[0]] + 
+                    blocks[pos[1]] + 
+                    blocks[pos[2]] + 
+                    body;
+            
+            getAST(script);
+        }
+    }
 }
