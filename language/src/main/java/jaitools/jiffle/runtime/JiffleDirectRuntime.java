@@ -30,7 +30,7 @@ import java.awt.image.WritableRenderedImage;
  * provides an {@link #evaluateAll(JiffleProgressListener)} method.
  *
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public interface JiffleDirectRuntime extends JiffleRuntime {

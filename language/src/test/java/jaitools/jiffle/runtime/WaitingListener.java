@@ -32,7 +32,7 @@ import jaitools.CollectionFactory;
  * wait for the expected number of tasks to be completed.
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public class WaitingListener implements JiffleEventListener {

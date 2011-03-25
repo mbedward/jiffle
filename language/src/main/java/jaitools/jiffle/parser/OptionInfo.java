@@ -27,7 +27,7 @@ import java.util.List;
  * Holds information about a supported Jiffle script option.
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 class OptionInfo {

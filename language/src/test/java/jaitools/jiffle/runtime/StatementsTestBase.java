@@ -38,7 +38,7 @@ import static org.junit.Assert.*;
  * and destination image.
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public abstract class StatementsTestBase {

@@ -41,7 +41,7 @@ import org.junit.Test;
  * Unit tests for the JiffleBuilder helper class.
  * 
  * @author Michael Bedward
- * @since 1.0
+ * @since 0.1
  * @version $Id$
  */
 public class JiffleBuilderTest extends StatementsTestBase {

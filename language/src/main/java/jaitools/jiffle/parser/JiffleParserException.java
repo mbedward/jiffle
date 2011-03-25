@@ -24,7 +24,7 @@ package jaitools.jiffle.parser;
  * An exception thrown when the Jiffle parser aborts due to errors.
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public class JiffleParserException extends RuntimeException {

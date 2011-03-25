@@ -27,7 +27,7 @@ package jaitools.jiffle.runtime;
  * @see JiffleExecutor
  *
  * @author Michael Bedward
- * @since 1.0
+ * @since 0.1
  * @version $Id$
  */
 public class JiffleExecutorException extends Exception {

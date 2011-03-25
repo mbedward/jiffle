@@ -25,7 +25,7 @@ package jaitools.jiffle.runtime;
  * {@code update(long numPixelsDone)} and {@code finish()} methods.
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public abstract class AbstractProgressListener implements JiffleProgressListener {

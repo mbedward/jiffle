@@ -25,7 +25,7 @@ package jaitools.jiffle.parser;
  * is attempting to parse a call to an undefined function.
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public class UndefinedFunctionException extends Exception {

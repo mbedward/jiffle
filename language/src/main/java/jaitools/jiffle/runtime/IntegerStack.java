@@ -26,7 +26,7 @@ package jaitools.jiffle.runtime;
  * does not support) or littering the runtime source code with casts.
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public class IntegerStack {

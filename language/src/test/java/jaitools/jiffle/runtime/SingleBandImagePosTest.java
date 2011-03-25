@@ -39,7 +39,7 @@ import org.junit.Test;
  * The unit tests here work with a single band image
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public class SingleBandImagePosTest extends StatementsTestBase {

@@ -43,7 +43,7 @@ import org.junit.runner.RunWith;
  * {@code JiffleExecutorTestRunner} to check for concurrency problems.
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  *
  */

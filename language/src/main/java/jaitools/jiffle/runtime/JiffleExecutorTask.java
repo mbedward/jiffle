@@ -32,7 +32,7 @@ import jaitools.jiffle.JiffleException;
  * Executes a runtime object in a thread provided by a {@link JiffleExecutor}.
  * 
  * @author Michael Bedward
- * @since 1.0
+ * @since 0.1
  * @version $Id$
  */
 public class JiffleExecutorTask implements Callable<JiffleExecutorResult> {

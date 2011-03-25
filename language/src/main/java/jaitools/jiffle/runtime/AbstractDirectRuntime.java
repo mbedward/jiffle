@@ -33,7 +33,7 @@ import javax.media.jai.iterator.WritableRandomIter;
  * direct evaluation.
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public abstract class AbstractDirectRuntime extends AbstractJiffleRuntime implements JiffleDirectRuntime {

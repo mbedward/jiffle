@@ -46,7 +46,7 @@ import org.junit.Test;
  * General tests for {@link JiffleExecutor}.
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public class ExecutorGeneralTest {

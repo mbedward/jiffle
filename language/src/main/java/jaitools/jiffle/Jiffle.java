@@ -53,6 +53,7 @@ import jaitools.jiffle.parser.TransformExpressions;
 import jaitools.jiffle.runtime.JiffleDirectRuntime;
 import jaitools.jiffle.runtime.JiffleIndirectRuntime;
 import jaitools.jiffle.runtime.JiffleRuntime;
+import java.util.logging.Logger;
 
 /**
  * Compiles scripts and generates Java sources and executable bytecode for
@@ -97,11 +98,13 @@ import jaitools.jiffle.runtime.JiffleRuntime;
  * @see jaitools.jiffle.runtime.JiffleExecutor
  * 
  * @author Michael Bedward
- * @since 1.0
+ * @since 0.1
  * @version $Id$
  */
 public class Jiffle {
     
+    public static final Logger LOGGER = Logger.getLogger(Jiffle.class.getName());
+
     /** 
      * Constants for runtime model. Jiffle supports two runtime models:
      * <ol type="1">
@@ -376,12 +379,12 @@ public class Jiffle {
             throw new JiffleException("No script has been set");
         }
         
+        clearCompiledObjects();
+        buildPrimaryAST();
+        
         if (imageParams.isEmpty()) {
             throw new JiffleException("No image parameters set");
         }
-        
-        clearCompiledObjects();
-        buildPrimaryAST();
         
         checkOptions();
         reportMessages();
@@ -565,6 +568,8 @@ public class Jiffle {
 
             JiffleParser parser = new JiffleParser(tokens);
             primaryAST = (CommonTree) parser.prog().getTree();
+            
+            loadScriptImageParameters(parser.getImageParams());
 
         } catch (RecognitionException ex) {
             throw new JiffleException(
@@ -573,6 +578,23 @@ public class Jiffle {
         }
     }
 
+    /**
+     * Sets the image parameters to those read from the script (if any). If any 
+     * previous parameters were set using {@link #setImageParams(java.util.Map)}
+     * they are discarded and a warning message is logged.
+     * 
+     * @param scriptImageParams parameters read from the script (may be empty)
+     */
+    private void loadScriptImageParameters(Map<String, ImageRole> scriptImageParams) {
+        if (!scriptImageParams.isEmpty()) {
+            if (!imageParams.isEmpty()) {
+                LOGGER.warning("Image parameters read from script override those previously set");
+            }
+            
+            imageParams = scriptImageParams;
+        }
+    }
+    
     private void checkOptions() {
         CommonTreeNodeStream nodes = new CommonTreeNodeStream(primaryAST);
         nodes.setTokenStream(tokens);

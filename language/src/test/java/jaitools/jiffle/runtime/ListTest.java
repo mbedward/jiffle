@@ -27,7 +27,7 @@ import org.junit.Test;
  * Tests for parsing list expressions.
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public class ListTest extends StatementsTestBase {

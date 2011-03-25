@@ -24,7 +24,7 @@ package jaitools.jiffle.parser;
  * Used by Jiffle parsers to complain about unexpected input in a acript.
  *
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public class UnexpectedInputException extends RuntimeException {

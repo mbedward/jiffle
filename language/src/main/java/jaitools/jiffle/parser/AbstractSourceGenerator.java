@@ -44,7 +44,7 @@ import jaitools.jiffle.JiffleProperties;
  * of common methods and fields.
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public abstract class AbstractSourceGenerator extends ErrorHandlingTreeParser implements SourceGenerator {

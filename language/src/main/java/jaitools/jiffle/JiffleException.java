@@ -26,7 +26,7 @@ import java.util.List;
  * Exception class for errors encountered while compiling a script
  * 
  * @author Michael Bedward
- * @since 1.0
+ * @since 0.1
  * @version $Id$
  */
 public class JiffleException extends Exception {

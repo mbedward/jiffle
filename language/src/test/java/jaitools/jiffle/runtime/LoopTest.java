@@ -27,7 +27,7 @@ import org.junit.Test;
  * Unit tests for Jiffle's loop statements.
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public class LoopTest extends StatementsTestBase {

@@ -32,7 +32,7 @@ import jaitools.jiffle.runtime.JiffleProgressListener;
  * A mock base class for direct evaluation used for unit testing.
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public abstract class MockDirectBaseClass 

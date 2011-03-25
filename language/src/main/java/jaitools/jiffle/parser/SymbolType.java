@@ -25,7 +25,7 @@ package jaitools.jiffle.parser;
  * during JIffle script compilation.
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public enum SymbolType {

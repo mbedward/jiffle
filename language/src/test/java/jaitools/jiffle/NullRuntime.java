@@ -27,7 +27,7 @@ import jaitools.jiffle.runtime.JiffleRuntimeException;
  * A stub class used in unit tests.
  *
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public class NullRuntime implements JiffleRuntime {

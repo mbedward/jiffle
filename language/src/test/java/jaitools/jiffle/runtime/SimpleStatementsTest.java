@@ -26,7 +26,7 @@ import org.junit.Test;
  * single source and destination image.
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public class SimpleStatementsTest extends StatementsTestBase {

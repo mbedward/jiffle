@@ -31,7 +31,7 @@ import jaitools.CollectionFactory;
  * from the Jiffle compiler.
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public class FunctionInfo {

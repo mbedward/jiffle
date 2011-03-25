@@ -84,7 +84,10 @@ optionValue returns [String src]
                 ;
 
 
-varDeclaration  : ^(IMAGE_SCOPE_VAR_DECL VAR_IMAGE_SCOPE e=expression?)
+varDeclaration  : ^(DECL VAR_DEST ID)
+                | ^(DECL VAR_SOURCE ID)
+
+                |^(DECL VAR_IMAGE_SCOPE e=expression?)
                 {
                     varScope.addSymbol($VAR_IMAGE_SCOPE.text, SymbolType.SCALAR, ScopeType.IMAGE);
                     StringTemplate exprST = (e == null ? null : $e.st);

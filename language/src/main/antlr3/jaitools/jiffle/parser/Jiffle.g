@@ -35,38 +35,43 @@ options {
 }
 
 tokens {
-    JIFFLE_OPTION;
-    IMAGE_SCOPE_VAR_DECL;
-    EXPR_LIST;
-    DECLARED_LIST;
-    PAR;
-    FUNC_CALL;
-    CON_CALL;
-    BLOCK;
-    IMAGE_POS;
-    BAND_REF;
-    PIXEL_REF;
     ABS_POS;
-    REL_POS;
-    PREFIX;
+    BAND_REF;
+    BLOCK;
+    CON_CALL;
+    DECL;
+    DECLARED_LIST;
+    EXPR_LIST;
+    FUNC_CALL;
+    IMAGE_POS;
+    JIFFLE_OPTION;
+    PAR;
+    PIXEL_REF;
     POSTFIX;
+    PREFIX;
+    REL_POS;
     SEQUENCE;
+    VAR_DEST;
+    VAR_IMAGE_SCOPE;
+    VAR_SOURCE;
 
     // Used by later tree parsers
     CONSTANT;
     IMAGE_WRITE;
-    VAR_DEST;
-    VAR_SOURCE;
-    VAR_IMAGE_SCOPE;
+    LIST_NEW;
+    VAR_IMAGE;
     VAR_PIXEL_SCOPE;
     VAR_PROVIDED;
     VAR_LOOP;
     VAR_LIST;
-    LIST_NEW;
 }
 
 @header {
 package jaitools.jiffle.parser;
+
+import java.util.Map;
+import jaitools.CollectionFactory;
+import jaitools.jiffle.Jiffle;
 }
 
 @lexer::header {
@@ -83,9 +88,31 @@ protected Object recoverFromMismatchedToken(IntStream input, int ttype, BitSet f
     return super.recoverFromMismatchedToken(input, ttype, follow);
 }
 
+private Map<String, Jiffle.ImageRole> imageParams = CollectionFactory.map();
+
+private void setImageVar(String varName, int type) {
+    Jiffle.ImageRole role = null;
+    switch (type) {
+        case READ:
+            role = Jiffle.ImageRole.SOURCE;
+            break;
+
+        case WRITE:
+            role = Jiffle.ImageRole.DEST;
+            break;
+
+        default:
+            throw new IllegalArgumentException("type must be READ or WRITE");
+    }
+
+    imageParams.put(varName, role);
 }
 
-prog            : optionsBlock? initBlock? statement+ EOF!
+public Map<String, Jiffle.ImageRole> getImageParams() { return imageParams; }
+
+}
+
+prog            : specialBlock* statement+ EOF!
                 ;
                 catch [UnexpectedInputException ex] {
                     throw new JiffleParserException(ex);
@@ -93,6 +120,12 @@ prog            : optionsBlock? initBlock? statement+ EOF!
                 catch [EarlyExitException ex] {
                     throw new JiffleParserException("Unexpected input at line " + ex.line);
                 }
+
+
+specialBlock    : optionsBlock
+                | imagesBlock
+                | initBlock
+                ;
 
 
 optionsBlock    : OPTIONS LCURLY option* RCURLY -> option*
@@ -107,11 +140,27 @@ optionValue     : ID
                 ;
 
 
+// No AST output
+imagesBlock     : IMAGES LCURLY imageVarDeclaration* RCURLY -> 
+                ;
+
+
+imageVarDeclaration
+                : ID EQ role SEMI
+                { setImageVar($ID.text, $role.start.getType()); }
+                ;
+
+
+role            : READ
+                | WRITE
+                ;
+
+
 initBlock       : INIT LCURLY varDeclaration* RCURLY -> varDeclaration*
                 ;
 
 
-varDeclaration  : ID (EQ expression)? SEMI -> ^(IMAGE_SCOPE_VAR_DECL ID expression?)
+varDeclaration  : ID (EQ expression)? SEMI -> ^(DECL VAR_IMAGE_SCOPE ID expression?)
                 ;
 
 
@@ -326,7 +375,10 @@ DOUBLE_TYPE     : 'double' ;
 BOOLEAN_TYPE    : 'boolean' ;
 
 OPTIONS : 'options' ;
+IMAGES  : 'images' ;
 INIT    : 'init' ;
+READ    : 'read' ;
+WRITE   : 'write' ;
 
 CON     : 'con' ;
 IF      : 'if' ;

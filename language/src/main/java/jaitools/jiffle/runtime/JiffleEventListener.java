@@ -25,7 +25,7 @@ package jaitools.jiffle.runtime;
  * information from {@link JiffleExecutor}.
  * 
  * @author Michael Bedward
- * @since 1.0
+ * @since 0.1
  * @version $Id$
  */
 public interface JiffleEventListener {

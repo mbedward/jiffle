@@ -30,7 +30,7 @@ import jaitools.jiffle.runtime.JiffleIndirectRuntime;
  * A mock base class for indirect evaluation used for unit testing.
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public abstract class MockIndirectBaseClass 

@@ -24,7 +24,7 @@ package jaitools.jiffle.parser;
  * Constants for variable scope type.
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public enum ScopeType {

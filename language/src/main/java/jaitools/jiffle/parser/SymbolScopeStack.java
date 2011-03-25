@@ -37,7 +37,7 @@ import java.util.List;
  * statement or block associated with the loop.
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public class SymbolScopeStack {

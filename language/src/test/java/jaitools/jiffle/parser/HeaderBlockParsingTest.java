@@ -26,7 +26,7 @@ import org.junit.Test;
  * Tests basic parsing of scripts with and without init and options blocks.
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public class HeaderBlockParsingTest extends ParserTestBase {
@@ -126,17 +126,6 @@ public class HeaderBlockParsingTest extends ParserTestBase {
                 + "    format = jiffle; \n\n"
                 + "} \n"
                 + "dest = 42;";
-
-        getAST(script);
-    }
-
-    @Test(expected=JiffleParserException.class)
-    public void misplacedOptionsBlock2() throws Exception {
-        System.out.println("   options block after init block");
-        String script =
-                  "init { n = 0; }"
-                + "options { format = jiffle; }"
-                + "dest = 42;" ;
 
         getAST(script);
     }

@@ -34,7 +34,7 @@ import jaitools.jiffle.runtime.JiffleIndirectRuntime;
  * Unit tests for basic Jiffle object creation, setting attributes and compiling.
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public class RuntimeClassTest {

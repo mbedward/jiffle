@@ -32,7 +32,7 @@ import org.antlr.runtime.TokenSource;
  * Adapted from ANTLR's {@link org.antlr.runtime.CommonTokenStream} class.
  *
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public final class MultiChannelTokenStream extends BufferedTokenStream {

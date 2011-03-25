@@ -28,7 +28,7 @@ import jaitools.jiffle.JiffleException;
  * compiled Jiffle scripts.
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public interface SourceGenerator {

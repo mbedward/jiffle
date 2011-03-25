@@ -26,7 +26,7 @@ package jaitools.jiffle.runtime;
  * the runtime object never bothers calling.
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public class NullProgressListener extends AbstractProgressListener {

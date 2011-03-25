@@ -24,7 +24,7 @@ package jaitools.jiffle.parser;
  * Used by the Jiffle compiler to force early exit from one of its parsers.
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public class CompilerExitException extends RuntimeException {

@@ -30,7 +30,7 @@ import jaitools.CollectionFactory;
  * A lookup service used by the Jiffle compiler when parsing script options.
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public class OptionLookup {

@@ -33,7 +33,7 @@ import jaitools.numeric.SampleStats;
  * is used as a field in {@link AbstractJiffleRuntime}.
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public class JiffleFunctions {

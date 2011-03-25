@@ -27,7 +27,7 @@ import org.junit.Test;
  * Unit tests of scripts with image scope variables declared in an init block.
  *
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public class ImageScopeVarsTest extends StatementsTestBase {

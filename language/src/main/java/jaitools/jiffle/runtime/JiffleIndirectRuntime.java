@@ -29,7 +29,7 @@ import java.awt.image.RenderedImage;
  * rather than writing them to the destination image directly.
  *
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public interface JiffleIndirectRuntime extends JiffleRuntime {

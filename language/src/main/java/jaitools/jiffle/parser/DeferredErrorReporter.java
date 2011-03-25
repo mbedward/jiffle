@@ -29,7 +29,7 @@ import jaitools.CollectionFactory;
  * Used by the Jiffle compiler to accumulate ANTLR parsing error messages.
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public class DeferredErrorReporter implements ParsingErrorReporter {

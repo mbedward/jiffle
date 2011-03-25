@@ -29,7 +29,7 @@ import org.antlr.runtime.tree.TreeParser;
  * ANTLR error and warning messages.
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public abstract class ErrorHandlingTreeParser extends TreeParser {

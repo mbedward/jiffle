@@ -24,7 +24,7 @@ package jaitools.jiffle.runtime;
  * The root interface for Jiffle runtime classes.
  *
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public interface JiffleRuntime {

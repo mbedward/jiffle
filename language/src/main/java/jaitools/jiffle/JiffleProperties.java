@@ -31,7 +31,7 @@ import jaitools.jiffle.runtime.JiffleRuntime;
  * {@link jaitools.jiffle.parser.AbstractSourceGenerator}.
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public class JiffleProperties {

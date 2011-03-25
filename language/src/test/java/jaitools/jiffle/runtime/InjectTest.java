@@ -33,7 +33,7 @@ import org.junit.Test;
  * Tests for setting the value of image-scope variables at run-time.
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public class InjectTest extends StatementsTestBase {

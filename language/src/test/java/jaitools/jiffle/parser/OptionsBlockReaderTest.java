@@ -37,7 +37,7 @@ import org.junit.Test;
  * Unit tests for the options block parser.
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public class OptionsBlockReaderTest {

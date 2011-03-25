@@ -30,7 +30,7 @@ package jaitools.jiffle.runtime;
  * method.
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public interface JiffleProgressListener {

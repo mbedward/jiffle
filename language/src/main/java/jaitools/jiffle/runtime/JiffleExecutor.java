@@ -115,7 +115,7 @@ import jaitools.jiffle.JiffleException;
  * the shutdown methods which terminate the task and polling threads.
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */public class JiffleExecutor {
     

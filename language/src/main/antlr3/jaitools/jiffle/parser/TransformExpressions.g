@@ -73,7 +73,10 @@ jiffleOption    : ^(JIFFLE_OPTION .+)
                 ;
 
 
-varDeclaration  : ^(IMAGE_SCOPE_VAR_DECL id=. expression?)
+varDeclaration  : ^(DECL VAR_DEST ID)
+                | ^(DECL VAR_SOURCE ID)
+
+                |^(DECL id=. expression?)
                 ;
 
 

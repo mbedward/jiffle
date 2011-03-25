@@ -34,7 +34,7 @@ import org.junit.runners.model.InitializationError;
  * high value to check for concurrency problems.
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  *
  */

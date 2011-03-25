@@ -28,7 +28,7 @@ import java.util.List;
  * defined by Jiffle.
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public interface ParsingErrorReporter {

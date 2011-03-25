@@ -29,7 +29,7 @@ import java.util.Map;
  * Mock object for unit tests.
  * 
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
 public class MockJiffle extends Jiffle {
