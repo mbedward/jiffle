@@ -4,59 +4,9 @@ Language Summary
 Structure of a Jiffle script
 ----------------------------
 
-A script can contain the following elements:
-
-  **options block**
-     *[optional]*
-     Sets values for script options that control Jiffle's compile-time and run-time behaviour.
-     If present, the options block must be the first element in the script (other than comments).
-
-  **images block**
-     *[optional]*
-     Declares variables associated with source (read-only) or destination (write-only) images.
-     If present, it must precede the script body.
-
-  **init block**
-     *[optional]*
-     Declares variables that will have *image-scope*, ie. their values will persist between processing
-     each destination pixel.
-     If present, it must precede the script body.
-
-  **body**
-     The script code.
-
-The following example script uses all of the above elements::
-
-  // This script implements a max filter with a 3x3
-  // neighbourhood (kernel)
-
-  // Set option to treat locations outside the source image
-  // area as null values
-  options { outside = null; }
-
-  // Declare image variables
-  images { src = read; dest = write; }
-  
-  // Declare a variable to record the global max value
-  init { 
-      hiVal = 0;
-  }
-
-  // The body of script is everything below this line
-
-  values = [];
-  foreach (dy in -1:1) {
-      foreach (dx in -1:1) {
-          values << src[dx, dy];
-      }
-  }
-
-  outVal = max(values);
-  hiVal = max(hiVal, outVal);
-
-  // Write the value to the destination image
-  dest = outVal;
-
+A script consists of the script body, optionally preceded by one or more *special blocks* which are used to declare
+variables and control runtime options. We'll return to these blocks later (skip ahead to :ref:`special-blocks` if you
+can't wait), but first let's look at the general features of language.
 
 Comments
 --------
@@ -127,6 +77,8 @@ Variable names must begin with a letter, optionally followed by any combination 
 dots. Letters can be upper or lower case. Variable names are case-sensitive.
 
 See also :ref:`reserved-words`
+
+.. _scope:
 
 Scope
 ~~~~~
@@ -424,6 +376,60 @@ Name              Returns
 ``y()``           Y ordinate of the current destination pixel
 
 ===============   ================================================
+
+
+.. _special-blocks:
+
+Special blocks
+--------------
+
+The options block
+~~~~~~~~~~~~~~~~~
+
+Used to set options for Jiffle's runtime behaviour. Presently, only the *outside* option is supported. 
+
+For example, this tells Jiffle to return a value of 0 for any pixel value request that falls outside the bounds of the
+source image::
+
+  options {
+      outside = 0;
+  }
+
+
+
+The following script retrieves the maximum value in a 3x3 kernel centred on each source image and writes it to the
+destination image. It uses the outside option to treat kernel locations beyond the source image's edge as null values
+which will be ignored by the *max* function:
+
+.. literalinclude:: /../src/main/resources/jaitools/jiffle/docs/MaxFilter.jfl
+
+If the *outside* option is not set, any request for a value beyond an image's bounds will cause a JiffleRuntimeException.
+
+The images block
+~~~~~~~~~~~~~~~~
+
+Used to associate variables with source (read-only) and destination (write-only) images. Example::
+
+  images { src = read; result = write; }
+  
+As shown in the above snippet, the block contains declarations of the form *name = (read | write)*. IF this block is
+provided, the Jiffle compiler expects that it contains declarations for all image variables used in the script. It not
+provided, variable names can be defined as representing source or destination images using methods provided by the
+Jiffle and JiffleBuilder classes. These methods are described further in :doc:`runtime`.
+
+The init block
+~~~~~~~~~~~~~~
+
+This block declares variables that will have *image scope* during processing (as discussed in :ref:`scope`).
+
+Each variable can optionally be assigned an intial value as ``foo`` is here::
+
+  init {
+      foo = 42;
+      bar;
+  }
+
+If an initial value is not provided, one must be *injected* at run-time. See XXXX for more details.
 
 
 Specifying source image position
