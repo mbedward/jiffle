@@ -88,6 +88,16 @@ protected Object recoverFromMismatchedToken(IntStream input, int ttype, BitSet f
     return super.recoverFromMismatchedToken(input, ttype, follow);
 }
 
+private List<Integer> blocksFound = CollectionFactory.list();
+
+private void checkBlock(Token blockToken) {
+    if ( blocksFound.contains(blockToken.getType()) ) {
+        throw new JiffleParserException("Duplicate " + blockToken.getText() + " block");
+    }
+
+    blocksFound.add(blockToken.getType());
+}
+
 private Map<String, Jiffle.ImageRole> imageParams = CollectionFactory.map();
 
 private void setImageVar(String varName, int type) {
@@ -112,7 +122,8 @@ public Map<String, Jiffle.ImageRole> getImageParams() { return imageParams; }
 
 }
 
-prog            : specialBlock* statement+ EOF!
+
+prog            : (blk=specialBlock {checkBlock($blk.start);} )* statement+ EOF!
                 ;
                 catch [UnexpectedInputException ex] {
                     throw new JiffleParserException(ex);
