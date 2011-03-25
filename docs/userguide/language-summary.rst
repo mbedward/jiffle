@@ -4,19 +4,26 @@ Language Summary
 Structure of a Jiffle script
 ----------------------------
 
-Each script has the following elements:
+A script can contain the following elements:
 
   **options block**
+     *[optional]*
      Sets values for script options that control Jiffle's compile-time and run-time behaviour.
-     It is optional but, if present, must be the first element in the script (other than comments).
+     If present, the options block must be the first element in the script (other than comments).
+
+  **images block**
+     *[optional]*
+     Declares variables associated with source (read-only) or destination (write-only) images.
+     If present, it must precede the script body.
 
   **init block**
+     *[optional]*
      Declares variables that will have *image-scope*, ie. their values will persist between processing
      each destination pixel.
-     It is optional but, if present, must precede the script body.
+     If present, it must precede the script body.
 
   **body**
-     The general script code.
+     The script code.
 
 The following example script uses all of the above elements::
 
@@ -26,6 +33,9 @@ The following example script uses all of the above elements::
   // Set option to treat locations outside the source image
   // area as null values
   options { outside = null; }
+
+  // Declare image variables
+  images { src = read; dest = write; }
   
   // Declare a variable to record the global max value
   init { 
@@ -115,6 +125,8 @@ Names
 
 Variable names must begin with a letter, optionally followed by any combination of letters, digits, underscores and
 dots. Letters can be upper or lower case. Variable names are case-sensitive.
+
+See also :ref:`reserved-words`
 
 Scope
 ~~~~~
@@ -429,5 +441,36 @@ Absolute pixel position
 
 Specified band 
 ~~~~~~~~~~~~~~
+
+.. _reserved-words:
+
+Reserved words
+--------------
+
+The following are reserved words in Jiffle and may not be used as variable names:
+
+  * boolean\ :sup:`a`
+  * break
+  * breakif
+  * con
+  * double\ :sup:`a`
+  * else
+  * false
+  * float\ :sup:`a`
+  * foreach
+  * if
+  * images
+  * in
+  * init
+  * int\ :sup:`a`
+  * null
+  * options
+  * read
+  * true
+  * until
+  * while
+  * write
+
+:sup:`a` reserved for future use
 
 
