@@ -116,6 +116,12 @@
     <!-- =========================================================== -->
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.googlecode.jaitools</groupId>
+                <artifactId>jt-utils</artifactId>
+                <version>1.1-SNAPSHOT</version>
+            </dependency>
+            
             <!-- Java Advanced Imaging (JAI) -->
             <dependency>
                 <groupId>javax.media</groupId>
@@ -187,6 +193,14 @@
             <url>http://oss.sonatype.org/service/local/staging/deploy/maven2</url>
         </repository>
     </distributionManagement>
+    
+    <repositories>
+        <repository>
+            <id>jaitools-snapshots</id>
+            <name>jaitools snapshots</name>
+            <url>http://oss.sonatype.org/content/repositories/snapshots</url>
+        </repository>
+    </repositories>
 
     <profiles>
         <profile>
