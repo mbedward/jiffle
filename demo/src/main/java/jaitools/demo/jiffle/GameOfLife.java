@@ -47,10 +47,10 @@ import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
 import jaitools.CollectionFactory;
-import jaitools.demo.SimpleImagePane;
 import jaitools.imageutils.ImageUtils;
 import jaitools.jiffle.Jiffle;
 import jaitools.jiffle.runtime.JiffleDirectRuntime;
+import jaitools.swing.SimpleImagePane;
 
 /**
  * John Conway's Game of Life implemented with Jiffle. 

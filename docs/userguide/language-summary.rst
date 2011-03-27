@@ -6,7 +6,7 @@ Structure of a Jiffle script
 
 A script consists of the script body, optionally preceded by one or more *special blocks* which are used to declare
 variables and control runtime options. We'll return to these blocks later (skip ahead to :ref:`special-blocks` if you
-can't wait), but first let's look at the general features of language.
+can't wait), but first let's look at the general features of the language.
 
 Comments
 --------

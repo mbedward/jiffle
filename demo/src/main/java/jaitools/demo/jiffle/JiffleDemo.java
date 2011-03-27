@@ -21,9 +21,12 @@
 package jaitools.demo.jiffle;
 
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.image.RenderedImage;
+
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -32,14 +35,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
 
 import jaitools.demo.ImageChoice;
-import jaitools.demo.SimpleImagePane;
 import jaitools.jiffle.JiffleBuilder;
 import jaitools.jiffle.JiffleException;
-import java.awt.Font;
-import java.awt.event.KeyEvent;
-import javax.swing.KeyStroke;
+import jaitools.swing.SimpleImagePane;
 
 /**
  * A browser for Jiffle example scripts. Displays the script in a text
