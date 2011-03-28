@@ -42,19 +42,6 @@ public abstract class AbstractIndirectRuntime extends AbstractJiffleRuntime impl
     List sourceImageNames = new ArrayList();
     String destImageName;
 
-    /** Processing bounds min X ordinate */
-    protected int _minx;
-
-    /** Processing bounds min Y ordinate */
-    protected int _miny;
-
-    /** Processing bounds width */
-    protected int _width;
-
-    /** Processing bounds height */
-    protected int _height;
-    
-    
     /**
      * Creates a new instance and initializes script-option variables.
      */
@@ -68,15 +55,6 @@ public abstract class AbstractIndirectRuntime extends AbstractJiffleRuntime impl
 
     public void setSourceImage(String imageName, RenderedImage image) {
         sourceImageNames.add(imageName);
-    }
-
-    public void setBounds(int minx, int miny, int width, int height) {
-        _minx = minx;
-        _miny = miny;
-        _width = width;
-        _height = height;
-
-        initImageScopeVars();
     }
 
     public double readFromImage(String srcImageName, int x, int y, int band) {

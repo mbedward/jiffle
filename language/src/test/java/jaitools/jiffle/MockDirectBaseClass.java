@@ -46,10 +46,6 @@ public abstract class MockDirectBaseClass
         throw new UnsupportedOperationException("Should not be called");
     }
 
-    public void setBounds(int minx, int miny, int width, int height) {
-        throw new UnsupportedOperationException("Should not be called");
-    }
-
     public void evaluateAll(JiffleProgressListener ignored) {
         throw new UnsupportedOperationException("Should not be called");
     }

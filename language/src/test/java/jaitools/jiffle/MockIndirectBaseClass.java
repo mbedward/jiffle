@@ -48,8 +48,4 @@ public abstract class MockIndirectBaseClass
         throw new UnsupportedOperationException("Should not be called");
     }
 
-    public void setBounds(int minx, int miny, int width, int height) {
-        throw new UnsupportedOperationException("Should not be called");
-    }
-    
 }
