@@ -54,15 +54,25 @@ program:
    :end-before: // docs-end-builder-example
 
 
-What you can do with Jiffle
----------------------------
-
-Coming soon...
 
 What you can't do with Jiffle
 -----------------------------
 
-Coming soon...
+Jiffle is still quite a new language and some of the features that we eventually hope to support are not in there yet.
+There are also some constraints imposed by the nature of the Jiffle run-time system.
+
+  * Destination images must be data type double (Java DataBuffer.TYPE_DOUBLE). Jiffle does all calculations using double
+    values, regardless of the type(s) of source images involved.
+
+  * Destination images can only have a single band.
+
+  * Jiffle run-time objects iterate through source and destination images by X-ordinate (column), then Y-ordinate (row).
+    Algorithms that require a different iteration order, such as the diamond-square method for generating fractal
+    surfaces [#f2]_ will be either impossible to implement in Jiffle and/or just a lot less work to write directly in
+    Java.
+
 
 .. [#f1] Java Advanced Imaging http://java.sun.com/javase/technologies/desktop/media/jai/
+
+.. [#f2] http://www.gameprogrammer.com/fractal.html#diamond
 
