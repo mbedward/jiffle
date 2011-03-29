@@ -14,7 +14,7 @@ Contents:
    introduction
    language-summary
    runtime
-   tips
+   clever
    glossary
 
 Indices and tables

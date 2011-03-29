@@ -1,11 +1,22 @@
 Cunning plans and clever tricks (plus a few things to avoid)
 ============================================================
 
+Jiffle scripts with no destination images
+-----------------------------------------
+
+Jiffle allows you to run a script that has no destination images although there must be at least one source image. This
+allows you to write scripts which calculate one or more properties from image values. The script below counts how many
+values are greater than a threshold value:
+
+.. literalinclude:: /../src/main/resources/jaitools/jiffle/docs/CountValuesGreaterThan.jfl
+
+After running the script, the calling Java code can retrieve the result like this::
+
+  Double count = runtimeObj.getVar("count");
+
+
 Modifying behaviour at run-time
 -------------------------------
-
-Injecting variable values
-~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Jiffle allows you to *inject* values for image scope variables at run-time. You can use this to do some nifty things. To
 see how this works, let's start with a script that implements a mean filter for a 3x3 kernel:
