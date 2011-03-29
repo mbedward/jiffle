@@ -26,7 +26,7 @@ package jaitools.demo;
  * 
  * @author Michael Bedward
  * @since 1.1
- * @version $Id: ImageChoice.java 1400 2011-02-15 06:29:59Z michael.bedward $
+ * @version $Id$
  */
 public enum ImageChoice {
 

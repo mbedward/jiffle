@@ -50,7 +50,7 @@ import javax.swing.JProgressBar;
  * 
  * @author Michael Bedward
  * @since 1.1
- * @version $Id: ProgressListenerDemo.java 1549 2011-03-18 13:26:34Z michael.bedward $
+ * @version $Id$
  */
 public class ProgressListenerDemo {
 

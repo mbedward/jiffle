@@ -279,8 +279,9 @@
     </profiles>
 
     <modules>
-        <module>demo</module>
         <module>language</module>
+        <module>demo</module>
+	<module>jiffleop</module>
     </modules>
 
 </project>

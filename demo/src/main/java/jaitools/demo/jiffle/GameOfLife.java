@@ -164,7 +164,7 @@ import jaitools.swing.SimpleImagePane;
  * 
  * @author Michael Bedward
  * @since 1.1
- * @version $Id: GameOfLife.java 1449 2011-02-21 13:47:14Z michael.bedward $
+ * @version $Id$
  */
 public class GameOfLife extends JFrame {
 

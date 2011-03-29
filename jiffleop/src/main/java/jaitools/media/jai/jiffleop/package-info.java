@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Michael Bedward
+ * Copyright 2009-2011 Michael Bedward
  *
  * This file is part of jai-tools.
  *
@@ -18,18 +18,8 @@
  *
  */
 
-package jaitools.demo.jiffle;
-
 /**
- * Defines some common fields for use in Jiffle demo applications.
- * 
- * @author Michael Bedward
- * @since 1.1
- * @version $Id$
+ * Jiffle as an image operator.
  */
-public abstract class JiffleDemoBase {
-    
-    public static final int WIDTH = 500;
-    public static final int HEIGHT = 500;
-    
-}
+
+package jaitools.media.jai.jiffleop;

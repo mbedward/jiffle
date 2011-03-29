@@ -34,7 +34,7 @@ import jaitools.jiffle.JiffleException;
  *
  * @author Michael Bedward
  * @since 1.1
- * @version $Id: JiffleDemoHelper.java 1400 2011-02-15 06:29:59Z michael.bedward $
+ * @version $Id$
  */
 public class JiffleDemoHelper {
     

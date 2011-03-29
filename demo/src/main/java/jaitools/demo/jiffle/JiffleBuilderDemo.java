@@ -36,7 +36,7 @@ import jaitools.swing.ImageFrame;
  *
  * @author Michael Bedward
  * @since 1.1
- * @version $Id: JiffleBuilderDemo.java 1400 2011-02-15 06:29:59Z michael.bedward $
+ * @version $Id$
  */
 public class JiffleBuilderDemo extends JiffleDemoBase {
 
