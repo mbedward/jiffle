@@ -97,7 +97,11 @@ public abstract class AbstractJiffleRuntime implements JiffleRuntime {
      * {@inheritDoc}
      */
     public void setBounds(int minx, int miny, int width, int height) {
-        this._bounds = new Rectangle(minx, miny, width, height);
+        _bounds = new Rectangle(minx, miny, width, height);
+    }
+    
+    public boolean isBoundsSet() {
+        return _bounds != null && !_bounds.isEmpty();
     }
 
     /**

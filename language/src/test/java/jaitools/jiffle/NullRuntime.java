@@ -44,4 +44,8 @@ public class NullRuntime implements JiffleRuntime {
         throw new UnsupportedOperationException("Should not be called");
     }
 
+    public boolean isBoundsSet() {
+        throw new UnsupportedOperationException("Should not be called");
+    }
+
 }

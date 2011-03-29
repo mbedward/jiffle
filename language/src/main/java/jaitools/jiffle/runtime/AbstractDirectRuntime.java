@@ -23,7 +23,9 @@ package jaitools.jiffle.runtime;
 import java.awt.image.RenderedImage;
 import java.awt.image.WritableRenderedImage;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+
 import javax.media.jai.iterator.RandomIter;
 import javax.media.jai.iterator.RandomIterFactory;
 import javax.media.jai.iterator.WritableRandomIter;
@@ -54,13 +56,13 @@ public abstract class AbstractDirectRuntime extends AbstractJiffleRuntime implem
      * Maps source image variable names ({@link String}) to image
      * iterators ({@link RandomIter}).
      */
-    protected Map readers = new HashMap();
+    protected Map readers = new LinkedHashMap();
     
     /**
      * Maps destination image variable names ({@link String} to
      * image iterators ({@link WritableRandomIter}).
      */
-    protected Map writers = new HashMap();
+    protected Map writers = new LinkedHashMap();
 
     /**
      * Creates a new instance and initializes script-option variables.
@@ -74,12 +76,6 @@ public abstract class AbstractDirectRuntime extends AbstractJiffleRuntime implem
      */
     public void setDestinationImage(String imageName, WritableRenderedImage image) {
         images.put(imageName, image);
-        
-        if (writers.isEmpty()) {
-            setBounds(image.getMinX(), image.getMinY(),
-                    image.getWidth(), image.getHeight());
-        }
-        
         writers.put(imageName, RandomIterFactory.createWritable(image, null));
     }
 
@@ -96,6 +92,10 @@ public abstract class AbstractDirectRuntime extends AbstractJiffleRuntime implem
      */
     public void evaluateAll(JiffleProgressListener pl) {
         JiffleProgressListener listener = pl == null ? new NullProgressListener() : pl;
+        
+        if (!isBoundsSet()) {
+            setDefaultBounds();
+        }
 
         final long numPixels = getSize();
         listener.setTaskSize(numPixels);
@@ -157,6 +157,25 @@ public abstract class AbstractDirectRuntime extends AbstractJiffleRuntime implem
     public void writeToImage(String imageName, int x, int y, int band, double value) {
         WritableRandomIter iter = (WritableRandomIter) writers.get(imageName);
         iter.setSample(x, y, band, value);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setDefaultBounds() {
+        RenderedImage refImage = null;
+        String imageName = null;
+        
+        if (!writers.isEmpty()) {
+            imageName = (String) writers.keySet().iterator().next();
+            refImage = (RenderedImage) images.get(imageName);
+        } else {
+            imageName = (String) readers.keySet().iterator().next();
+            refImage = (RenderedImage) images.get(imageName);
+        }
+        
+        setBounds(refImage.getMinX(), refImage.getMinY(), 
+                refImage.getWidth(), refImage.getHeight());
     }
 
 }

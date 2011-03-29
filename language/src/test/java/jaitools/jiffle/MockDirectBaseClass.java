@@ -37,6 +37,10 @@ import jaitools.jiffle.runtime.JiffleProgressListener;
  */
 public abstract class MockDirectBaseClass 
         extends AbstractJiffleRuntime implements JiffleDirectRuntime {
+
+    public void setDefaultBounds() {
+        throw new UnsupportedOperationException("Should not be called");
+    }
     
     public void setDestinationImage(String imageName, WritableRenderedImage image) {
         throw new UnsupportedOperationException("Should not be called");

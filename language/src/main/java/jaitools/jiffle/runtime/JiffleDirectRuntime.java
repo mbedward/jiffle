@@ -54,6 +54,14 @@ public interface JiffleDirectRuntime extends JiffleRuntime {
     void setSourceImage(String imageName, RenderedImage image);
     
     /**
+     * Sets default bounds for the processing area. These are the bounds of 
+     * the first destination image or, if there are no destination images,
+     * the bounds of the first source image, where first means first added
+     * to the run-time objects list of images.
+     */
+    void setDefaultBounds();
+    
+    /**
      * Evaluates the script for the given image location and writes
      * the result to the destination image(s).
      * 

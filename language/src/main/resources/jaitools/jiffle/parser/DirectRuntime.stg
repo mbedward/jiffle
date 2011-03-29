@@ -49,6 +49,9 @@ public class <name> extends <base> {
     <ctor(classname=name, fields=fields)>
     <defaultvaluegetter(fields)>
     public void evaluate(int _x, int _y) {
+        if (!isBoundsSet()) {
+            setDefaultBounds();
+        }
         if (!_imageScopeVarsInitialized) {
             initImageScopeVars();
         }

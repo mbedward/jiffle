@@ -41,6 +41,13 @@ public interface JiffleRuntime {
     void setBounds(int minx, int miny, int width, int height);
     
     /**
+     * Tests if the bounds of the processing area have been set.
+     * 
+     * @return {@code true} if bounds are set; {@code false} otherwise
+     */
+    boolean isBoundsSet();
+    
+    /**
      * Returns the value of a variable that was declared in the
      * script's <i>init</i> block.
      *
