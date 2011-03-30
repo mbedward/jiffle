@@ -19,7 +19,7 @@
  */
   
  /**
-  * Transforms tokens representing variables into specific token types.
+  * Reads the options block, if present.
   *
   * @author Michael Bedward
   */

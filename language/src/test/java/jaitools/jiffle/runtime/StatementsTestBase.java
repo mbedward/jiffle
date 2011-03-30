@@ -19,7 +19,6 @@
  */
 package jaitools.jiffle.runtime;
 
-import java.awt.Rectangle;
 import java.awt.image.RenderedImage;
 import java.util.Map;
 
