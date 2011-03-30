@@ -281,7 +281,6 @@
     <modules>
         <module>language</module>
         <module>demo</module>
-	<module>jiffleop</module>
     </modules>
 
 </project>
