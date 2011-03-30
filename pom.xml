@@ -1,0 +1,287 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.googlecode.jaitools</groupId>
+    <artifactId>jiffle</artifactId>
+    <version>0.1-SNAPSHOT</version>
+
+    <packaging>pom</packaging>
+    <name>Jiffle project</name>
+    <description>
+        Jiffle is a scripting language to create and analyse raster images.
+    </description>
+    <url>http://code.google.com/p/jiffle/</url>
+    <inceptionYear>2011</inceptionYear>
+
+    <issueManagement>
+        <url>http://code.google.com/p/jiffle/issues/list</url>
+    </issueManagement>
+
+    <mailingLists>
+        <mailingList>
+            <name>jai-tools</name>
+            <subscribe>jai-tools+subscribe@googlegroups.com</subscribe>
+            <unsubscribe>jai-tools+unsubscribe@googlegroups.com</unsubscribe>
+            <post>jai-tools@googlegroups.com</post>
+            <archive>http://groups.google.com/group/jai-tools</archive>
+        </mailingList>
+    </mailingLists>
+
+    <scm>
+        <connection>scm:svn:http://jiffle.googlecode.com/svn/trunk/</connection>
+        <developerConnection>scm:svn:https://jiffle.googlecode.com/svn/trunk/</developerConnection>
+        <url>http://code.google.com/p/jiffle/source/browse/</url>
+    </scm>
+
+    <licenses>
+        <license>
+            <name>Lesser General Public License (LGPL)</name>
+            <url>http://www.gnu.org/copyleft/lesser.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <build>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-webdav</artifactId>
+                <version>1.0-beta-2</version>
+            </extension>
+        </extensions>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>1.4</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        
+        <plugins>
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.0-beta-9</version>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <mavenExecutorId>forked-path</mavenExecutorId>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.4.3</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <developers>
+        <developer>
+            <id>michael.bedward</id>
+            <name>Michael Bedward</name>
+            <email>michael.bedward@gmail.com</email>
+            <timezone>+10</timezone>
+        </developer>
+        <developer>
+            <id>andrea.antonello</id>
+            <name>Andrea Antonello</name>
+            <organization>HydroloGIS</organization>
+            <organizationUrl>http://www.hydrologis.com/</organizationUrl>
+        </developer>
+    </developers>
+
+    <!-- =========================================================== -->
+    <!--     Dependency Management                                   -->
+    <!--     If a POM declares one of those dependencies, then it    -->
+    <!--     will use the version specified here. Otherwise, those   -->
+    <!--     dependencies are ignored.                               -->
+    <!-- =========================================================== -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.googlecode.jaitools</groupId>
+                <artifactId>jt-utils</artifactId>
+                <version>1.1-SNAPSHOT</version>
+            </dependency>
+            
+            <!-- Java Advanced Imaging (JAI) -->
+            <dependency>
+                <groupId>javax.media</groupId>
+                <artifactId>jai_core</artifactId>
+                <version>1.1.3</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.media</groupId>
+                <artifactId>jai_codec</artifactId>
+                <version>1.1.3</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.media</groupId>
+                <artifactId>jai_imageio</artifactId>
+                <version>1.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.vividsolutions</groupId>
+                <artifactId>jts</artifactId>
+                <version>1.11</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.8</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+    <!-- =========================================================== -->
+    <!--     Dependencies to be inherited by all modules.            -->
+    <!--     Default version numbers are specified above.            -->
+    <!-- =========================================================== -->
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.media</groupId>
+            <artifactId>jai_core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.media</groupId>
+            <artifactId>jai_codec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.media</groupId>
+            <artifactId>jai_imageio</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>jaitools-snapshots</id>
+            <name>jaitools snapshots</name>
+            <url>http://oss.sonatype.org/content/repositories/snapshots</url>
+            <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
+        <repository>
+            <id>jaitools-staging</id>
+            <name>jaitools staging repository</name>
+            <url>http://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+        </repository>
+    </distributionManagement>
+    
+    <repositories>
+        <repository>
+            <id>jaitools-snapshots</id>
+            <name>jaitools snapshots</name>
+            <url>http://oss.sonatype.org/content/repositories/snapshots</url>
+        </repository>
+    </repositories>
+
+    <profiles>
+        <profile>
+            <id>build-javadocs</id>
+            <activation>
+                <property>
+                    <name>javadocs</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.7</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>build-sources</id>
+            <activation>
+                <property>
+                    <name>sources</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
+        <profile>
+            <id>release-signed-artifacts</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <modules>
+        <module>language</module>
+        <module>demo</module>
+	<module>jiffleop</module>
+    </modules>
+
+</project>
