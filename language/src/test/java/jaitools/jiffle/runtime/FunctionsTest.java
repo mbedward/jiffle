@@ -26,8 +26,7 @@ import jaitools.CollectionFactory;
 import jaitools.imageutils.ImageUtils;
 import jaitools.jiffle.Jiffle;
 import jaitools.jiffle.JiffleException;
-import jaitools.numeric.DoubleComparison;
-import static jaitools.numeric.DoubleComparison.*;
+import jaitools.numeric.CompareOp;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -297,8 +296,8 @@ public class FunctionsTest extends StatementsTestBase {
             for (int x = 0; x < WIDTH; x++) {
                 double val = src.getSample(x, y, 0);
                 double z = dest.getSample(x, y, 0);
-                assertTrue(dcomp(z, val) >= 0);
-                assertTrue(dcomp(z, 2*val) <= 0);
+                assertTrue(CompareOp.acompare(z, val) >= 0);
+                assertTrue(CompareOp.acompare(z, 2*val) <= 0);
             }
         }
     }
@@ -325,9 +324,9 @@ public class FunctionsTest extends StatementsTestBase {
             for (int x = 0; x < WIDTH; x++) {
                 double val = src.getSample(x, y, 0);
                 double z = dest.getSample(x, y, 0);
-                assertEquals(Math.round(z), z, DoubleComparison.TOL);
-                assertTrue(dcomp(z, val) >= 0);
-                assertTrue(dcomp(z, 2*val + 1) <= 0);
+                assertEquals(Math.round(z), z, CompareOp.DTOL);
+                assertTrue(CompareOp.acompare(z, val) >= 0);
+                assertTrue(CompareOp.acompare(z, 2*val + 1) <= 0);
             }
         }
     }

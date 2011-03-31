@@ -22,7 +22,7 @@ package jaitools.jiffle.runtime;
 
 import org.junit.Test;
 
-import jaitools.numeric.DoubleComparison;
+import jaitools.numeric.CompareOp;
 
 /**
  * Unit tests for the evaluation of simple logical statements with a 
@@ -109,7 +109,7 @@ public class LogicalStatementsTest extends StatementsTestBase {
                 new Evaluator() {
 
                     public double eval(double val) {
-                        return DoubleComparison.dequal(val, NUM_PIXELS / 2) ? 1.0 : 0.0;
+                        return CompareOp.aequal(val, NUM_PIXELS / 2) ? 1.0 : 0.0;
                     }
                 });
     }
@@ -125,7 +125,7 @@ public class LogicalStatementsTest extends StatementsTestBase {
                 new Evaluator() {
 
                     public double eval(double val) {
-                        return !DoubleComparison.dequal(val, NUM_PIXELS / 2) ? 1.0 : 0.0;
+                        return !CompareOp.aequal(val, NUM_PIXELS / 2) ? 1.0 : 0.0;
                     }
                 });
     }
@@ -140,7 +140,7 @@ public class LogicalStatementsTest extends StatementsTestBase {
                 new Evaluator() {
 
                     public double eval(double val) {
-                        return !DoubleComparison.dequal(val % 2, 1.0) ? 1.0 : 0.0;
+                        return !CompareOp.aequal(val % 2, 1.0) ? 1.0 : 0.0;
                     }
                 });
     }

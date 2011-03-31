@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static jaitools.numeric.DoubleComparison.dcomp;
-import static jaitools.numeric.DoubleComparison.dzero;
 import jaitools.numeric.SampleStats;
+import static jaitools.numeric.CompareOp.acompare;
+import static jaitools.numeric.CompareOp.isZero;
 
 /**
  * Provides functions for Jiffle runtime objects. An instance of this class
@@ -62,7 +62,7 @@ public class JiffleFunctions {
      */
     public Integer sign(double x) {
         if (!Double.isNaN(x)) {
-            return dcomp(x, 0);
+            return acompare(x, 0);
         }
         return null;
     }
@@ -266,7 +266,7 @@ public class JiffleFunctions {
             return Double.NaN;
         }
 
-        return (!dzero(x) || !dzero(y) ? 1d : 0d);
+        return (!isZero(x) || !isZero(y) ? 1d : 0d);
     }
 
     /**
@@ -282,7 +282,7 @@ public class JiffleFunctions {
             return Double.NaN;
         }
 
-        return (!dzero(x) && !dzero(y) ? 1d : 0d);
+        return (!isZero(x) && !isZero(y) ? 1d : 0d);
     }
 
     /**
@@ -298,7 +298,7 @@ public class JiffleFunctions {
             return Double.NaN;
         }
 
-        return (!dzero(x) ^ !dzero(y) ? 1d : 0d);
+        return (!isZero(x) ^ !isZero(y) ? 1d : 0d);
     }
 
     /**
@@ -314,7 +314,7 @@ public class JiffleFunctions {
             return Double.NaN;
         }
 
-        return (dcomp(x, y) > 0 ? 1d : 0d);
+        return (acompare(x, y) > 0 ? 1d : 0d);
     }
 
     /**
@@ -330,7 +330,7 @@ public class JiffleFunctions {
             return Double.NaN;
         }
 
-        return (dcomp(x, y) >= 0 ? 1d : 0d);
+        return (acompare(x, y) >= 0 ? 1d : 0d);
     }
 
     /**
@@ -346,7 +346,7 @@ public class JiffleFunctions {
             return Double.NaN;
         }
 
-        return (dcomp(x, y) < 0 ? 1d : 0d);
+        return (acompare(x, y) < 0 ? 1d : 0d);
     }
 
     /**
@@ -362,7 +362,7 @@ public class JiffleFunctions {
             return Double.NaN;
         }
 
-        return (dcomp(x, y) <= 0 ? 1d : 0d);
+        return (acompare(x, y) <= 0 ? 1d : 0d);
     }
 
     /**
@@ -378,7 +378,7 @@ public class JiffleFunctions {
             return Double.NaN;
         }
 
-        return (dcomp(x, y) == 0 ? 1d : 0d);
+        return (acompare(x, y) == 0 ? 1d : 0d);
     }
 
     /**
@@ -394,7 +394,7 @@ public class JiffleFunctions {
             return Double.NaN;
         }
 
-        return (dcomp(x, y) != 0 ? 1d : 0d);
+        return (acompare(x, y) != 0 ? 1d : 0d);
     }
 
     /**
@@ -410,7 +410,7 @@ public class JiffleFunctions {
             return Double.NaN;
         }
 
-        return (dzero(x) ? 1d : 0d);
+        return (isZero(x) ? 1d : 0d);
     }
     
     /**
