@@ -125,7 +125,7 @@ public abstract class AbstractSourceGenerator extends ErrorHandlingTreeParser im
     /**
      * {@inheritDoc}
      */
-    public String getSource() throws JiffleException {
+    public String getSource(String script) throws JiffleException {
         if (model == null) {
             throw new RuntimeException("Runtime model has not been set");
         }
@@ -163,7 +163,7 @@ public abstract class AbstractSourceGenerator extends ErrorHandlingTreeParser im
         
         try {
             setErrorReporter(new DeferredErrorReporter());
-            return generate().getTemplate().toString();
+            return generate(script).getTemplate().toString();
 
         } catch (RecognitionException ex) {
             if (errorReporter != null && errorReporter.getNumErrors() > 0) {
@@ -179,12 +179,15 @@ public abstract class AbstractSourceGenerator extends ErrorHandlingTreeParser im
      * Starts generating source code based on the abstract syntax tree 
      * produced by the Jiffle compiler.
      * 
+     * @param script the Jiffle script to include in the class javadocs;
+     *        may be {@code null} or empty
+     * 
      * @return an ANTLR rule return object from which the results can be
      *         retrieved
      * 
      * @throws RecognitionException on errors processing the AST
      */
-    protected abstract RuleReturnScope generate() throws RecognitionException;
+    protected abstract RuleReturnScope generate(String script) throws RecognitionException;
 
     /**
      * Used internally to set the string templates for source generation.

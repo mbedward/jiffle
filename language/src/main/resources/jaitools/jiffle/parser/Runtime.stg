@@ -35,6 +35,18 @@ group Runtime;
 
 
 ////////////////////////////////////////////////////////////
+// Class javadocs
+
+javadocs(script) ::= <<
+<{/**}>
+ * Java runtime class generated from the following Jiffle script:
+ * 
+ <script: {line | * <line>}; separator="\n">
+<{ */}>
+>>
+
+
+////////////////////////////////////////////////////////////
 // Constructor
 //
 // The fields arg holds templates for image-scope variables

@@ -711,6 +711,7 @@ public class Jiffle {
         SourceGenerator generator = new RuntimeSourceGenerator(nodes);
         generator.setBaseClassName(baseClassName);
         generator.setRuntimeModel(model);
-        return generator.getSource();
+        String s = scriptInDocs ? null : theScript;
+        return generator.getSource(s);
     }
 }

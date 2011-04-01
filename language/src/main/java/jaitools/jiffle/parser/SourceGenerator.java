@@ -49,12 +49,17 @@ public interface SourceGenerator {
 
     /**
      * Returns the source for the runtime class. The runtime model and base class
-     * name must be set before calling this method.
+     * name must be set before calling this method. If the script is passed to 
+     * this method it will be included in the class javadocs.
+     * 
+     * @param script the Jiffle script which is being compiled; may be {@code null}
+     *        or empty
      * 
      * @return source of the runtime class as a single String.
+     * 
      * @throws JiffleException on errors creating source
      * @throws RuntimeException if the runtime model or base class name are not set
      */
-    String getSource() throws JiffleException;
+    String getSource(String script) throws JiffleException;
 
 }

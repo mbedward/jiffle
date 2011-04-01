@@ -111,6 +111,8 @@ import jaitools.jiffle.runtime.JiffleDirectRuntime;
  * @version $Id$
  */
 public class JiffleBuilder {
+    
+    private Jiffle compiledInstance;
 
     private static class ImageRef {
         Object ref;
@@ -153,6 +155,7 @@ public class JiffleBuilder {
      * arguments they will also be freed.
      */
     public void clear() {
+        compiledInstance = null;
         script = null;
         imageParams.clear();
         images.clear();
@@ -337,8 +340,8 @@ public class JiffleBuilder {
             throw new IllegalStateException("Jiffle script has not been set yet");
         }
 
-        Jiffle jiffle = new Jiffle(script, imageParams);
-        JiffleDirectRuntime runtime = jiffle.getRuntimeInstance();
+        compiledInstance = new Jiffle(script, imageParams);
+        JiffleDirectRuntime runtime = compiledInstance.getRuntimeInstance();
         for (String var : images.keySet()) {
             RenderedImage img = images.get(var).get();
             if (img == null) {
@@ -358,6 +361,39 @@ public class JiffleBuilder {
         }
 
         return runtime;
+    }
+    
+    /**
+     * Gets the compiled {@link Jiffle} instance for the currently set script and 
+     * images.
+     *
+     * @return the compiled instance
+     *
+     * @throws JiffleException if the script has not been set yet or if
+     *         compilation errors occur
+     */
+    public Jiffle getCompiledJiffle() throws JiffleException {
+        if (script == null) {
+            throw new IllegalStateException("Jiffle script has not been set yet");
+        }
+        
+        if (compiledInstance == null) {
+            compiledInstance = new Jiffle(script, imageParams);
+        }
+        
+        return compiledInstance;
+    }
+
+    /**
+     * Gets the Java run-time class code generated from the compiled script.
+     *
+     * @return the run-time source code
+     *
+     * @throws JiffleException if the script has not been set yet or if
+     *         compilation errors occur
+     */
+    public String getRuntimeSource() throws JiffleException {
+        return getCompiledJiffle().getRuntimeSource(Jiffle.RuntimeModel.DIRECT, true);
     }
 
     /**
