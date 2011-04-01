@@ -46,6 +46,21 @@ class MockJiffleRuntime extends AbstractDirectRuntime {
         setBounds(0, 0, imageSize, 1);
     }
 
+    /**
+     * Returns an empty array
+     */
+    @Override
+    public String[] getDestinationVarNames() {
+        return new String[0];
+    }
+
+    /**
+     * Returns an empty array
+     */
+    @Override
+    public String[] getSourceVarNames() {
+        return new String[0];
+    }
 
     /**
      * Does nothing.

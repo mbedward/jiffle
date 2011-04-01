@@ -24,7 +24,6 @@ import java.awt.image.RenderedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -147,8 +146,8 @@ import jaitools.jiffle.JiffleException;
     
     private final List<JiffleEventListener> listeners;
     
-    private final AtomicBoolean isPolling = new AtomicBoolean(false);
-    private final AtomicInteger numTasksRunning = new AtomicInteger(0);
+    private boolean isPolling;
+    private int numTasksRunning;
     
     /* Used by constructors when setting up the task service. */
     private static enum ThreadPoolType {
@@ -208,6 +207,8 @@ import jaitools.jiffle.JiffleException;
                 new DaemonThreadFactory(Thread.NORM_PRIORITY, "executor-shutdown"));
         
         listeners = new ArrayList<JiffleEventListener>();
+        
+        isPolling = false;
     }
     
     /**
@@ -225,7 +226,7 @@ import jaitools.jiffle.JiffleException;
      */
     public void setPollingInterval(long millis) {
         synchronized (_lock) {
-            if (isPolling.get()) {
+            if (isPolling) {
                 if (LOGGER.isLoggable(Level.WARNING)) {
                     LOGGER.log(Level.WARNING,
                             "Request to change polling interval ignored");
@@ -328,21 +329,56 @@ import jaitools.jiffle.JiffleException;
                 if (!jiffle.isCompiled()) {
                     jiffle.compile();
                 }
+                
+                return submit(jiffle.getRuntimeInstance(), images, progressListener);
+                
             } catch (JiffleException ex) {
                 throw new JiffleExecutorException(ex);
             }
+        }
+    }
+    
+    /**
+     * Submits an {@code JiffleDirectRuntime} object for execution. Depending 
+     * on existing tasks and the number of threads available to the executor 
+     * there could be a delay before the task starts. Clients can receive 
+     * notification via an optional progress listener.
+     * <p>
+     * 
+     * @param runtime the run-time instance to execute
+     * 
+     * @param images source and destination images as a {@code Map} with
+     *        keys being image variable names as used in the Jiffle script
+     *        and image parameters
+     * 
+     * @param progressListener an optional progress listener (may be {@code null})
+     * 
+     * @return the job ID that can be used to query progress
+     */
+    public int submit(JiffleDirectRuntime runtime,
+            Map<String, RenderedImage> images,
+            JiffleProgressListener progressListener) {
+
+        synchronized (_lock) {
+            if (taskService.isShutdown()) {
+                throw new IllegalStateException("Submitting task after executor shutdown");
+            }
 
             startPolling();
-            
             int id = jobID.getAndIncrement();
-            
+
             if (LOGGER.isLoggable(Level.INFO)) {
                 LOGGER.log(Level.INFO, TASK_SUBMITTED_MSG, id);
             }
 
-            numTasksRunning.incrementAndGet();
-            completionService.submit( new JiffleExecutorTask(
-                    this, id, jiffle, images, progressListener));
+            numTasksRunning++ ;
+
+            completionService.submit(new JiffleExecutorTask(
+                    this,
+                    id,
+                    runtime,
+                    images,
+                    progressListener));
 
             return id;
         }
@@ -400,10 +436,10 @@ import jaitools.jiffle.JiffleException;
      * Starts the polling service if it is not already running.
      */
     private void startPolling() {
-        if (!isPolling.get()) {
+        if (!isPolling) {
             pollingService.scheduleWithFixedDelay(new PollingTask(),
                     pollingInterval, pollingInterval, TimeUnit.MILLISECONDS);
-            isPolling.set(true);
+            isPolling = true;
         }
     }
     
@@ -421,7 +457,7 @@ import jaitools.jiffle.JiffleException;
 
         shutdownService.scheduleAtFixedRate(new Runnable() {
             public void run() {
-                if (numTasksRunning.get() == 0) {
+                if (numTasksRunning == 0) {
                     pollingService.shutdown();
                     shutdownService.shutdown();
                 }
@@ -435,7 +471,7 @@ import jaitools.jiffle.JiffleException;
                 Future<JiffleExecutorResult> future = completionService.poll();
                 if (future != null) {
                     JiffleExecutorResult result = future.get();
-                    numTasksRunning.decrementAndGet();
+                    numTasksRunning-- ;
                     
                     if (result.isCompleted()) {
                         if (LOGGER.isLoggable(Level.INFO)) {

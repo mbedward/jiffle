@@ -36,7 +36,7 @@ import jaitools.jiffle.Jiffle;
 public class JiffleExecutorResult {
 
     private final int jobID;
-    private final Jiffle jiffle;
+    private final JiffleDirectRuntime runtime;
     private final Map<String, RenderedImage> images;
     private final boolean completed;
 
@@ -44,13 +44,14 @@ public class JiffleExecutorResult {
      * Creates a new result object.
      * 
      * @param taskID the task ID assigned by the executor
-     * @param jiffle the input {@link Jiffle} object
+     * @param runtime the run-time instance
      * @param images source and destination images keyed by script variable name
      * @param completed whether the task was completed successfully
      */
-    public JiffleExecutorResult(int taskID, Jiffle jiffle, Map<String, RenderedImage> images, boolean completed) {
+    public JiffleExecutorResult(int taskID, JiffleDirectRuntime runtime, 
+            Map<String, RenderedImage> images, boolean completed) {
         this.jobID = taskID;
-        this.jiffle = jiffle;
+        this.runtime = runtime;
         this.images = images;
         this.completed = completed;
     }
@@ -69,8 +70,8 @@ public class JiffleExecutorResult {
      * 
      * @return the {@link Jiffle} object
      */
-    public Jiffle getJiffle() {
-        return jiffle;
+    public JiffleDirectRuntime getRuntime() {
+        return runtime;
     }
 
     /**

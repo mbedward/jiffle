@@ -22,6 +22,7 @@ package jaitools.jiffle;
 
 import jaitools.jiffle.runtime.JiffleRuntime;
 import jaitools.jiffle.runtime.JiffleRuntimeException;
+import java.util.Map;
 
 /**
  * A stub class used in unit tests.
@@ -45,6 +46,18 @@ public class NullRuntime implements JiffleRuntime {
     }
 
     public boolean isBoundsSet() {
+        throw new UnsupportedOperationException("Should not be called");
+    }
+
+    public void setImageParams(Map imageParams) {
+        throw new UnsupportedOperationException("Should not be called");
+    }
+
+    public String[] getSourceVarNames() {
+        throw new UnsupportedOperationException("Should not be called");
+    }
+
+    public String[] getDestinationVarNames() {
         throw new UnsupportedOperationException("Should not be called");
     }
 

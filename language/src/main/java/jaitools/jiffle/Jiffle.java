@@ -686,8 +686,9 @@ public class Jiffle {
             }
             
             Class<?> clazz = compiler.getClassLoader().loadClass(sb.toString());
-
-            return (JiffleRuntime) clazz.newInstance();
+            JiffleRuntime runtime = (JiffleRuntime) clazz.newInstance();
+            runtime.setImageParams(imageParams);
+            return runtime;
 
         } catch (Exception ex) {
             throw new JiffleException("Runtime source error", ex);
