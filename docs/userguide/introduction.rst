@@ -22,7 +22,7 @@ the sunlit surface of a still pond...*
 .. image:: ripples-image.png
    :align: center
 
-Here is the Java code to plot the function. It uses a JAI [#f1]_ iterator to set pixel values. We'll omit the import statements and just
+Here is the Java code to plot the function. It uses a JAI [*]_ iterator to set pixel values. We'll omit the import statements and just
 concentrate on the method itself:
 
 .. literalinclude:: /../src/main/java/com/googlecode/jaitools/jiffle/docs/Ripples.java
@@ -54,7 +54,6 @@ program:
    :end-before: // docs-end-builder-example
 
 
-
 What you can't do with Jiffle
 -----------------------------
 
@@ -68,11 +67,11 @@ There are also some constraints imposed by the nature of the Jiffle run-time sys
 
   * Jiffle run-time objects iterate through source and destination images by X-ordinate (column), then Y-ordinate (row).
     Algorithms that require a different iteration order, such as the diamond-square method for generating fractal
-    surfaces [#f2]_ will be either impossible to implement in Jiffle and/or just a lot less work to write directly in
-    Java.
+    surfaces [*]_ will either be impossible to implement in Jiffle or just a lot less work to write directly in Java.
 
 
-.. [#f1] Java Advanced Imaging http://java.sun.com/javase/technologies/desktop/media/jai/
+.. [*] Java Advanced Imaging http://java.sun.com/javase/technologies/desktop/media/jai/
 
-.. [#f2] http://www.gameprogrammer.com/fractal.html#diamond
+.. [*] http://www.gameprogrammer.com/fractal.html#diamond
+
 
