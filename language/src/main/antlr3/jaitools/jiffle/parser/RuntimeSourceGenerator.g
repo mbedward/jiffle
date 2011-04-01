@@ -60,13 +60,20 @@ private String getImageScopeVarExpr(String varName) {
 }
 
 
-generate
+generate [String script]
 @init {
     varScope.addLevel("top");
+    List scriptLines = null;
+    if (script != null && script.length() > 0) {
+        scriptLines = new ArrayList();
+        for (String line : script.split("[\r\n]+")) {
+            scriptLines.add(line);
+        }
+    }
 }
                 : o+=jiffleOption* v+=varDeclaration* s+=statement+
 
-                -> runtime(pkgname={pkgName}, imports={imports}, 
+                -> runtime(script={scriptLines}, pkgname={pkgName}, imports={imports},
                            name={className}, base={baseClassName}, 
                            opts={$o}, fields={$v}, eval={$s})
                 ;

@@ -37,11 +37,12 @@ group DirectRuntime : Runtime;
 // Runtime template.
 // This is the root template for source generation.
 
-runtime(pkgname, imports, name, base, opts, fields, eval) ::= <<
+runtime(script, pkgname, imports, name, base, opts, fields, eval) ::= <<
 package <pkgname>;
 
 <imports: {imp |import <imp>;}; separator="\n">
 
+<javadocs(script)>
 public class <name> extends <base> {
     <fieldindices(fields)>
     <initoptions(opts)>
