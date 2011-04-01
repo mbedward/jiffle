@@ -20,6 +20,8 @@
 
 package jaitools.jiffle.runtime;
 
+import java.util.Map;
+
 /**
  * The root interface for Jiffle runtime classes.
  *
@@ -70,4 +72,32 @@ public interface JiffleRuntime {
      * @throws JiffleRuntimeException if the variable name is not found
      */
     void setVar(String varName, Double value) throws JiffleRuntimeException;
+    
+    /**
+     * Supplies the image parameters to the runtime object so that source
+     * and destination image variable names can be retrieved by the client
+     * prior to the actual images being set.
+     * <p>
+     * <b>Note:</b> The {@code imageParams} Map is declared here without 
+     * type parameters to work with the Janino compiler.
+     * 
+     * @param imageParams a {@code Map} with image variable names as keys and
+     *        {@code Jiffle.ImageRole} constants as values
+     * 
+     */
+    void setImageParams(Map imageParams);
+    
+    /**
+     * Gets the names of script variables which represent source images.
+     * 
+     * @return array of names (may be empty but not {@code null}
+     */
+    String[] getSourceVarNames();
+    
+    /**
+     * Gets the names of script variables which represent destination images.
+     * 
+     * @return array of names (may be empty but not {@code null}
+     */
+    String[] getDestinationVarNames();
 }

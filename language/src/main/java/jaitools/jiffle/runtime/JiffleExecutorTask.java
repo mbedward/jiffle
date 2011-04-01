@@ -25,8 +25,6 @@ import java.awt.image.WritableRenderedImage;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import jaitools.jiffle.Jiffle;
-import jaitools.jiffle.JiffleException;
 
 /**
  * Executes a runtime object in a thread provided by a {@link JiffleExecutor}.
@@ -39,7 +37,7 @@ public class JiffleExecutorTask implements Callable<JiffleExecutorResult> {
     
     private final JiffleExecutor executor;
     private final int id;
-    private final Jiffle jiffle;
+    private final JiffleDirectRuntime runtime;
     private final Map<String, RenderedImage> images;
     private final JiffleProgressListener progressListener;
     
@@ -47,27 +45,24 @@ public class JiffleExecutorTask implements Callable<JiffleExecutorResult> {
 
     
     /**
-     * Creates a new task. The {@code Jiffle} object must be 
-     * properly initialized with a script and image parameters 
-     * although it need not be compiled. The image variable names
-     * in {@code images} must match those used in the {@code Jiffle}
-     * objects image parameters.
+     * Creates a new task. The image variable names (keys) in {@code images}
+     * must correspond to those known by the runtime object.
      * 
      * @param id job ID allocated by the {@link JiffleExecutor}.
-     * @param jiffle the {@link Jiffle} object
+     * @param runtime the {@link JiffleDirectRuntime} instance
      * @param images a {@code Map} with image variable name as key and the
      *        corresponding source or destination image as value 
      */
     public JiffleExecutorTask(
             JiffleExecutor executor,
             int id, 
-            Jiffle jiffle, 
+            JiffleDirectRuntime runtime, 
             Map<String, RenderedImage> images,
             JiffleProgressListener progressListener) {
         
         this.executor = executor;
         this.id = id;
-        this.jiffle = jiffle;
+        this.runtime = runtime;
         this.images = images;
         this.progressListener = progressListener;
         
@@ -81,22 +76,15 @@ public class JiffleExecutorTask implements Callable<JiffleExecutorResult> {
      * @return a result object with references to the {@code Jiffle} object,
      *         the images, and the job completion status
      */
-    public JiffleExecutorResult call() throws JiffleException {
-        JiffleDirectRuntime runtime = jiffle.getRuntimeInstance();
+    public JiffleExecutorResult call() {
+        for (String name : runtime.getSourceVarNames()) {
+            RenderedImage srcImg = images.get(name);
+            runtime.setSourceImage(name, srcImg);
+        }
         
-        Map<String, Jiffle.ImageRole> imageParams = jiffle.getImageParams();
-        for (String imageName : images.keySet()) {
-            switch (imageParams.get(imageName)) {
-                case DEST:
-                    WritableRenderedImage destImg = (WritableRenderedImage) images.get(imageName);
-                    runtime.setDestinationImage(imageName, destImg);
-                    break;
-                    
-                case SOURCE:
-                    RenderedImage srcImg = images.get(imageName);
-                    runtime.setSourceImage(imageName, srcImg);
-                    break;
-            }
+        for (String name : runtime.getDestinationVarNames()) {
+            WritableRenderedImage destImg = (WritableRenderedImage) images.get(name);
+            runtime.setDestinationImage(name, destImg);
         }
         
         boolean gotEx = false;
@@ -108,7 +96,7 @@ public class JiffleExecutorTask implements Callable<JiffleExecutorResult> {
         }
 
         completed = !gotEx;
-        return new JiffleExecutorResult(id, jiffle, images, completed);
+        return new JiffleExecutorResult(id, runtime, images, completed);
     }
 
 }

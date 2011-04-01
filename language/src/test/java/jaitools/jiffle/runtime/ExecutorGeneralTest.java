@@ -45,6 +45,8 @@ import org.junit.Test;
 /**
  * General tests for {@link JiffleExecutor}.
  * 
+ * @see ExecutorSimpleTaskTest
+ * 
  * @author Michael Bedward
  * @since 0.1
  * @version $Id$
@@ -90,6 +92,15 @@ public class ExecutorGeneralTest {
         System.out.println("   receive exception when script will not compile");
         Jiffle jiffle = createJiffle("dest = unknownvar;", false);
         executor.submit(jiffle, createImagesMap(), null);
+    }
+    
+    @Test
+    public void submitRuntimeInstance() throws Exception {
+        System.out.println("   submit a JiffleDirectRuntime instance");
+        
+        Jiffle jiffle = createJiffle("dest = 42;", true);
+        JiffleDirectRuntime runtime = jiffle.getRuntimeInstance();
+        executor.submit(runtime, createImagesMap(), null);
     }
     
     @Test

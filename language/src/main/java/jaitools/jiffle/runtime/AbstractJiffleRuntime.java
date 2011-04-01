@@ -19,7 +19,12 @@
  */
 package jaitools.jiffle.runtime;
 
+import jaitools.jiffle.Jiffle;
 import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Provides default implementations of {@link JiffleRuntime} methods plus 
@@ -32,6 +37,8 @@ import java.awt.Rectangle;
  * @version $Id$
  */
 public abstract class AbstractJiffleRuntime implements JiffleRuntime {
+    
+    private Map<String, Jiffle.ImageRole> _imageParams;
     
     /** Processing bounds */
     protected Rectangle _bounds;
@@ -91,6 +98,43 @@ public abstract class AbstractJiffleRuntime implements JiffleRuntime {
     public AbstractJiffleRuntime() {
         _FN = new JiffleFunctions();
         _stk = new IntegerStack();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void setImageParams(Map imageParams) {
+        this._imageParams = new HashMap<String, Jiffle.ImageRole>();
+        for (Object oname : imageParams.keySet()) {
+            String name = (String) oname;
+            Jiffle.ImageRole role = (Jiffle.ImageRole) imageParams.get(oname);
+            this._imageParams.put(name, role);
+        }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String[] getDestinationVarNames() {
+        return doGetImageVarNames(Jiffle.ImageRole.DEST);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String[] getSourceVarNames() {
+        return doGetImageVarNames(Jiffle.ImageRole.SOURCE);
+    }
+
+    private String[] doGetImageVarNames(Jiffle.ImageRole role) {
+        List<String> names = new ArrayList<String>();
+        for (String name : _imageParams.keySet()) {
+            if (_imageParams.get(name) == role) {
+                names.add(name);
+            }
+        }
+
+        return names.toArray(new String[0]);
     }
     
     /**
