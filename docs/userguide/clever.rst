@@ -1,5 +1,5 @@
-Cunning plans and clever tricks (plus a few things to avoid)
-============================================================
+Cunning plans and clever tricks (plus some things to avoid)
+===========================================================
 
 Jiffle scripts with no destination images
 -----------------------------------------
@@ -31,6 +31,25 @@ Now at run-time, we can do this in the calling Java code::
 
   // Specify a 5x5 kernel by setting maxd to 2
   runtimeObj.setVar("maxd", 2);  
+  
+
+Saving the Java run-time source
+-------------------------------
+
+The Jiffle compiler translates an input script into a Java source code. After compiling the script you can get a copy of
+the generated Java code to examine, modify or compile separately. Here's how to do it with JiffleBuilder:
+
+.. literalinclude:: /../src/main/java/com/googlecode/jaitools/jiffle/docs/GetRuntimeSource.java
+   :language: java
+   :start-after: // docs start getSourceFromJiffleBuilder
+   :end-before: // docs end getSourceFromJiffleBuilder
+
+You can also do the same thing when working with a Jiffle object directly:
+
+.. literalinclude:: /../src/main/java/com/googlecode/jaitools/jiffle/docs/GetRuntimeSource.java
+   :language: java
+   :start-after: // docs start getSourceFromJiffleObject
+   :end-before: // docs end getSourceFromJiffleObject
 
 
 Things to avoid

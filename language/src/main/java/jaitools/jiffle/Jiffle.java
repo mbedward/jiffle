@@ -479,14 +479,34 @@ public class Jiffle {
     }
     
     /**
-     * Gets a copy of the Java source for the runtime class.
+     * Gets a copy of the Java source for the runtime class. The 
+     * script must have been compiled before calling this method.
+     * 
+     * @param scriptInDocs whether to include the original Jiffle script
+     *        in the class javadocs
+     * 
+     * @return source for the runtime class
+     * 
+     * @throws JiffleException if this instance has not yet been compiled
+     *         or if there is an error creating the runtime source
+     */
+    public String getRuntimeSource(boolean scriptInDocs)
+            throws JiffleException {
+        return getRuntimeSource(RuntimeModel.DIRECT, scriptInDocs);
+    }
+        
+    /**
+     * Gets a copy of the Java source for the runtime class. The 
+     * script must have been compiled before calling this method.
      * 
      * @param model the {@link Jiffle.RuntimeModel}
      * @param scriptInDocs whether to include the original Jiffle script
      *        in the class javadocs
      * 
      * @return source for the runtime class
-     * @throws JiffleException on error creating the runtime source
+     * 
+     * @throws JiffleException if this instance has not yet been compiled
+     *         or if there is an error creating the runtime source
      */
     public String getRuntimeSource(RuntimeModel model, boolean scriptInDocs)
             throws JiffleException {
@@ -705,6 +725,10 @@ public class Jiffle {
      */
     private String createRuntimeSource(RuntimeModel model,
             String baseClassName, boolean scriptInDocs) throws JiffleException {
+        
+        if (!isCompiled()) {
+            throw new JiffleException("This instance has not been compiled");
+        }
 
         CommonTreeNodeStream nodes = new CommonTreeNodeStream(finalAST);
         nodes.setTokenStream(tokens);
