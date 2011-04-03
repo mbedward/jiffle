@@ -35,6 +35,8 @@ import jaitools.CollectionFactory;
 import jaitools.jiffle.Jiffle;
 import jaitools.jiffle.JiffleException;
 import jaitools.jiffle.JiffleProperties;
+import org.antlr.runtime.ANTLRStringStream;
+import org.antlr.runtime.Token;
 
 /**
  * Base class for tree parsers that generate Jiffle runtime source.
@@ -265,5 +267,34 @@ public abstract class AbstractSourceGenerator extends ErrorHandlingTreeParser im
         }
     }
 
+    protected List<String> prepareScriptForComments(String script) {
+        ANTLRStringStream stream = new ANTLRStringStream(script);
+        
+        CommentFinder finder = new CommentFinder(stream);
+        Token tok = finder.nextToken();
+        while (tok.getType() != Token.EOF) {
+            tok = finder.nextToken();
+        }
+        
+        List<Integer> indices = finder.getStartEndIndices();
+        StringBuilder sb = new StringBuilder();
+        if (indices.isEmpty()) {
+            sb.append(script);
+        } else {
+            int pos = 0;
+            for (int i = 0; i < indices.size() && pos < script.length(); i += 2) {
+                int start = indices.get(i);
+                int end = indices.get(i+1);
+                sb.append(script.substring(pos, start));
+                pos = end;
+            }
+            if (pos < script.length()) {
+                sb.append(script.substring(pos, script.length()));
+            }
+        }
+        
+        String[] lines = sb.toString().split("[\n\r]+");
+        return Arrays.asList(lines);
+    }
 }
 

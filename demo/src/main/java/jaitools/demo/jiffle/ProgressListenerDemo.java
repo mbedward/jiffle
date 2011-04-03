@@ -20,6 +20,19 @@
 
 package jaitools.demo.jiffle;
 
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.RenderedImage;
+import java.util.Map;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+
 import jaitools.CollectionFactory;
 import jaitools.jiffle.Jiffle;
 import jaitools.jiffle.JiffleException;
@@ -28,16 +41,7 @@ import jaitools.jiffle.runtime.AbstractProgressListener;
 import jaitools.jiffle.runtime.JiffleDirectRuntime;
 import jaitools.jiffle.runtime.JiffleExecutor;
 import jaitools.jiffle.runtime.JiffleExecutorException;
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.image.RenderedImage;
-import java.util.Map;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
+
 
 /**
  * Demonstrates using a JiffleProgressListener with JiffleExecutor.
@@ -221,7 +225,8 @@ public class ProgressListenerDemo {
 
         public PretendJiffleRuntime() {
             // set the pretend processing area
-            setBounds(0, 0, NUM_PIXELS, 1);
+            Rectangle bounds = new Rectangle(0, 0, NUM_PIXELS, 1);
+            setWorldByStepDistance(bounds, 1, 1);
         }
 
         @Override
@@ -233,7 +238,7 @@ public class ProgressListenerDemo {
         /**
          * Pretends to process a pixel (very slowly).
          */
-        public void evaluate(int x, int y) {
+        public void evaluate(double x, double y) {
             try {
                 Thread.sleep(PIXEL_TIME);
 

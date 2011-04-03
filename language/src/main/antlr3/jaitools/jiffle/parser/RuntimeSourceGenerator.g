@@ -65,10 +65,7 @@ generate [String script]
     varScope.addLevel("top");
     List scriptLines = null;
     if (script != null && script.length() > 0) {
-        scriptLines = new ArrayList();
-        for (String line : script.split("[\r\n]+")) {
-            scriptLines.add(line);
-        }
+        scriptLines = prepareScriptForComments(script);
     }
 }
                 : o+=jiffleOption* v+=varDeclaration* s+=statement+
