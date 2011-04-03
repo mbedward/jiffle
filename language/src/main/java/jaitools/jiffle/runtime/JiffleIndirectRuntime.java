@@ -20,7 +20,6 @@
 
 package jaitools.jiffle.runtime;
 
-import java.awt.image.RenderedImage;
 
 /**
  * Defines methods implemented by runtime classes adopting the indirect 
@@ -34,41 +33,71 @@ import java.awt.image.RenderedImage;
  */
 public interface JiffleIndirectRuntime extends JiffleRuntime {
     /**
-     * Specifies the variable in the Jiffle script which refers
-     * to the destination image.
+     * Specifies the name of the script variable which represents the destination
+     * image and defines the coordinate transform.
+     * The transform defines how to convert from processing area coordinates
+     * to image (pixel) coordinates. If {@code tr} is {@code null} the default
+     * identify transform will be used.
+     * <p> 
+     * Note that Jiffle uses truncation rather than rounding to reduce the
+     * transformed coordinates to integers, so this should be taken into account
+     * when defining the transform.
      * 
-     * @param imageName variable name as used in the Jiffle script
+     * @param varName script variable representing the destination image
+     * @param tr transform for processing area to image coordinates
      */
-    void setDestinationImage(String imageName);
+    void setDestinationImage(String varName, CoordinateTransform tr);
     
     /**
-     * Associates a variable name in the Jiffle script with a
-     * source image.
+     * Specifies the name of the script variable which represents the destination
+     * image. Equivalent to:
+     * <pre><code>
+     * setDestinationImage(varName, null)
+     * </code></pre>
+     * This convenience method is defined in the interface because it will be
+     * commonly when working directly with image coordinates.
      * 
-     * @param imageName image name as used in the Jiffle script
+     * @param varName script variable representing the destination image
+     */
+    void setDestinationImage(String varName);
+    
+    /**
+     * Associates a variable name with a source image and coordinate transform.
+     * The transform defines how to convert from processing area coordinates
+     * to image (pixel) coordinates. If {@code tr} is {@code null} the default
+     * identify transform will be used.
+     * <p> 
+     * Note that Jiffle uses truncation rather than rounding to reduce the
+     * transformed coordinates to integers, so this should be taken into account
+     * when defining the transform.
+     * 
+     * @param varName script variable representing the source image
+     * @param image writable image
+     * @param tr transform for processing area to image coordinates
+     */
+    void setSourceImage(String varName, CoordinateTransform tr);
+    
+    /**
+     * Associates a variable name with a source image. Equivalent to:
+     * <pre><code>
+     * setSourceImage(varName, null)
+     * </code></pre>
+     * This convenience method is defined in the interface because it will be
+     * commonly when working directly with image coordinates.
+     * 
+     * @param varName script variable representing the source image
      * @param image writable image
      */
-    void setSourceImage(String imageName, RenderedImage image);
-    
+    void setSourceImage(String varName);
+
     /**
-     * Evaluates the script for the given image location.
+     * Evaluates the script for the given world position.
      * 
-     * @param x destination X ordinate
-     * @param y destination Y ordinate
+     * @param x world position X ordinate
+     * @param y world position Y ordinate
      * 
      * @return the result
      */
-    double evaluate(int x, int y);
+    double evaluate(double x, double y);
 
-    /**
-     * Gets a value from a source image as a double.
-     * 
-     * @param srcImageName the source image
-     * @param x source X ordinate
-     * @param y source Y ordinate
-     * @param band source band
-     * @return image value
-     */
-    double readFromImage(String srcImageName, int x, int y, int band);
-    
 }

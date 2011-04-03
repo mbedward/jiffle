@@ -19,12 +19,14 @@
  */
 package jaitools.jiffle.runtime;
 
-import jaitools.jiffle.Jiffle;
-import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import jaitools.jiffle.Jiffle;
+
 
 /**
  * Provides default implementations of {@link JiffleRuntime} methods plus 
@@ -37,15 +39,30 @@ import java.util.Map;
  * @version $Id$
  */
 public abstract class AbstractJiffleRuntime implements JiffleRuntime {
+    private static final double EPS = 1.0e-8d;
+
+    private enum Dim { XDIM, YDIM };
     
     private Map<String, Jiffle.ImageRole> _imageParams;
     
-    /** Processing bounds */
-    protected Rectangle _bounds;
+    /** Processing area bounds in world units. */
+    private Rectangle2D _worldBounds;
     
-    /** Whether the image-scope variables have been initialized. */
-    protected boolean _imageScopeVarsInitialized;
+    /** Step distance in X direction in world units. */
+    private double _xstep;
     
+    /** Step distance in Y direction in world units. */
+    private double _ystep;
+
+    /** Flags whether bounds and step distances have been set. */
+    private boolean _worldSet;
+    
+    /** Number of pixels calculated from bounds and step distances. */
+    private long _numPixels;
+    
+    /** World to image coordinate transforms with image name as key. */
+    private Map<String, CoordinateTransform> _transformLookup;
+
     /** Holds information about an image-scope variable. */
     public class ImageScopeVar {
         
@@ -66,6 +83,9 @@ public abstract class AbstractJiffleRuntime implements JiffleRuntime {
     /** Image-scope variables. */
     protected ImageScopeVar[] _vars = new ImageScopeVar[VAR_ARRAY_CHUNK];
     
+    /** Whether the image-scope variables have been initialized. */
+    protected boolean _imageScopeVarsInitialized;
+
     /** The number of image-scope variables defined. */
     protected int _numVars;
     
@@ -98,6 +118,10 @@ public abstract class AbstractJiffleRuntime implements JiffleRuntime {
     public AbstractJiffleRuntime() {
         _FN = new JiffleFunctions();
         _stk = new IntegerStack();
+        
+        _transformLookup = new HashMap<String, CoordinateTransform>();
+        _xstep = Double.NaN;
+        _ystep = Double.NaN;
     }
     
     /**
@@ -140,12 +164,36 @@ public abstract class AbstractJiffleRuntime implements JiffleRuntime {
     /**
      * {@inheritDoc}
      */
-    public void setBounds(int minx, int miny, int width, int height) {
-        _bounds = new Rectangle(minx, miny, width, height);
+    public void setWorldByStepDistance(Rectangle2D bounds, double xstep, double ystep) {
+        if (bounds == null || bounds.isEmpty()) {
+            throw new IllegalArgumentException("bounds cannot be null or empty");
+        }
+        if (xstep < EPS || ystep < EPS) {
+            throw new IllegalArgumentException("step distance but must be greater than 0");
+        }
+        
+        doSetWorld(bounds, xstep, ystep);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setWorldByNumSteps(Rectangle2D bounds, int nx, int ny) {
+        if (bounds == null || bounds.isEmpty()) {
+            throw new IllegalArgumentException("bounds cannot be null or empty");
+        }
+        if (nx <= 0 || ny <= 0) {
+            throw new IllegalArgumentException("number of steps must be greater than 0");
+        }
+        
+        doSetWorld(bounds, bounds.getWidth() / nx, bounds.getHeight() / ny);
     }
     
-    public boolean isBoundsSet() {
-        return _bounds != null && !_bounds.isEmpty();
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isWorldSet() {
+        return _worldSet;
     }
 
     /**
@@ -169,6 +217,80 @@ public abstract class AbstractJiffleRuntime implements JiffleRuntime {
             throw new JiffleRuntimeException("Undefined variable: " + varName);
         }
         setVarValue(index, value);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public double getMinX() {
+        return _worldBounds.getMinX();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public double getMaxX() {
+        return _worldBounds.getMaxX();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public double getMinY() {
+        return _worldBounds.getMinY();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public double getMaxY() {
+        return _worldBounds.getMaxY();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public double getWidth() {
+        return _worldBounds.getWidth();
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public double getHeight() {
+        return _worldBounds.getHeight();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public double getXStep() {
+        return _xstep;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public double getYStep() {
+        return _ystep;
+    }
+    
+    public long getNumPixels() {
+        if (!_worldSet) {
+            throw new IllegalStateException("Processing area has not been set");
+        }
+        return _numPixels;
+    }
+    
+    protected void setTransform(String imageVarName, CoordinateTransform tr) {
+        if (tr == null) {
+            tr = new IdentityCoordinateTransform();
+        }
+        _transformLookup.put(imageVarName, tr);
+    }
+    
+    protected CoordinateTransform getTransform(String imageVarName) {
+        return _transformLookup.get(imageVarName);
     }
 
     /**
@@ -251,9 +373,10 @@ public abstract class AbstractJiffleRuntime implements JiffleRuntime {
     protected abstract void initOptionVars();
 
     /**
+     * Registers a variable as having image scope.
      * 
-     * @param isvNames
-     * @param evals 
+     * @param name variable name
+     * @param hasDefault whether the variable has a default value
      */
     protected void registerVar(String name, boolean hasDefault) {
         // check that the variable is not already registered
@@ -274,67 +397,53 @@ public abstract class AbstractJiffleRuntime implements JiffleRuntime {
         _vars = new ImageScopeVar[_vars.length + VAR_ARRAY_CHUNK];
         System.arraycopy(temp, 0, _vars, 0, temp.length);
     }
-    
-    /**
-     * Gets the min X ordinate of the processing area.
-     * 
-     * @return min X ordinate
-     */
-    public int getMinX() {
-        return _bounds.x;
-    }
 
     /**
-     * Gets the max X ordinate of the processing area.
+     * Helper for {@link #setWorldByNumSteps(Rectangle2D, int, int)} and
+     * {@link #setWorldByStepDistance(Rectangle2D, double, double)} methods.
      * 
-     * @return max X ordinate
+     * @param bounds world bounds
+     * @param xstep step distance in X direction
+     * @param ystep step distance in Y direction
      */
-    public int getMaxX() {
-        return _bounds.x + _bounds.width - 1;
-    }
-
-    /**
-     * Gets the min Y ordinate of the processing area.
-     * 
-     * @return min Y ordinate
-     */
-    public int getMinY() {
-        return _bounds.y;
-    }
-
-    /**
-     * Gets the max Y ordinate of the processing area.
-     * 
-     * @return max Y ordinate
-     */
-    public int getMaxY() {
-        return _bounds.y + _bounds.height - 1;
+    private void doSetWorld(Rectangle2D bounds, double xstep, double ystep) {
+        checkStepDistance(xstep, Dim.XDIM, bounds);
+        checkStepDistance(ystep, Dim.YDIM, bounds);
+        
+        _worldBounds = new Rectangle2D.Double(
+                bounds.getMinX(), bounds.getMinY(),
+                bounds.getWidth(), bounds.getHeight());
+        
+        _xstep = xstep;
+        _ystep = ystep;
+        
+        _worldSet = true;
     }
     
     /**
-     * Gets the width of the processing area.
+     * Helper method for {@link #setWorldByStepDistance(Rectangle2D, double, double)} to
+     * check the validity of a step distance.
      * 
-     * @return the width
+     * @param value step distance in world units
+     * @param dim axis: Dim.XDIM or Dim.YDIM
+     * @param bounds world area bounds
      */
-    public int getWidth() {
-        return _bounds.width;
+    private void checkStepDistance(double value, Dim dim, Rectangle2D bounds) {
+        String name = dim == Dim.XDIM ? "X step" : "Y step";
+        
+        if (Double.isInfinite(value)) {
+            throw new IllegalArgumentException(name + " cannot be infinite");
+        }
+        if (Double.isNaN(value)) {
+            throw new IllegalArgumentException(name + " cannot be NaN");
+        }
+        
+        if (dim == Dim.XDIM && value > bounds.getWidth()) {
+            throw new IllegalArgumentException(name + "should be less than processing area width");
+            
+        } else if (dim == Dim.YDIM && value > bounds.getHeight()) {
+            throw new IllegalArgumentException(name + "should be less than processing area height");
+        }
     }
     
-    /**
-     * Gets the height of the processing area.
-     * 
-     * @return the height
-     */
-    public int getHeight() {
-        return _bounds.height;
-    }
-    
-    /**
-     * Gets the total number of pixels in the processing area.
-     * 
-     * @return the number of pixels
-     */
-    public long getSize() {
-        return (long)_bounds.width * _bounds.height;
-    }
 }

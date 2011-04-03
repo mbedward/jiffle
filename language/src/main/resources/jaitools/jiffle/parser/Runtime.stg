@@ -128,7 +128,7 @@ readFromImage("<var>", <if(pixel)><pixel><else>_x, _y<endif>, <if(band)>(int)(<b
 >>
 
 pixel(x, y) ::= <<
-(int)(<x>), (int)(<y>)
+<x>, <y>
 >>
 
 

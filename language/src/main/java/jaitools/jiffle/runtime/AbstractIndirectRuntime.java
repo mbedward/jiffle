@@ -20,8 +20,6 @@
 
 package jaitools.jiffle.runtime;
 
-import java.awt.image.RenderedImage;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,16 +47,21 @@ public abstract class AbstractIndirectRuntime extends AbstractJiffleRuntime impl
         initOptionVars();
     }
 
-    public void setDestinationImage(String imageName) {
-        destImageName = imageName;
+    public void setDestinationImage(String varName) {
+        setDestinationImage(varName, null);
     }
 
-    public void setSourceImage(String imageName, RenderedImage image) {
-        sourceImageNames.add(imageName);
+    public void setDestinationImage(String varName, CoordinateTransform tr) {
+        destImageName = varName;
+        setTransform(varName, tr);
     }
 
-    public double readFromImage(String srcImageName, int x, int y, int band) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void setSourceImage(String varName) {
+        setSourceImage(varName, null);
     }
 
+    public void setSourceImage(String varName, CoordinateTransform tr) {
+        sourceImageNames.add(varName);
+        setTransform(varName, tr);
+    }
 }
