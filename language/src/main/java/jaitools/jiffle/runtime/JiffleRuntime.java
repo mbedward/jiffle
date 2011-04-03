@@ -20,6 +20,7 @@
 
 package jaitools.jiffle.runtime;
 
+import java.awt.geom.Rectangle2D;
 import java.util.Map;
 
 /**
@@ -32,22 +33,101 @@ import java.util.Map;
 public interface JiffleRuntime {
 
     /**
-     * Set the bounds of the processing area. Usually this will be
-     * the bounds of the destination image(s).
-     *
-     * @param minx min X pixel ordinate
-     * @param miny min Y pixel ordinate
-     * @param width width of processing area
-     * @param height height of processing area
+     * Sets the world (processing area) bounds and step distances.
+     * 
+     * @param bounds outer bounds of the processing area
+     * @param xstep distance between pixels in world units in the X direction
+     * @param ystep distance between pixels in world units in the Y direction
+     * 
+     * @throws IllegalArgumentException if {@code bounds} is {@code null} or empty
      */
-    void setBounds(int minx, int miny, int width, int height);
+    void setWorldByStepDistance(Rectangle2D bounds, double xstep, double ystep);
     
     /**
-     * Tests if the bounds of the processing area have been set.
+     * Sets the world (processing area) bounds and the number of pixels in the
+     * X and Y directions.
      * 
-     * @return {@code true} if bounds are set; {@code false} otherwise
+     * @param bounds outer bounds of the processing area
+     * @param nx number of pixels in the X direction
+     * @param ny number of pixels in the Y direction
+     * 
+     * @throws IllegalArgumentException if {@code bounds} is {@code null} or empty
      */
-    boolean isBoundsSet();
+    void setWorldByNumSteps(Rectangle2D bounds, int nx, int ny);
+    
+    /**
+     * Gets the min X ordinate of the processing area.
+     * 
+     * @return min X ordinate in world units
+     */
+    double getMinX();
+
+    /**
+     * Gets the max X ordinate of the processing area.
+     * 
+     * @return max X ordinate in world units
+     */
+    double getMaxX();
+
+    /**
+     * Gets the min Y ordinate of the processing area.
+     * 
+     * @return min Y ordinate in world units
+     */
+    double getMinY();
+
+    /**
+     * Gets the max Y ordinate of the processing area.
+     * 
+     * @return max Y ordinate in world units
+     */
+    double getMaxY();
+    
+    /**
+     * Gets the width of the processing area.
+     * 
+     * @return the width in world units
+     */
+    double getWidth();
+    
+    /**
+     * Gets the height of the processing area.
+     * 
+     * @return the height in world units
+     */
+    double getHeight();
+    
+    /**
+     * Gets the distance between pixels in the X direction, expressed in
+     * world units.
+     * 
+     * @return step distance in world units
+     */
+    double getXStep();
+    
+    /**
+     * Gets the distance between pixels in the Y direction, expressed in
+     * world units.
+     * 
+     * @return step distance in world units
+     */
+    double getYStep();
+    
+    /**
+     * Gets the total number of pixels in the processing area, calculated from 
+     * the world bounds and step distances.
+     * 
+     * @return number of pixels
+     * @throws IllegalStateException if the processing area has not been set
+     */
+    long getNumPixels();
+    
+    /**
+     * Checks whether the world bounds and step distances have been set.
+     * 
+     * @return {@code true} if set; {@code false} otherwise
+     */
+    boolean isWorldSet();
     
     /**
      * Returns the value of a variable that was declared in the

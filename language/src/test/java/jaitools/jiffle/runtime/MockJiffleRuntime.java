@@ -20,6 +20,8 @@
 
 package jaitools.jiffle.runtime;
 
+import java.awt.Rectangle;
+
 /**
  * Mock object for unit tests.
  * 
@@ -27,7 +29,7 @@ package jaitools.jiffle.runtime;
  * @since 0.1
  * @version $Id$
  */
-class MockJiffleRuntime extends AbstractDirectRuntime {
+public class MockJiffleRuntime extends AbstractDirectRuntime {
 
     private final long pixelTime;
 
@@ -42,8 +44,7 @@ class MockJiffleRuntime extends AbstractDirectRuntime {
      */
     public MockJiffleRuntime(int imageSize, long pixelTime) {
         this.pixelTime = pixelTime;
-        
-        setBounds(0, 0, imageSize, 1);
+        setWorldByStepDistance(new Rectangle(0, 0, imageSize, 1), 1, 1);
     }
 
     /**
@@ -79,7 +80,7 @@ class MockJiffleRuntime extends AbstractDirectRuntime {
     /**
      * Pretends to process a pixel (very slowly).
      */
-    public void evaluate(int x, int y) {
+    public void evaluate(double x, double y) {
         try {
             Thread.sleep(pixelTime);
 

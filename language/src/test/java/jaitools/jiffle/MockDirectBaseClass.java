@@ -24,6 +24,7 @@ import java.awt.image.RenderedImage;
 import java.awt.image.WritableRenderedImage;
 
 import jaitools.jiffle.runtime.AbstractJiffleRuntime;
+import jaitools.jiffle.runtime.CoordinateTransform;
 import jaitools.jiffle.runtime.JiffleDirectRuntime;
 import jaitools.jiffle.runtime.JiffleProgressListener;
 
@@ -46,19 +47,29 @@ public abstract class MockDirectBaseClass
         throw new UnsupportedOperationException("Should not be called");
     }
 
-    public void setSourceImage(String imageName, RenderedImage image) {
+    public void setDestinationImage(String imageName, WritableRenderedImage image, 
+            CoordinateTransform tr) {
         throw new UnsupportedOperationException("Should not be called");
     }
 
+    public void setSourceImage(String imageName, RenderedImage image) {
+        throw new UnsupportedOperationException("Should not be called");
+    }
+    
+    public void setSourceImage(String imageName, RenderedImage image,
+            CoordinateTransform tr) {
+        throw new UnsupportedOperationException("Should not be called");
+    }
+    
     public void evaluateAll(JiffleProgressListener ignored) {
         throw new UnsupportedOperationException("Should not be called");
     }
 
-    public double readFromImage(String srcImageName, int x, int y, int band) {
+    public double readFromImage(String srcImageName, double x, double y, int band) {
         throw new UnsupportedOperationException("Should not be called");
     }
 
-    public void writeToImage(String destImageName, int x, int y, int band, double value) {
+    public void writeToImage(String destImageName, double x, double y, int band, double value) {
         throw new UnsupportedOperationException("Should not be called");
     }
 

@@ -22,6 +22,7 @@ package jaitools.jiffle;
 
 import jaitools.jiffle.runtime.JiffleRuntime;
 import jaitools.jiffle.runtime.JiffleRuntimeException;
+import java.awt.geom.Rectangle2D;
 import java.util.Map;
 
 /**
@@ -34,31 +35,67 @@ import java.util.Map;
 public class NullRuntime implements JiffleRuntime {
 
     public Double getVar(String varName) {
-        throw new UnsupportedOperationException("Should not be called");
+        return null;
     }
 
-    public void setVar(String varName, Double value) throws JiffleRuntimeException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void setVar(String varName, Double value) throws JiffleRuntimeException {}
+
+    public void setWorldByStepDistance(Rectangle2D bounds, double xstep, double ystep) {
     }
 
-    public void setBounds(int minx, int miny, int width, int height) {
-        throw new UnsupportedOperationException("Should not be called");
+    public void setWorldByNumSteps(Rectangle2D bounds, int nx, int ny) {
     }
 
-    public boolean isBoundsSet() {
-        throw new UnsupportedOperationException("Should not be called");
+    public boolean isWorldSet() {
+        return true;
     }
 
     public void setImageParams(Map imageParams) {
-        throw new UnsupportedOperationException("Should not be called");
     }
 
     public String[] getSourceVarNames() {
-        throw new UnsupportedOperationException("Should not be called");
+        return new String[0];
     }
 
     public String[] getDestinationVarNames() {
-        throw new UnsupportedOperationException("Should not be called");
+        return new String[0];
+    }
+
+
+    public double getMinX() {
+        return 0;
+    }
+
+    public double getMaxX() {
+        return 0;
+    }
+
+    public double getMinY() {
+        return 0;
+    }
+
+    public double getMaxY() {
+        return 0;
+    }
+
+    public double getWidth() {
+        return 0;
+    }
+
+    public double getHeight() {
+        return 0;
+    }
+
+    public double getXStep() {
+        return 0;
+    }
+
+    public double getYStep() {
+        return 0;
+    }
+
+    public long getNumPixels() {
+        return 0;
     }
 
 }

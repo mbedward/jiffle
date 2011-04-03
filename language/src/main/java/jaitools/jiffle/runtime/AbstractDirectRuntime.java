@@ -20,6 +20,8 @@
 
 package jaitools.jiffle.runtime;
 
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.image.RenderedImage;
 import java.awt.image.WritableRenderedImage;
 import java.util.HashMap;
@@ -40,6 +42,8 @@ import javax.media.jai.iterator.WritableRandomIter;
  */
 public abstract class AbstractDirectRuntime extends AbstractJiffleRuntime implements JiffleDirectRuntime {
 
+    private static final double EPS = 1.0e-10d;
+    
     /* 
      * Note: not using generics here because they are not
      * supported by the Janino compiler.
@@ -74,17 +78,35 @@ public abstract class AbstractDirectRuntime extends AbstractJiffleRuntime implem
     /**
      * {@inheritDoc}
      */
-    public void setDestinationImage(String imageName, WritableRenderedImage image) {
-        images.put(imageName, image);
-        writers.put(imageName, RandomIterFactory.createWritable(image, null));
+    public void setDestinationImage(String varName, WritableRenderedImage image) {
+        setDestinationImage(varName, image, null);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void setDestinationImage(String varName, WritableRenderedImage image, 
+            CoordinateTransform tr) {
+        
+        images.put(varName, image);
+        writers.put(varName, RandomIterFactory.createWritable(image, null));
+        setTransform(varName, tr);
     }
 
     /**
      * {@inheritDoc}
      */
-    public void setSourceImage(String imageName, RenderedImage image) {
-        images.put(imageName, image);
-        readers.put(imageName, RandomIterFactory.create(image, null));
+    public void setSourceImage(String varName, RenderedImage image) {
+        setSourceImage(varName, image, null);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void setSourceImage(String varName, RenderedImage image, CoordinateTransform tr) {
+        images.put(varName, image);
+        readers.put(varName, RandomIterFactory.create(image, null));
+        setTransform(varName, tr);
     }
 
     /**
@@ -93,20 +115,28 @@ public abstract class AbstractDirectRuntime extends AbstractJiffleRuntime implem
     public void evaluateAll(JiffleProgressListener pl) {
         JiffleProgressListener listener = pl == null ? new NullProgressListener() : pl;
         
-        if (!isBoundsSet()) {
+        if (!isWorldSet()) {
             setDefaultBounds();
         }
 
-        final long numPixels = getSize();
+        final long numPixels = getNumPixels();
         listener.setTaskSize(numPixels);
         
         long count = 0;
         long sinceLastUpdate = 0;
         final long updateInterval = listener.getUpdateInterval();
         
+        final double minX = getMinX();
+        final double maxX = getMaxX();
+        final double stepX = getXStep();
+        
+        final double minY = getMinY();
+        final double maxY = getMaxY();
+        final double stepY = getYStep();
+        
         listener.start();
-        for (int y = _bounds.y, iy = 0; iy < _bounds.height; y++, iy++) {
-            for (int x = _bounds.x, ix = 0; ix < _bounds.width; x++, ix++) {
+        for (double y = minY; y < maxY - EPS; y += stepY) {
+            for (double x = minX; x < maxX - EPS; x += stepX) {
                 evaluate(x, y);
                 
                 count++ ;
@@ -123,15 +153,18 @@ public abstract class AbstractDirectRuntime extends AbstractJiffleRuntime implem
     /**
      * {@inheritDoc}
      */
-    public double readFromImage(String imageName, int x, int y, int band) {
+    public double readFromImage(String srcImageName, double x, double y, int band) {
         boolean inside = true;
-        RenderedImage img = (RenderedImage) images.get(imageName);
+        RenderedImage img = (RenderedImage) images.get(srcImageName);
+        CoordinateTransform tr = getTransform(srcImageName);
         
-        int xx = x - img.getMinX();
+        Point imgPos = tr.worldToImage(x, y, null);
+        
+        int xx = imgPos.x - img.getMinX();
         if (xx < 0 || xx >= img.getWidth()) {
             inside = false;
         } else {
-            int yy = y - img.getMinY();
+            int yy = imgPos.y - img.getMinY();
             if (yy < 0 || yy >= img.getHeight()) {
                 inside = false;
             }
@@ -142,21 +175,23 @@ public abstract class AbstractDirectRuntime extends AbstractJiffleRuntime implem
                 return _outsideValue;
             } else {
                 throw new JiffleRuntimeException( String.format(
-                        "Position %d %d is outside bounds of image: %s", 
-                        x, y, imageName));
+                        "Position %.4f %.4f is outside bounds of image: %s", 
+                        x, y, srcImageName));
             }
         }
         
-        RandomIter iter = (RandomIter) readers.get(imageName);
-        return iter.getSampleDouble(x, y, band);
+        RandomIter iter = (RandomIter) readers.get(srcImageName);
+        return iter.getSampleDouble(imgPos.x, imgPos.y, band);
     }
     
     /**
      * {@inheritDoc}
      */
-    public void writeToImage(String imageName, int x, int y, int band, double value) {
-        WritableRandomIter iter = (WritableRandomIter) writers.get(imageName);
-        iter.setSample(x, y, band, value);
+    public void writeToImage(String destImageName, double x, double y, int band, double value) {
+        WritableRandomIter iter = (WritableRandomIter) writers.get(destImageName);
+        CoordinateTransform tr = getTransform(destImageName);
+        Point imgPos = tr.worldToImage(x, y, null);
+        iter.setSample(imgPos.x, imgPos.y, band, value);
     }
 
     /**
@@ -174,8 +209,11 @@ public abstract class AbstractDirectRuntime extends AbstractJiffleRuntime implem
             refImage = (RenderedImage) images.get(imageName);
         }
         
-        setBounds(refImage.getMinX(), refImage.getMinY(), 
+        Rectangle rect = new Rectangle(
+                refImage.getMinX(), refImage.getMinY(), 
                 refImage.getWidth(), refImage.getHeight());
+        
+        setWorldByStepDistance(rect, 1, 1);
     }
 
 }

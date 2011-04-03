@@ -49,7 +49,7 @@ public class <name> extends <base> {
 
     <ctor(classname=name, fields=fields)>
     <defaultvaluegetter(fields)>
-    public double evaluate(int _x, int _y) {
+    public double evaluate(double _x, double _y) {
         if (!_imageScopeVarsInitialized) {
             initImageScopeVars();
         }

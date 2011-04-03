@@ -20,9 +20,8 @@
 
 package jaitools.jiffle;
 
-import java.awt.image.RenderedImage;
-
 import jaitools.jiffle.runtime.AbstractJiffleRuntime;
+import jaitools.jiffle.runtime.CoordinateTransform;
 import jaitools.jiffle.runtime.JiffleIndirectRuntime;
 
 
@@ -36,7 +35,11 @@ import jaitools.jiffle.runtime.JiffleIndirectRuntime;
 public abstract class MockIndirectBaseClass 
         extends AbstractJiffleRuntime implements JiffleIndirectRuntime {
 
-    public double readFromImage(String srcImageName, int x, int y, int band) {
+    public void setSourceImage(String imageName) {
+        throw new UnsupportedOperationException("Should not be called");
+    }
+
+    public void setSourceImage(String varName, CoordinateTransform tr) {
         throw new UnsupportedOperationException("Should not be called");
     }
 
@@ -44,7 +47,7 @@ public abstract class MockIndirectBaseClass
         throw new UnsupportedOperationException("Should not be called");
     }
 
-    public void setSourceImage(String imageName, RenderedImage image) {
+    public void setDestinationImage(String varName, CoordinateTransform tr) {
         throw new UnsupportedOperationException("Should not be called");
     }
 
