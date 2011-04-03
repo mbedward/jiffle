@@ -76,7 +76,7 @@ public class JiffleOpImage extends OpImage {
             runtime = (JiffleIndirectRuntime) jiffle.getRuntimeInstance(Jiffle.RuntimeModel.INDIRECT);
             
             for (String varName : sourceImages.keySet()) {
-                runtime.setSourceImage(varName, sourceImages.get(varName));
+                runtime.setSourceImage(varName);
             }
             
             if (destBounds == null) {
@@ -89,7 +89,7 @@ public class JiffleOpImage extends OpImage {
                 bounds = new Rectangle(destBounds);
             }
             
-            runtime.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
+            runtime.setWorldByStepDistance(bounds, 1, 1);
             
         } catch (JiffleException ex) {
             throw new RuntimeException(ex);
