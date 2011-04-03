@@ -357,23 +357,25 @@ Processing area functions
 ===============   ================================================
 Name              Returns             
 ===============   ================================================
-``height()``      Height of the processing area (pixels)
+``height()``      Height of the processing area (world units)
 
-``width()``       Width of the processing area (pixels)
+``width()``       Width of the processing area (world units)
 
-``size()``        Total size of the processing area (pixels)
+``xmin()``        Minimum X ordinate of the processing area (world units)
 
-``xmin()``        Minimum X ordinate of the processing area
+``ymin()``        Minimum Y ordinate of the processing area (world units)
 
-``ymin()``        Minimum Y ordinate of the processing area
+``xmax()``        Maximum X ordinate of the processing area (world units)
 
-``xmax()``        Maximum X ordinate of the processing area
+``ymax()``        Maximum Y ordinate of the processing area (world units)
 
-``ymax()``        Maximum Y ordinate of the processing area
+``x()``           X ordinate of the current processing position (world units)
 
-``x()``           X ordinate of the current destination pixel
+``y()``           Y ordinate of the current processing position (world units)
 
-``y()``           Y ordinate of the current destination pixel
+``xstep()``       Pixel width (world units)
+
+``ystep()``       Pixel height (world units)
 
 ===============   ================================================
 
