@@ -22,9 +22,11 @@ package jaitools.jiffle;
 
 import java.awt.geom.Rectangle2D;
 
+import jaitools.jiffle.Jiffle.ImageRole;
 import jaitools.jiffle.runtime.CoordinateTransform;
 import jaitools.jiffle.runtime.JiffleRuntime;
 import jaitools.jiffle.runtime.JiffleRuntimeException;
+import java.util.Map;
 
 /**
  * A stub class used in unit tests.
@@ -86,5 +88,15 @@ public class NullRuntime implements JiffleRuntime {
     }
 
     public void setDefaultTransform(CoordinateTransform tr) {}
+
+    public void setImageParams(Map<String, ImageRole> imageParams) {}
+
+    public String[] getSourceVarNames() {
+        return new String[0];
+    }
+
+    public String[] getDestinationVarNames() {
+        return new String[0];
+    }
 
 }
