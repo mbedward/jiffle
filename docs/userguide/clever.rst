@@ -39,14 +39,14 @@ Saving the Java run-time source
 The Jiffle compiler translates an input script into a Java source code. After compiling the script you can get a copy of
 the generated Java code to examine, modify or compile separately. Here's how to do it with JiffleBuilder:
 
-.. literalinclude:: /../src/main/java/com/googlecode/jaitools/jiffle/docs/GetRuntimeSource.java
+.. literalinclude:: /../src/main/java/jaitools/jiffle/docs/GetRuntimeSource.java
    :language: java
    :start-after: // docs start getSourceFromJiffleBuilder
    :end-before: // docs end getSourceFromJiffleBuilder
 
 You can also do the same thing when working with a Jiffle object directly:
 
-.. literalinclude:: /../src/main/java/com/googlecode/jaitools/jiffle/docs/GetRuntimeSource.java
+.. literalinclude:: /../src/main/java/jaitools/jiffle/docs/GetRuntimeSource.java
    :language: java
    :start-after: // docs start getSourceFromJiffleObject
    :end-before: // docs end getSourceFromJiffleObject
