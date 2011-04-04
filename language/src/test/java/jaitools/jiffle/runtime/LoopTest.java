@@ -45,7 +45,7 @@ public class LoopTest extends StatementsTestBase {
             
             public double eval(double val) {
                 int xx = x;
-                x = (x + 1) % WIDTH;
+                x = (x + 1) % IMG_WIDTH;
                 return xx;
             }
         };
@@ -67,7 +67,7 @@ public class LoopTest extends StatementsTestBase {
             public double eval(double val) {
                 int n = 0;
                 for (int i = 0; i < x; i++) n += i;
-                x = (x + 1) % WIDTH;
+                x = (x + 1) % IMG_WIDTH;
                 return n;
             }
         };
@@ -88,7 +88,7 @@ public class LoopTest extends StatementsTestBase {
             
             public double eval(double val) {
                 int xx = x;
-                x = (x + 1) % WIDTH;
+                x = (x + 1) % IMG_WIDTH;
                 return xx + 1;
             }
         };
@@ -110,7 +110,7 @@ public class LoopTest extends StatementsTestBase {
             public double eval(double val) {
                 int n = 0;
                 for (int i = 0; i <= x; i++) n += i;
-                x = (x + 1) % WIDTH;
+                x = (x + 1) % IMG_WIDTH;
                 return n;
             }
         };
@@ -132,7 +132,7 @@ public class LoopTest extends StatementsTestBase {
 
             public double eval(double val) {
                 double z = x + y + 3;
-                x = (x + 1) % WIDTH;
+                x = (x + 1) % IMG_WIDTH;
                 if (x == 0) y++ ;
                 return z;
             }
@@ -159,7 +159,7 @@ public class LoopTest extends StatementsTestBase {
 
             public double eval(double val) {
                 double z = 2*(x + y + 3);
-                x = (x + 1) % WIDTH;
+                x = (x + 1) % IMG_WIDTH;
                 if (x == 0) y++ ;
                 return z;
             }
@@ -182,7 +182,7 @@ public class LoopTest extends StatementsTestBase {
             public double eval(double val) {
                 double z = 0;
                 for (int i = -1; i <= 5; i++) z += val * i;
-                x = (x + 1) % WIDTH;
+                x = (x + 1) % IMG_WIDTH;
                 return z;
             }
         };
@@ -207,7 +207,7 @@ public class LoopTest extends StatementsTestBase {
             public double eval(double val) {
                 double z = 0;
                 for (int i = -1; i <= 5; i++) z += val * i;
-                x = (x + 1) % WIDTH;
+                x = (x + 1) % IMG_WIDTH;
                 return z;
             }
         };
@@ -233,7 +233,7 @@ public class LoopTest extends StatementsTestBase {
             public double eval(double val) {
                 int n = 0;
                 for (int i = 0; i < x; i++) n += i;
-                x = (x + 1) % WIDTH;
+                x = (x + 1) % IMG_WIDTH;
                 return (n < 10 ? n : 10);
             }
         };
@@ -262,7 +262,7 @@ public class LoopTest extends StatementsTestBase {
             public double eval(double val) {
                 int n = 0;
                 for (int i = 0; i < x; i++) n += i;
-                x = (x + 1) % WIDTH;
+                x = (x + 1) % IMG_WIDTH;
                 return (n < 10 ? n : 10);
             }
         };
@@ -365,9 +365,9 @@ public class LoopTest extends StatementsTestBase {
             public double eval(double val) {
                 double z = val;
                 if (x > 0) z += val - 1;
-                if (x < WIDTH-1) z += val + 1;
+                if (x < IMG_WIDTH-1) z += val + 1;
                 
-                x = (x + 1) % WIDTH;
+                x = (x + 1) % IMG_WIDTH;
                 return z;
             }
         };

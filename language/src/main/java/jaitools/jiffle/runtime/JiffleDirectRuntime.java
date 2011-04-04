@@ -22,6 +22,7 @@ package jaitools.jiffle.runtime;
 
 import java.awt.image.RenderedImage;
 import java.awt.image.WritableRenderedImage;
+import java.util.Map;
 
 /**
  * Defines methods implemented by runtime classes adopting the direct evaluation
@@ -93,8 +94,6 @@ public interface JiffleDirectRuntime extends JiffleRuntime {
      */
     void setSourceImage(String varName, RenderedImage image);
     
-    
-    
     /**
      * Sets default bounds for the processing area. These are the bounds of 
      * the first destination image or, if there are no destination images,
@@ -143,4 +142,12 @@ public interface JiffleDirectRuntime extends JiffleRuntime {
      * @param value the value to write
      */
     void writeToImage(String destImageName, double x, double y, int band, double value);
+
+    /**
+     * Gets the images used by this object and returns them as a {@code Map}
+     * with variable names as keys and images as values.
+     * 
+     * @return images keyed by variable name
+     */
+    Map<String, RenderedImage> getImages();
 }

@@ -92,8 +92,8 @@ public class FunctionsTest extends StatementsTestBase {
         Evaluator e = new Evaluator() {
             int x = 0;
             public double eval(double val) {
-                double z = Math.acos((double)x / WIDTH);
-                x = (x + 1) % WIDTH;
+                double z = Math.acos((double)x / IMG_WIDTH);
+                x = (x + 1) % IMG_WIDTH;
                 return z;
             }
         };
@@ -109,8 +109,8 @@ public class FunctionsTest extends StatementsTestBase {
         Evaluator e = new Evaluator() {
             int x = 0;
             public double eval(double val) {
-                double z = Math.asin((double)x / WIDTH);
-                x = (x + 1) % WIDTH;
+                double z = Math.asin((double)x / IMG_WIDTH);
+                x = (x + 1) % IMG_WIDTH;
                 return z;
             }
         };
@@ -126,8 +126,8 @@ public class FunctionsTest extends StatementsTestBase {
         Evaluator e = new Evaluator() {
             int x = 0;
             public double eval(double val) {
-                double z = Math.atan((double)x / WIDTH);
-                x = (x + 1) % WIDTH;
+                double z = Math.atan((double)x / IMG_WIDTH);
+                x = (x + 1) % IMG_WIDTH;
                 return z;
             }
         };
@@ -184,7 +184,7 @@ public class FunctionsTest extends StatementsTestBase {
             int x = 0;
             public double eval(double val) {
                 Double z = 1.0 / x;
-                x = (x + 1) % WIDTH;
+                x = (x + 1) % IMG_WIDTH;
                 return z.isInfinite() ? 1.0 : 0.0;
             }
         };
@@ -202,7 +202,7 @@ public class FunctionsTest extends StatementsTestBase {
             int y = 0;
             public double eval(double val) {
                 Double z = (double)y / x;
-                x = (x + 1) % WIDTH;
+                x = (x + 1) % IMG_WIDTH;
                 if (x == 0) y++ ;
                 return z.isNaN() ? 1.0 : 0.0;
             }
@@ -221,7 +221,7 @@ public class FunctionsTest extends StatementsTestBase {
             int y = 0;
             public double eval(double val) {
                 Double z = (double)y / x;
-                x = (x + 1) % WIDTH;
+                x = (x + 1) % IMG_WIDTH;
                 if (x == 0) y++ ;
                 return z.isNaN() ? 1.0 : 0.0;
             }
@@ -286,14 +286,14 @@ public class FunctionsTest extends StatementsTestBase {
         JiffleDirectRuntime runtime = jiffle.getRuntimeInstance();
         
         TiledImage src = createRowValueImage();
-        TiledImage dest = ImageUtils.createConstantImage(WIDTH, WIDTH, 0d);
+        TiledImage dest = ImageUtils.createConstantImage(IMG_WIDTH, IMG_WIDTH, 0d);
         
         runtime.setSourceImage("src", src);
         runtime.setDestinationImage("dest", dest);
         runtime.evaluateAll(null);
 
-        for (int y = 0; y < WIDTH; y++) {
-            for (int x = 0; x < WIDTH; x++) {
+        for (int y = 0; y < IMG_WIDTH; y++) {
+            for (int x = 0; x < IMG_WIDTH; x++) {
                 double val = src.getSample(x, y, 0);
                 double z = dest.getSample(x, y, 0);
                 assertTrue(CompareOp.acompare(z, val) >= 0);
@@ -314,14 +314,14 @@ public class FunctionsTest extends StatementsTestBase {
         JiffleDirectRuntime runtime = jiffle.getRuntimeInstance();
         
         TiledImage src = createRowValueImage();
-        TiledImage dest = ImageUtils.createConstantImage(WIDTH, WIDTH, 0d);
+        TiledImage dest = ImageUtils.createConstantImage(IMG_WIDTH, IMG_WIDTH, 0d);
         
         runtime.setSourceImage("src", src);
         runtime.setDestinationImage("dest", dest);
         runtime.evaluateAll(null);
 
-        for (int y = 0; y < WIDTH; y++) {
-            for (int x = 0; x < WIDTH; x++) {
+        for (int y = 0; y < IMG_WIDTH; y++) {
+            for (int x = 0; x < IMG_WIDTH; x++) {
                 double val = src.getSample(x, y, 0);
                 double z = dest.getSample(x, y, 0);
                 assertEquals(Math.round(z), z, CompareOp.DTOL);
@@ -338,7 +338,7 @@ public class FunctionsTest extends StatementsTestBase {
         
         Evaluator e = new Evaluator() {
             public double eval(double val) {
-                return Math.round(val / (WIDTH - 1));
+                return Math.round(val / (IMG_WIDTH - 1));
             }
         };
         
@@ -352,7 +352,7 @@ public class FunctionsTest extends StatementsTestBase {
         
         Evaluator e = new Evaluator() {
             public double eval(double val) {
-                double z = val / (WIDTH - 1);
+                double z = val / (IMG_WIDTH - 1);
                 return Math.round(z / 2) * 2;
             }
         };

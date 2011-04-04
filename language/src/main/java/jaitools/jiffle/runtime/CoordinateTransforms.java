@@ -70,17 +70,12 @@ public class CoordinateTransforms {
      * 
      * @throws IllegalArgumentException if {@code imageBounds} is {@code null} or empty
      */
-    static CoordinateTransform unitInterval(Rectangle imageBounds) {
+    public static CoordinateTransform unitInterval(Rectangle imageBounds) {
         if (imageBounds == null || imageBounds.isEmpty()) {
             throw new IllegalArgumentException("imageBounds must not be null or empty");
         }
-        
-        double xscale = imageBounds.getWidth();
-        double yscale = imageBounds.getHeight();
-        double xoff = imageBounds.getMinX();
-        double yoff = imageBounds.getMinY();
-        
-        return new AffineCoordinateTransform(new AffineTransform(xscale, 0, 0, yscale, xoff, yoff));
+
+        return getTransform(new Rectangle(0, 0, 1, 1), imageBounds);
     }
 
     /**
@@ -93,7 +88,7 @@ public class CoordinateTransforms {
      * 
      * @throws IllegalArgumentException if either argument is {@code null} or empty
      */
-    static CoordinateTransform getTransform(Rectangle2D worldBounds, Rectangle imageBounds) {
+    public static CoordinateTransform getTransform(Rectangle2D worldBounds, Rectangle imageBounds) {
         if (worldBounds == null || worldBounds.isEmpty()) {
             throw new IllegalArgumentException("worldBounds must not be null or empty");
         }

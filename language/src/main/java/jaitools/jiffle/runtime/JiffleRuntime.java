@@ -21,7 +21,6 @@
 package jaitools.jiffle.runtime;
 
 import java.awt.geom.Rectangle2D;
-import java.util.Map;
 
 /**
  * The root interface for Jiffle runtime classes.
@@ -54,6 +53,18 @@ public interface JiffleRuntime {
      * @throws IllegalArgumentException if {@code bounds} is {@code null} or empty
      */
     void setWorldByNumSteps(Rectangle2D bounds, int nx, int ny);
+    
+    /**
+     * Sets a coordinate transform to be used by any source and destination images
+     * submitted to the runtime object without their own transforms. This 
+     * includes any images submitted prior to calling this method. If {@code tr}
+     * is {@code null} the system default transform ({@link IdentityCoordinateTransform})
+     * will be used.
+     * 
+     * @param tr the coordinate transform to use as the default; or {@code null}
+     *        for the system default
+     */
+    void setDefaultTransform(CoordinateTransform tr);
     
     /**
      * Gets the min X ordinate of the processing area.
@@ -153,31 +164,4 @@ public interface JiffleRuntime {
      */
     void setVar(String varName, Double value) throws JiffleRuntimeException;
     
-    /**
-     * Supplies the image parameters to the runtime object so that source
-     * and destination image variable names can be retrieved by the client
-     * prior to the actual images being set.
-     * <p>
-     * <b>Note:</b> The {@code imageParams} Map is declared here without 
-     * type parameters to work with the Janino compiler.
-     * 
-     * @param imageParams a {@code Map} with image variable names as keys and
-     *        {@code Jiffle.ImageRole} constants as values
-     * 
-     */
-    void setImageParams(Map imageParams);
-    
-    /**
-     * Gets the names of script variables which represent source images.
-     * 
-     * @return array of names (may be empty but not {@code null}
-     */
-    String[] getSourceVarNames();
-    
-    /**
-     * Gets the names of script variables which represent destination images.
-     * 
-     * @return array of names (may be empty but not {@code null}
-     */
-    String[] getDestinationVarNames();
 }

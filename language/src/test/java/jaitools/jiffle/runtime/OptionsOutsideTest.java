@@ -122,13 +122,13 @@ public class OptionsOutsideTest extends StatementsTestBase {
     private void assertOutsideEqualsValue(String stringValue, final Double expectedValue) 
             throws Exception {
         String script = "options { outside = " + stringValue + "; } dest = src[-1, 0];" ;
-        TiledImage srcImg = ImageUtils.createConstantImage(WIDTH, WIDTH, 1);
+        TiledImage srcImg = ImageUtils.createConstantImage(IMG_WIDTH, IMG_WIDTH, 1);
         
         Evaluator e = new Evaluator() {
             int x = 0;
             public double eval(double val) {
                 double z = x == 0 ? expectedValue : 1;
-                x = (x + 1) % WIDTH;
+                x = (x + 1) % IMG_WIDTH;
                 return z;
             }
         };

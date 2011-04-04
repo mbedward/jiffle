@@ -76,7 +76,7 @@ public class InjectTest extends StatementsTestBase {
                 + "dest = n;" ;
         
         JiffleDirectRuntime runtime = getRuntime(script);
-        WritableRenderedImage destImg = ImageUtils.createConstantImage(WIDTH, WIDTH, 0d);
+        WritableRenderedImage destImg = ImageUtils.createConstantImage(IMG_WIDTH, IMG_WIDTH, 0d);
         runtime.setDestinationImage("dest", destImg);
 
         runtime.setVar("n", -1.0);
@@ -131,7 +131,7 @@ public class InjectTest extends StatementsTestBase {
     }
     
     private void testInject(JiffleDirectRuntime runtime, final Double value) throws Exception {
-        WritableRenderedImage destImg = ImageUtils.createConstantImage(WIDTH, WIDTH, 0d);
+        WritableRenderedImage destImg = ImageUtils.createConstantImage(IMG_WIDTH, IMG_WIDTH, 0d);
         runtime.setDestinationImage("dest", destImg);
         if (value != null) {
             runtime.setVar("n", value);

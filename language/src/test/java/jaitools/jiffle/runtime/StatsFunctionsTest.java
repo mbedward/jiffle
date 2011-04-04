@@ -35,7 +35,7 @@ public class StatsFunctionsTest extends StatementsTestBase {
     public void max2Arg() throws Exception {
         System.out.println("   max(D, D)");
         
-        int z = WIDTH * WIDTH / 2;
+        int z = IMG_WIDTH * IMG_WIDTH / 2;
         String script = String.format("init { z = %d; } dest = max(src, z);", z);
         
         Evaluator e = new Evaluator() {
@@ -51,7 +51,7 @@ public class StatsFunctionsTest extends StatementsTestBase {
     public void min2Arg() throws Exception {
         System.out.println("   min(D, D)");
         
-        int z = WIDTH * WIDTH / 2;
+        int z = IMG_WIDTH * IMG_WIDTH / 2;
         String script = String.format("init { z = %d; } dest = min(src, z);", z);
         
         Evaluator e = new Evaluator() {
@@ -72,12 +72,12 @@ public class StatsFunctionsTest extends StatementsTestBase {
                 + "dest = max(z);";
         
         Evaluator e = new Evaluator() {
-            final int MAXY = WIDTH - 1;
+            final int MAXY = IMG_WIDTH - 1;
             int x = 0;
             int y = 0;
             public double eval(double val) {
                 double z = Math.min(MAXY, y + 1);
-                x = (x + 1) % WIDTH;
+                x = (x + 1) % IMG_WIDTH;
                 if (x == 0) y++ ;
                 return z;
             }
@@ -95,12 +95,12 @@ public class StatsFunctionsTest extends StatementsTestBase {
                 + "dest = min(z);";
         
         Evaluator e = new Evaluator() {
-            final int MAXY = WIDTH - 1;
+            final int MAXY = IMG_WIDTH - 1;
             int x = 0;
             int y = 0;
             public double eval(double val) {
                 double z = y == MAXY ? 0 : Math.max(0, y-1);
-                x = (x + 1) % WIDTH;
+                x = (x + 1) % IMG_WIDTH;
                 if (x == 0) y++ ;
                 return z;
             }

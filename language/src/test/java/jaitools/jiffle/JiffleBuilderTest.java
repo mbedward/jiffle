@@ -59,7 +59,7 @@ public class JiffleBuilderTest extends StatementsTestBase {
         String script = "dest = con(src1 > 10, src1, null);" ;
 
         TiledImage srcImg1 = createSequenceImage();
-        TiledImage destImg = ImageUtils.createConstantImage(WIDTH, WIDTH, 0d);
+        TiledImage destImg = ImageUtils.createConstantImage(IMG_WIDTH, IMG_WIDTH, 0d);
 
         jb.script(script).source("src1", srcImg1).dest("dest", destImg);
         JiffleDirectRuntime runtime = jb.getRuntime();
@@ -80,15 +80,15 @@ public class JiffleBuilderTest extends StatementsTestBase {
         System.out.println("   builder creating dest image");
         String script = "init { n = 0; } dest = n++ ;" ;
 
-        jb.dest("dest", WIDTH, WIDTH).script(script).getRuntime().evaluateAll(null);
+        jb.dest("dest", IMG_WIDTH, IMG_WIDTH).script(script).getRuntime().evaluateAll(null);
         RenderedImage img = jb.getImage("dest");
 
         assertNotNull(img);
         
         RandomIter iter = RandomIterFactory.create(img, null);
         int k = 0;
-        for (int y = 0; y < WIDTH; y++) {
-            for (int x = 0; x < WIDTH; x++) {
+        for (int y = 0; y < IMG_WIDTH; y++) {
+            for (int x = 0; x < IMG_WIDTH; x++) {
                 assertEquals(k, iter.getSample(x, y, 0));
                 k++ ;
             }
@@ -136,7 +136,7 @@ public class JiffleBuilderTest extends StatementsTestBase {
             int x = 0;
             public double eval(double val) {
                 int xx = x;
-                x = (x + 1) % WIDTH;
+                x = (x + 1) % IMG_WIDTH;
                 return xx;
             }
         };

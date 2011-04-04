@@ -37,7 +37,6 @@ public class JiffleExecutorResult {
 
     private final int jobID;
     private final JiffleDirectRuntime runtime;
-    private final Map<String, RenderedImage> images;
     private final boolean completed;
 
     /**
@@ -48,11 +47,9 @@ public class JiffleExecutorResult {
      * @param images source and destination images keyed by script variable name
      * @param completed whether the task was completed successfully
      */
-    public JiffleExecutorResult(int taskID, JiffleDirectRuntime runtime, 
-            Map<String, RenderedImage> images, boolean completed) {
+    public JiffleExecutorResult(int taskID, JiffleDirectRuntime runtime, boolean completed) {
         this.jobID = taskID;
         this.runtime = runtime;
-        this.images = images;
         this.completed = completed;
     }
 
@@ -62,7 +59,7 @@ public class JiffleExecutorResult {
      * @return the images keyed by script variable name
      */
     public Map<String, RenderedImage> getImages() {
-        return images;
+        return runtime.getImages();
     }
 
     /**

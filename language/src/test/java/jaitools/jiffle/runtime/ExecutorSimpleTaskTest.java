@@ -30,6 +30,7 @@ import javax.media.jai.iterator.RectIterFactory;
 import jaitools.CollectionFactory;
 import jaitools.imageutils.ImageUtils;
 import jaitools.jiffle.Jiffle;
+import java.awt.image.WritableRenderedImage;
 
 import org.junit.After;
 import static org.junit.Assert.*;
@@ -73,16 +74,17 @@ public class ExecutorSimpleTaskTest {
         imageParams.put("dest", Jiffle.ImageRole.DEST);
         
         Jiffle jiffle = new Jiffle("dest = x() + y();", imageParams);
+        JiffleDirectRuntime runtime = jiffle.getRuntimeInstance();
         
-        Map<String, RenderedImage> images = CollectionFactory.map();
-        images.put("dest", ImageUtils.createConstantImage(WIDTH, WIDTH, 0d));
+        WritableRenderedImage destImage = ImageUtils.createConstantImage(WIDTH, WIDTH, 0d);
+        runtime.setDestinationImage("dest", destImage);
         
         WaitingListener listener = new WaitingListener();
         executor.addEventListener(listener);
         
         listener.setNumTasks(1);
 
-        int jobID = executor.submit(jiffle, images, nullListener);
+        int jobID = executor.submit(runtime, nullListener);
         
         if (!listener.await(2, TimeUnit.SECONDS)) {
             fail("Listener time-out period elapsed");

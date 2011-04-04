@@ -98,7 +98,7 @@ public class ImageScopeVarsTest extends StatementsTestBase {
         Evaluator e = new Evaluator() {
 
             public double eval(double val) {
-                return WIDTH;
+                return IMG_WIDTH;
             }
         };
 
@@ -114,7 +114,7 @@ public class ImageScopeVarsTest extends StatementsTestBase {
         Evaluator e = new Evaluator() {
 
             public double eval(double val) {
-                return WIDTH > 100 ? 2 : 1;
+                return IMG_WIDTH > 100 ? 2 : 1;
             }
         };
 

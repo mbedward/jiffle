@@ -45,7 +45,7 @@ public class ProxyFunctionsTest extends StatementsTestBase {
             int x = 0;
             public double eval(double val) {
                 double xx = x;
-                x = (x + 1) % WIDTH;
+                x = (x + 1) % IMG_WIDTH;
                 return xx;
             }
         };
@@ -64,7 +64,7 @@ public class ProxyFunctionsTest extends StatementsTestBase {
             int y = 0;
             public double eval(double val) {
                 double yy = y;
-                x = (x + 1) % WIDTH;
+                x = (x + 1) % IMG_WIDTH;
                 if (x == 0) y++ ;
                 return yy;
             }
@@ -113,7 +113,7 @@ public class ProxyFunctionsTest extends StatementsTestBase {
 
         Evaluator e = new Evaluator() {
             public double eval(double val) {
-                return WIDTH;
+                return IMG_WIDTH;
             }
         };
 
@@ -128,7 +128,7 @@ public class ProxyFunctionsTest extends StatementsTestBase {
 
         Evaluator e = new Evaluator() {
             public double eval(double val) {
-                return WIDTH;
+                return IMG_WIDTH;
             }
         };
 

@@ -20,19 +20,22 @@
 package jaitools.demo.jiffle;
 
 import java.awt.image.RenderedImage;
+import java.awt.image.WritableRenderedImage;
 import java.io.File;
 import java.util.Map;
 
 import jaitools.CollectionFactory;
 import jaitools.demo.ImageChoice;
 import jaitools.imageutils.ImageUtils;
+import jaitools.jiffle.Jiffle;
 import jaitools.jiffle.runtime.JiffleExecutor;
 import jaitools.jiffle.runtime.JiffleExecutorResult;
-import jaitools.jiffle.Jiffle;
+import jaitools.jiffle.runtime.JiffleDirectRuntime;
 import jaitools.jiffle.runtime.JiffleEvent;
 import jaitools.jiffle.runtime.JiffleEventListener;
 import jaitools.jiffle.runtime.NullProgressListener;
 import jaitools.swing.ImageFrame;
+
 
 /**
  * Demonstrates the use of {@link JiffleExecutor} to run a script.
@@ -99,15 +102,13 @@ public class JiffleExecutorDemo extends JiffleDemoBase {
         Map<String, Jiffle.ImageRole> imageParams = CollectionFactory.map();
         imageParams.put("result", Jiffle.ImageRole.DEST);
 
-        Jiffle j = new Jiffle(scriptFile, imageParams);
+        Jiffle jiffle = new Jiffle(scriptFile, imageParams);
+        JiffleDirectRuntime runtime = jiffle.getRuntimeInstance();
+        
+        WritableRenderedImage destImage = ImageUtils.createConstantImage(WIDTH, HEIGHT, 0d);
+        runtime.setDestinationImage("result", destImage);
 
-        Map<String, RenderedImage> images = CollectionFactory.map();
-        images.put("result",
-                ImageUtils.createConstantImage(WIDTH, HEIGHT, Double.valueOf(0d)));
-
-        if (j.isCompiled()) {
-            executor.submit(j, images, new NullProgressListener());
-        }
+        executor.submit(runtime, new NullProgressListener());
     }
 
     /**
