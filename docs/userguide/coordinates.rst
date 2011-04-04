@@ -21,9 +21,9 @@ simpler:
 .. literalinclude:: /../src/main/resources/jaitools/jiffle/docs/RipplesProportionalCoords.jfl
 
 We no longer need the variables *xc* and *yc* because the proportional X and Y distances from the image centre are now
-simply *x() - 0.5* and *y() - 0.5* respectively. Also, unlike the previous script, this one will work equally well with
-a destination image having a non-zero origin. So working in propoortional coordinates has made the script both simpler
-and more general.
+simply *2 * (x() - 0.5)* and *2 * (y() - 0.5)* respectively. Also, unlike the previous script, this one will work
+equally well with a destination image having a non-zero origin. So working in propoortional coordinates has made the
+script both simpler and more general.
 
 
 How Jiffle relates image and world coordinates
@@ -55,6 +55,9 @@ area for you based on the first destination image that was associated with the r
 destination images, the first source image. In this case, processing area is simple the image area, and world units will
 be equivalent to pixel coordinates.
 
+You can define your own processing area using one of two methods::
+
+  // Define bounds and pixel dimensions in world units
 
 
 Creating coordinate transforms

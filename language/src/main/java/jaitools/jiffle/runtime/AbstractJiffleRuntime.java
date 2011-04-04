@@ -229,6 +229,17 @@ public abstract class AbstractJiffleRuntime implements JiffleRuntime {
         }
         setVarValue(index, value);
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String[] getVarNames() {
+        String[] names = new String[_numVars];
+        for (int i = 0; i < _numVars; i++) {
+            names[i] = _vars[i].name;
+        }
+        return names;
+    }
 
     /**
      * {@inheritDoc}

@@ -24,12 +24,12 @@ import java.io.File;
 import java.net.URL;
 import java.util.Map;
 
+import jaitools.CollectionFactory;
+import jaitools.jiffle.runtime.JiffleRuntime;
+
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-
-import jaitools.CollectionFactory;
-import jaitools.jiffle.runtime.JiffleRuntime;
 
 /**
  * Unit tests for basic Jiffle object creation, setting attributes and compiling.
