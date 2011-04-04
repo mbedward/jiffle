@@ -20,7 +20,9 @@
 
 package jaitools.jiffle.runtime;
 
+import jaitools.jiffle.Jiffle.ImageRole;
 import java.awt.geom.Rectangle2D;
+import java.util.Map;
 
 /**
  * The root interface for Jiffle runtime classes.
@@ -160,5 +162,30 @@ public interface JiffleRuntime {
      * @throws JiffleRuntimeException if the variable name is not found
      */
     void setVar(String varName, Double value) throws JiffleRuntimeException;
+
+    /**
+     * Supplies the runtime object with the names and roles if image variables
+     * used in the script. Although this is a public method it is not intended
+     * for general use. It is called by the {@link jaitools.jiffle.Jiffle} 
+     * instance that is creating the runtime object so that clients can use 
+     * the 
+     * 
+     * @param imageParams a {@code Map} of variable names (key) and roles (value)
+     */
+    void setImageParams(Map<String, ImageRole> imageParams);
+    
+    /**
+     * Gets the variable names associated with source images.
+     * 
+     * @return an array of names; may be empty but not {@code null}
+     */
+    String[] getSourceVarNames();
+    
+    /**
+     * Gets the variable names associated with destination images.
+     * 
+     * @return an array of names; may be empty but not {@code null}
+     */
+    String[] getDestinationVarNames();
     
 }

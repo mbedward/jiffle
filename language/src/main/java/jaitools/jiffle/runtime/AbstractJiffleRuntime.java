@@ -150,17 +150,17 @@ public abstract class AbstractJiffleRuntime implements JiffleRuntime {
     /**
      * {@inheritDoc}
      */
-    public String[] getDestinationVarNames() {
-        return doGetImageVarNames(Jiffle.ImageRole.DEST);
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
     public String[] getSourceVarNames() {
         return doGetImageVarNames(Jiffle.ImageRole.SOURCE);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public String[] getDestinationVarNames() {
+        return doGetImageVarNames(Jiffle.ImageRole.DEST);
+    }
+    
     private String[] doGetImageVarNames(Jiffle.ImageRole role) {
         List<String> names = new ArrayList<String>();
         for (String name : _imageParams.keySet()) {

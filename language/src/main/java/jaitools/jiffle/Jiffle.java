@@ -707,6 +707,7 @@ public class Jiffle {
             
             Class<?> clazz = compiler.getClassLoader().loadClass(sb.toString());
             JiffleRuntime runtime = (JiffleRuntime) clazz.newInstance();
+            runtime.setImageParams(imageParams);
             return runtime;
 
         } catch (Exception ex) {
