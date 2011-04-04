@@ -89,7 +89,7 @@ public class JiffleOpImage extends OpImage {
                 bounds = new Rectangle(destBounds);
             }
             
-            runtime.setWorldByStepDistance(bounds, 1, 1);
+            runtime.setWorldByResolution(bounds, 1, 1);
             
         } catch (JiffleException ex) {
             throw new RuntimeException(ex);

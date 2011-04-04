@@ -48,16 +48,16 @@ public abstract class AbstractJiffleRuntime implements JiffleRuntime {
     /** Processing area bounds in world units. */
     private Rectangle2D _worldBounds;
     
-    /** Step distance in X direction in world units. */
-    private double _xstep;
+    /** Pixel width in world units. */
+    private double _xres;
     
-    /** Step distance in Y direction in world units. */
-    private double _ystep;
+    /** Pixel height in world units. */
+    private double _yres;
 
-    /** Flags whether bounds and step distances have been set. */
+    /** Flags whether bounds and pixel dimensions have been set. */
     private boolean _worldSet;
     
-    /** Number of pixels calculated from bounds and step distances. */
+    /** Number of pixels calculated from bounds and pixel dimensions. */
     private long _numPixels;
     
     private class TransformInfo {
@@ -131,8 +131,8 @@ public abstract class AbstractJiffleRuntime implements JiffleRuntime {
         _stk = new IntegerStack();
         
         _transformLookup = new HashMap<String, TransformInfo>();
-        _xstep = Double.NaN;
-        _ystep = Double.NaN;
+        _xres = Double.NaN;
+        _yres = Double.NaN;
     }
     
     /**
@@ -175,29 +175,29 @@ public abstract class AbstractJiffleRuntime implements JiffleRuntime {
     /**
      * {@inheritDoc}
      */
-    public void setWorldByStepDistance(Rectangle2D bounds, double xstep, double ystep) {
+    public void setWorldByResolution(Rectangle2D bounds, double xres, double yres) {
         if (bounds == null || bounds.isEmpty()) {
             throw new IllegalArgumentException("bounds cannot be null or empty");
         }
-        if (xstep < EPS || ystep < EPS) {
-            throw new IllegalArgumentException("step distance but must be greater than 0");
+        if (xres < EPS || yres < EPS) {
+            throw new IllegalArgumentException("xres and yres but must be greater than 0");
         }
         
-        doSetWorld(bounds, xstep, ystep);
+        doSetWorld(bounds, xres, yres);
     }
 
     /**
      * {@inheritDoc}
      */
-    public void setWorldByNumSteps(Rectangle2D bounds, int nx, int ny) {
+    public void setWorldByNumPixels(Rectangle2D bounds, int numX, int numY) {
         if (bounds == null || bounds.isEmpty()) {
             throw new IllegalArgumentException("bounds cannot be null or empty");
         }
-        if (nx <= 0 || ny <= 0) {
-            throw new IllegalArgumentException("number of steps must be greater than 0");
+        if (numX <= 0 || numY <= 0) {
+            throw new IllegalArgumentException("numX and numY must be greater than 0");
         }
         
-        doSetWorld(bounds, bounds.getWidth() / nx, bounds.getHeight() / ny);
+        doSetWorld(bounds, bounds.getWidth() / numX, bounds.getHeight() / numY);
     }
     
     /**
@@ -275,15 +275,15 @@ public abstract class AbstractJiffleRuntime implements JiffleRuntime {
     /**
      * {@inheritDoc}
      */
-    public double getXStep() {
-        return _xstep;
+    public double getXRes() {
+        return _xres;
     }
 
     /**
      * {@inheritDoc}
      */
-    public double getYStep() {
-        return _ystep;
+    public double getYRes() {
+        return _yres;
     }
     
     public long getNumPixels() {
@@ -438,37 +438,37 @@ public abstract class AbstractJiffleRuntime implements JiffleRuntime {
     }
 
     /**
-     * Helper for {@link #setWorldByNumSteps(Rectangle2D, int, int)} and
-     * {@link #setWorldByStepDistance(Rectangle2D, double, double)} methods.
+     * Helper for {@link #setWorldByNumPixels(Rectangle2D, int, int)} and
+     * {@link #setWorldByResolution(Rectangle2D, double, double)} methods.
      * 
      * @param bounds world bounds
-     * @param xstep step distance in X direction
-     * @param ystep step distance in Y direction
+     * @param xres pixel width
+     * @param yres pixel height
      */
-    private void doSetWorld(Rectangle2D bounds, double xstep, double ystep) {
-        checkStepDistance(xstep, Dim.XDIM, bounds);
-        checkStepDistance(ystep, Dim.YDIM, bounds);
+    private void doSetWorld(Rectangle2D bounds, double xres, double yres) {
+        checkResValue(xres, Dim.XDIM, bounds);
+        checkResValue(yres, Dim.YDIM, bounds);
         
         _worldBounds = new Rectangle2D.Double(
                 bounds.getMinX(), bounds.getMinY(),
                 bounds.getWidth(), bounds.getHeight());
         
-        _xstep = xstep;
-        _ystep = ystep;
+        _xres = xres;
+        _yres = yres;
         
         _worldSet = true;
     }
     
     /**
-     * Helper method for {@link #setWorldByStepDistance(Rectangle2D, double, double)} to
-     * check the validity of a step distance.
+     * Helper method for {@link #setWorldByResolution(Rectangle2D, double, double)} to
+     * check the validity of a pixel dimension.
      * 
-     * @param value step distance in world units
+     * @param value dimension in world units
      * @param dim axis: Dim.XDIM or Dim.YDIM
      * @param bounds world area bounds
      */
-    private void checkStepDistance(double value, Dim dim, Rectangle2D bounds) {
-        String name = dim == Dim.XDIM ? "X step" : "Y step";
+    private void checkResValue(double value, Dim dim, Rectangle2D bounds) {
+        String name = dim == Dim.XDIM ? "xres" : "yres";
         
         if (Double.isInfinite(value)) {
             throw new IllegalArgumentException(name + " cannot be infinite");

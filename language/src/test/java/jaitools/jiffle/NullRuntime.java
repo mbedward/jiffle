@@ -41,9 +41,9 @@ public class NullRuntime implements JiffleRuntime {
 
     public void setVar(String varName, Double value) throws JiffleRuntimeException {}
 
-    public void setWorldByStepDistance(Rectangle2D bounds, double xstep, double ystep) {}
+    public void setWorldByResolution(Rectangle2D bounds, double xres, double yres) {}
 
-    public void setWorldByNumSteps(Rectangle2D bounds, int nx, int ny) {}
+    public void setWorldByNumPixels(Rectangle2D bounds, int nx, int ny) {}
 
     public boolean isWorldSet() {
         return true;
@@ -73,11 +73,11 @@ public class NullRuntime implements JiffleRuntime {
         return 0;
     }
 
-    public double getXStep() {
+    public double getXRes() {
         return 0;
     }
 
-    public double getYStep() {
+    public double getYRes() {
         return 0;
     }
 

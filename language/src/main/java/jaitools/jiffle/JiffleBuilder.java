@@ -565,7 +565,7 @@ public class JiffleBuilder {
         
         runtime.setDefaultTransform(_defaultTransform);
         if (worldInfo != null) {
-            runtime.setWorldByStepDistance(worldInfo.bounds, worldInfo.xres, worldInfo.yres);
+            runtime.setWorldByResolution(worldInfo.bounds, worldInfo.xres, worldInfo.yres);
         }
         
         for (String var : images.keySet()) {
