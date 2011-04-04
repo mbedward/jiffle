@@ -99,4 +99,8 @@ public class NullRuntime implements JiffleRuntime {
         return new String[0];
     }
 
+    public String[] getVarNames() {
+        return new String[0];
+    }
+
 }

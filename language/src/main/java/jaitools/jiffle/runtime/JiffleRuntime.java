@@ -140,6 +140,15 @@ public interface JiffleRuntime {
     boolean isWorldSet();
     
     /**
+     * Returns the names of image scope variables that can be used with
+     * the {@link #getVar(String)} and {@link #setVar(String, Double)}
+     * methods.
+     * 
+     * @return array of variable names; may be empty but not {@code null}
+     */
+    String[] getVarNames();
+    
+    /**
      * Returns the value of a variable that was declared in the
      * script's <i>init</i> block.
      *
@@ -168,7 +177,8 @@ public interface JiffleRuntime {
      * used in the script. Although this is a public method it is not intended
      * for general use. It is called by the {@link jaitools.jiffle.Jiffle} 
      * instance that is creating the runtime object so that clients can use 
-     * the 
+     * the {@link #getSourceVarNames()} and {@link #getDestinationVarNames()}
+     * methods.
      * 
      * @param imageParams a {@code Map} of variable names (key) and roles (value)
      */
