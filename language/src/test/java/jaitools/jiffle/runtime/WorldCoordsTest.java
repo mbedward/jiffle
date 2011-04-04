@@ -27,7 +27,6 @@ import java.awt.image.WritableRenderedImage;
 
 import jaitools.imageutils.ImageUtils;
 import jaitools.jiffle.Jiffle;
-import javax.media.jai.TiledImage;
 
 import org.junit.Test;
 
@@ -58,9 +57,9 @@ public class WorldCoordsTest extends StatementsTestBase {
                 + "dest = right + 2 * top;" ;
         JiffleDirectRuntime runtime = getRuntime(script);
         
-        double xstep = worldBounds.getWidth() / IMG_WIDTH;
-        double ystep = worldBounds.getHeight() / IMG_WIDTH;
-        runtime.setWorldByStepDistance(worldBounds, xstep, ystep);
+        double xres = worldBounds.getWidth() / IMG_WIDTH;
+        double yres = worldBounds.getHeight() / IMG_WIDTH;
+        runtime.setWorldByResolution(worldBounds, xres, yres);
         
         WritableRenderedImage destImg = ImageUtils.createConstantImage(IMG_WIDTH, IMG_WIDTH, 0d);
         runtime.setDestinationImage("dest", destImg, tr);
@@ -100,7 +99,7 @@ public class WorldCoordsTest extends StatementsTestBase {
         Rectangle2D worldBounds = new Rectangle(0, 0, 1, 1);
         Rectangle imageBounds = new Rectangle(0, 0, IMG_WIDTH, IMG_WIDTH);
         
-        runtime.setWorldByNumSteps(worldBounds, IMG_WIDTH, IMG_WIDTH);
+        runtime.setWorldByNumPixels(worldBounds, IMG_WIDTH, IMG_WIDTH);
         
         // Get the transform from world to image coordinates
         // CoordinateTransform tr = CoordinateTransforms.unitInterval(
@@ -124,7 +123,7 @@ public class WorldCoordsTest extends StatementsTestBase {
     
     @Test
     public void worldDistancesInScript() throws Exception {
-        System.out.println("   using world position and step distances in script");
+        System.out.println("   using world position and pixel dimensions in script");
         
         final double XO = 750000;
         final double YO = 6550000;
@@ -132,14 +131,14 @@ public class WorldCoordsTest extends StatementsTestBase {
         
         Rectangle2D worldBounds = new Rectangle2D.Double(XO, YO, W, W);
         
-        String script = "images { dest=write; } dest = xstep() + ystep() + x() + y();" ;
+        String script = "images { dest=write; } dest = xres() + yres() + x() + y();" ;
         JiffleDirectRuntime runtime = getRuntime(script);
         
         WritableRenderedImage destImg = ImageUtils.createConstantImage(IMG_WIDTH, IMG_WIDTH, 0d);
         Rectangle imageBounds = new Rectangle(0, 0, IMG_WIDTH, IMG_WIDTH); 
         
-        final double STEP = W / IMG_WIDTH;
-        runtime.setWorldByStepDistance(worldBounds, STEP, STEP);
+        final double RES = W / IMG_WIDTH;
+        runtime.setWorldByResolution(worldBounds, RES, RES);
         
         CoordinateTransform tr = CoordinateTransforms.getTransform(worldBounds, imageBounds);
         runtime.setDestinationImage("dest", destImg, tr);
@@ -152,15 +151,15 @@ public class WorldCoordsTest extends StatementsTestBase {
             double y = YO;
             
             public double eval(double val) {
-                double z = STEP + STEP + x + y;
+                double z = RES + RES + x + y;
                 
                 ix++;
-                x += STEP;
+                x += RES;
                 if (ix == IMG_WIDTH) {
                     ix = 0;
                     x = XO;
                     iy++ ;
-                    y += STEP;
+                    y += RES;
                 }
                 return z;
             }

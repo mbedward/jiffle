@@ -32,27 +32,27 @@ import java.awt.geom.Rectangle2D;
 public interface JiffleRuntime {
 
     /**
-     * Sets the world (processing area) bounds and step distances.
+     * Sets the world (processing area) bounds and resolution (pixel dimensions).
      * 
      * @param bounds outer bounds of the processing area
-     * @param xstep distance between pixels in world units in the X direction
-     * @param ystep distance between pixels in world units in the Y direction
+     * @param xres pixel width in world units
+     * @param yres pixel height in world units
      * 
      * @throws IllegalArgumentException if {@code bounds} is {@code null} or empty
      */
-    void setWorldByStepDistance(Rectangle2D bounds, double xstep, double ystep);
+    void setWorldByResolution(Rectangle2D bounds, double xres, double yres);
     
     /**
      * Sets the world (processing area) bounds and the number of pixels in the
      * X and Y directions.
      * 
      * @param bounds outer bounds of the processing area
-     * @param nx number of pixels in the X direction
-     * @param ny number of pixels in the Y direction
+     * @param numX number of pixels in the X direction
+     * @param numY number of pixels in the Y direction
      * 
      * @throws IllegalArgumentException if {@code bounds} is {@code null} or empty
      */
-    void setWorldByNumSteps(Rectangle2D bounds, int nx, int ny);
+    void setWorldByNumPixels(Rectangle2D bounds, int numX, int numY);
     
     /**
      * Sets a coordinate transform to be used by any source and destination images
@@ -109,24 +109,21 @@ public interface JiffleRuntime {
     double getHeight();
     
     /**
-     * Gets the distance between pixels in the X direction, expressed in
-     * world units.
+     * Gets the pixel width (resolution in X direction) in world units.
      * 
-     * @return step distance in world units
+     * @return pixel width
      */
-    double getXStep();
+    double getXRes();
     
     /**
-     * Gets the distance between pixels in the Y direction, expressed in
-     * world units.
+     * Gets the pixel height (resolution in Y direction) in world units.
      * 
-     * @return step distance in world units
+     * @return pixel height
      */
-    double getYStep();
+    double getYRes();
     
     /**
-     * Gets the total number of pixels in the processing area, calculated from 
-     * the world bounds and step distances.
+     * Gets the total number of pixels in the processing area.
      * 
      * @return number of pixels
      * @throws IllegalStateException if the processing area has not been set
@@ -134,7 +131,7 @@ public interface JiffleRuntime {
     long getNumPixels();
     
     /**
-     * Checks whether the world bounds and step distances have been set.
+     * Checks whether the world bounds and pixel dimensions have been set.
      * 
      * @return {@code true} if set; {@code false} otherwise
      */

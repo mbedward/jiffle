@@ -35,30 +35,39 @@ How Jiffle relates image and world coordinates
 When a Jiffle script is executed, any calls to coordinate functions such as *x()* (which returns the X ordinate of the
 current processing position) or *width()* (which returns the width of the processing area) return values in *world
 units*. When reading a value from a source image, or writing a value to a destination image, Jiffle converts the
-position from *world coordinates* to a pixel lcoation using the **CoordinateTransform** associated with the image. So,
-to run the ripples script (above) written in terms of proportional coordinates, we would associate a transform 
-with the destination image when submitting it to the Jiffle run-time object.
+position from *world coordinates* to a pixel lcoation using the **CoordinateTransform** associated with the image.
 
 Note that CoordinateTransforms are run-time objects. You don't need to worry about the transforms in the script itself.
 Instead, you write the script using whatever coordinate system is most appropriate for the application, then provide the
-necessary transforms at run-time to convert between world and image coordinates.
+necessary transforms at run-time to convert between world and image coordinates. 
 
-When working only with image coordinates, or with a script that doesn't require any coordinate references, you don't
-need to worry about supplying transforms. Jiffle will create a default identity transform for each image which simply
-converts double-precision world coordinates into integer image coordinates by rounding.
-
+If you are working directly with image coordinates in your script you don't need to worry about coordinate transforms
+because Jiffle will create a default identity transform for each image automatically. Similarly, if your script makes no
+explicit reference to coordinates then, once again, you can simply let Jiffle create the default transforms behind the
+scenes.
 
 Defining the processing area
 ----------------------------
 
 To execute a script, the Jiffle runtime system needs to know the bounds of the processing area and the pixel dimensions,
-both of which are expressed in world units. Before going into any more detail, let's look at an example where we run the
-proportional coordinate ripples script (above):
+both of which are expressed in world units. If you don't supply these explicitly, it will create a default processing
+area for you based on the first destination image that was associated with the runtime object or, if there are not
+destination images, the first source image. In this case, processing area is simple the image area, and world units will
+be equivalent to pixel coordinates.
 
-.. literalinclude:: /../src/main/java/jaitools/jiffle/docs/RunProportionalRipples.java
 
 
 Creating coordinate transforms
 ------------------------------
 
 
+Example
+~~~~~~~
+
+Before going into any more detail, let's look at an example where we run the
+modified *ripples* script (above):
+
+.. literalinclude:: /../src/main/java/jaitools/jiffle/docs/RunProportionalRipples.java
+   :language: java
+   :start-after: // docs start jiffle method
+   :end-before: // docs end jiffle method

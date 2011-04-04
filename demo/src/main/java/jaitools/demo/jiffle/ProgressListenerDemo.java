@@ -193,7 +193,7 @@ public class ProgressListenerDemo {
         public PretendJiffleRuntime() {
             // set the pretend processing area
             Rectangle bounds = new Rectangle(0, 0, NUM_PIXELS, 1);
-            setWorldByStepDistance(bounds, 1, 1);
+            setWorldByResolution(bounds, 1, 1);
         }
 
         @Override

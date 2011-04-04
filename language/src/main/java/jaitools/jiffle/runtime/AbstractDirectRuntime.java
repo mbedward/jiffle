@@ -128,15 +128,15 @@ public abstract class AbstractDirectRuntime extends AbstractJiffleRuntime implem
         
         final double minX = getMinX();
         final double maxX = getMaxX();
-        final double stepX = getXStep();
+        final double resX = getXRes();
         
         final double minY = getMinY();
         final double maxY = getMaxY();
-        final double stepY = getYStep();
+        final double resY = getYRes();
         
         listener.start();
-        for (double y = minY; y < maxY - EPS; y += stepY) {
-            for (double x = minX; x < maxX - EPS; x += stepX) {
+        for (double y = minY; y < maxY - EPS; y += resY) {
+            for (double x = minX; x < maxX - EPS; x += resX) {
                 evaluate(x, y);
                 
                 count++ ;
@@ -213,7 +213,7 @@ public abstract class AbstractDirectRuntime extends AbstractJiffleRuntime implem
                 refImage.getMinX(), refImage.getMinY(), 
                 refImage.getWidth(), refImage.getHeight());
         
-        setWorldByStepDistance(rect, 1, 1);
+        setWorldByResolution(rect, 1, 1);
     }
 
     /**

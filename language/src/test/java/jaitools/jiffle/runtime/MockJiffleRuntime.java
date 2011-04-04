@@ -44,7 +44,7 @@ public class MockJiffleRuntime extends AbstractDirectRuntime {
      */
     public MockJiffleRuntime(int imageSize, long pixelTime) {
         this.pixelTime = pixelTime;
-        setWorldByStepDistance(new Rectangle(0, 0, imageSize, 1), 1, 1);
+        setWorldByResolution(new Rectangle(0, 0, imageSize, 1), 1, 1);
     }
 
     /**
