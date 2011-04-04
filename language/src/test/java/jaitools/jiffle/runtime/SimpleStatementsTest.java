@@ -263,7 +263,7 @@ public class SimpleStatementsTest extends StatementsTestBase {
 
             public double eval(double val) {
                 double value = x + 1;
-                x = (x + 1) % WIDTH;
+                x = (x + 1) % IMG_WIDTH;
                 return value;
             }
         };

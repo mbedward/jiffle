@@ -20,21 +20,19 @@
 
 package jaitools.jiffle.runtime;
 
-import jaitools.CollectionFactory;
-import jaitools.imageutils.ImageUtils;
-import jaitools.jiffle.Jiffle;
-import java.awt.image.RenderedImage;
+import java.awt.image.WritableRenderedImage;
 import java.io.ByteArrayOutputStream;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
-
 import java.util.logging.Formatter;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
+
+import jaitools.CollectionFactory;
+import jaitools.imageutils.ImageUtils;
+import jaitools.jiffle.Jiffle;
 
 import org.junit.After;
 import static org.junit.Assert.*;
@@ -82,25 +80,11 @@ public class ExecutorGeneralTest {
     
     
     @Test
-    public void okToSubmitUncompiledScript() throws Exception {
-        System.out.println("   ok to submit uncompiled script");
-        executor.submit(createJiffle("dest=42;", false), createImagesMap(), null);
-    }
-    
-    @Test(expected=JiffleExecutorException.class)
-    public void submitBadScript() throws Exception {
-        System.out.println("   receive exception when script will not compile");
-        Jiffle jiffle = createJiffle("dest = unknownvar;", false);
-        executor.submit(jiffle, createImagesMap(), null);
-    }
-    
-    @Test
     public void submitRuntimeInstance() throws Exception {
         System.out.println("   submit a JiffleDirectRuntime instance");
         
-        Jiffle jiffle = createJiffle("dest = 42;", true);
-        JiffleDirectRuntime runtime = jiffle.getRuntimeInstance();
-        executor.submit(runtime, createImagesMap(), null);
+        JiffleDirectRuntime runtime = getRuntime("dest = 42;");
+        executor.submit(runtime, null);
     }
     
     @Test
@@ -134,7 +118,8 @@ public class ExecutorGeneralTest {
     public void pollingIntervalAfterFirstTaskIgnored() throws Exception {
         System.out.println("   polling interval set after first task is ignored");
         
-        executor.submit(createJiffle("dest=42;", true), createImagesMap(), null);
+        JiffleDirectRuntime runtime = getRuntime("dest = 42;");
+        executor.submit(runtime, null);
         executor.setPollingInterval(JiffleExecutor.DEFAULT_POLLING_INTERVAL * 2);
         
         // polling interval set after task should have been ignored
@@ -145,7 +130,8 @@ public class ExecutorGeneralTest {
     public void pollingIntervalAfterFirstTaskWarning() throws Exception {
         System.out.println("   polling interval set after first task warning received");
         
-        executor.submit(createJiffle("dest=42;", true), createImagesMap(), null);
+        JiffleDirectRuntime runtime = getRuntime("dest = 42;");
+        executor.submit(runtime, null);
         assertWarningMessage(JiffleExecutor.DEFAULT_POLLING_INTERVAL * 2, 
                 "polling interval ignored");
     }
@@ -194,8 +180,7 @@ public class ExecutorGeneralTest {
         executor.addEventListener(listener);
         listener.setNumTasks(1);
         
-        Map<String, RenderedImage> emptyMap = Collections.emptyMap();
-        executor.submit(new MockJiffle(50, 10L), emptyMap, null);
+        executor.submit(new MockJiffleRuntime(100, 5), null);
 
         executor.shutdown();
         if (!listener.await(2, TimeUnit.SECONDS)) {
@@ -215,8 +200,7 @@ public class ExecutorGeneralTest {
         executor.addEventListener(listener);
         listener.setNumTasks(1);
         
-        Map<String, RenderedImage> emptyMap = Collections.emptyMap();
-        executor.submit(new MockJiffle(50, 10L), emptyMap, null);
+        executor.submit(new MockJiffleRuntime(100, 5), null);
 
         executor.shutdownNow();
         boolean receivedEvent = listener.await(1, TimeUnit.SECONDS);
@@ -224,7 +208,7 @@ public class ExecutorGeneralTest {
     }
     
     
-    private Jiffle createJiffle(String script, boolean compile) throws Exception {
+    private JiffleDirectRuntime getRuntime(String script) throws Exception {
         Jiffle jiffle = new Jiffle();
         jiffle.setScript(script);
         
@@ -232,20 +216,16 @@ public class ExecutorGeneralTest {
         imageParams.put("dest", Jiffle.ImageRole.DEST);
         
         jiffle.setImageParams(imageParams);
-        if (compile ) {
-            jiffle.compile();
-        }
+
+        jiffle.compile();
+        JiffleDirectRuntime runtime = jiffle.getRuntimeInstance();
         
-        return jiffle;
+        WritableRenderedImage destImg = ImageUtils.createConstantImage(WIDTH, WIDTH, 0d);
+        runtime.setDestinationImage("dest", destImg);
+        
+        return runtime;
     }
     
-    private Map<String, RenderedImage> createImagesMap() throws Exception {
-        Map<String, RenderedImage> images = CollectionFactory.map();
-        RenderedImage img = ImageUtils.createConstantImage(10, 10, 0d);
-        images.put("dest", img);
-        return images;
-    }
-
     private JiffleEventListener createListener() {
         return new JiffleEventListener() {
             public void onCompletionEvent(JiffleEvent ev) {

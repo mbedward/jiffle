@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.googlecode.jaitools.jiffle.docs;
+package jaitools.jiffle.docs;
 
 import jaitools.jiffle.Jiffle;
 import jaitools.jiffle.JiffleBuilder;

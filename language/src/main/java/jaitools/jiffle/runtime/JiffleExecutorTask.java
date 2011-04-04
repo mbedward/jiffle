@@ -20,9 +20,6 @@
 
 package jaitools.jiffle.runtime;
 
-import java.awt.image.RenderedImage;
-import java.awt.image.WritableRenderedImage;
-import java.util.Map;
 import java.util.concurrent.Callable;
 
 
@@ -38,7 +35,6 @@ public class JiffleExecutorTask implements Callable<JiffleExecutorResult> {
     private final JiffleExecutor executor;
     private final int id;
     private final JiffleDirectRuntime runtime;
-    private final Map<String, RenderedImage> images;
     private final JiffleProgressListener progressListener;
     
     private boolean completed;
@@ -57,13 +53,11 @@ public class JiffleExecutorTask implements Callable<JiffleExecutorResult> {
             JiffleExecutor executor,
             int id, 
             JiffleDirectRuntime runtime, 
-            Map<String, RenderedImage> images,
             JiffleProgressListener progressListener) {
         
         this.executor = executor;
         this.id = id;
         this.runtime = runtime;
-        this.images = images;
         this.progressListener = progressListener;
         
         completed = false;
@@ -77,16 +71,6 @@ public class JiffleExecutorTask implements Callable<JiffleExecutorResult> {
      *         the images, and the job completion status
      */
     public JiffleExecutorResult call() {
-        for (String name : runtime.getSourceVarNames()) {
-            RenderedImage srcImg = images.get(name);
-            runtime.setSourceImage(name, srcImg);
-        }
-        
-        for (String name : runtime.getDestinationVarNames()) {
-            WritableRenderedImage destImg = (WritableRenderedImage) images.get(name);
-            runtime.setDestinationImage(name, destImg);
-        }
-        
         boolean gotEx = false;
         try {
             runtime.evaluateAll(progressListener);
@@ -96,7 +80,7 @@ public class JiffleExecutorTask implements Callable<JiffleExecutorResult> {
         }
 
         completed = !gotEx;
-        return new JiffleExecutorResult(id, runtime, images, completed);
+        return new JiffleExecutorResult(id, runtime, completed);
     }
 
 }

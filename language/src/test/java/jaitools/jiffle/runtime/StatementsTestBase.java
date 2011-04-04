@@ -42,8 +42,8 @@ import static org.junit.Assert.*;
  */
 public abstract class StatementsTestBase {
 
-    protected static final int WIDTH = 10;
-    protected static final int NUM_PIXELS = WIDTH * WIDTH;
+    protected static final int IMG_WIDTH = 10;
+    protected static final int NUM_PIXELS = IMG_WIDTH * IMG_WIDTH;
     protected static final double TOL = 1.0e-8;
     
     private final JiffleProgressListener nullListener = new NullProgressListener();
@@ -56,10 +56,10 @@ public abstract class StatementsTestBase {
     }
     
     protected TiledImage createSequenceImage() {
-        TiledImage img = ImageUtils.createConstantImage(WIDTH, WIDTH, 0.0);
+        TiledImage img = ImageUtils.createConstantImage(IMG_WIDTH, IMG_WIDTH, 0.0);
         int k = 0;
-        for (int y = 0; y < WIDTH; y++) {
-            for (int x = 0; x < WIDTH; x++) {
+        for (int y = 0; y < IMG_WIDTH; y++) {
+            for (int x = 0; x < IMG_WIDTH; x++) {
                 img.setSample(x, y, 0, k++);
             }
         }
@@ -67,9 +67,9 @@ public abstract class StatementsTestBase {
     }
     
     protected TiledImage createRowValueImage() {
-        TiledImage img = ImageUtils.createConstantImage(WIDTH, WIDTH, 0.0);
-        for (int y = 0; y < WIDTH; y++) {
-            for (int x = 0; x < WIDTH; x++) {
+        TiledImage img = ImageUtils.createConstantImage(IMG_WIDTH, IMG_WIDTH, 0.0);
+        for (int y = 0; y < IMG_WIDTH; y++) {
+            for (int x = 0; x < IMG_WIDTH; x++) {
                 img.setSample(x, y, 0, y);
             }
         }

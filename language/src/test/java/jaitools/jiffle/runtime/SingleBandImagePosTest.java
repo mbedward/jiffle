@@ -62,7 +62,7 @@ public class SingleBandImagePosTest extends StatementsTestBase {
                     outVal = Double.NaN;
                 }
                 
-                x = (x + 1) % WIDTH;
+                x = (x + 1) % IMG_WIDTH;
                 lastVal = val;
                 return outVal;
             }
@@ -91,7 +91,7 @@ public class SingleBandImagePosTest extends StatementsTestBase {
                 } 
                 
                 x++ ;
-                if (x == WIDTH) {
+                if (x == IMG_WIDTH) {
                     x = 0;
                     y++ ;
                 }

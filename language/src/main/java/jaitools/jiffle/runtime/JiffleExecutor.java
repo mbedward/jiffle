@@ -295,50 +295,6 @@ import jaitools.jiffle.JiffleException;
     }
     
     /**
-     * Submits an {@code Jiffle} object for execution. If the script is not
-     * already compiled the executor will compile it. Depending on existing
-     * tasks and the number of threads available to the executor there could
-     * be a delay before the task starts. Clients can receive notification 
-     * via an optional progress listener.
-     * <p>
-     * 
-     * @param jiffle a properly compiled {@code Jiffle} object
-     * 
-     * @param images source and destination images as a {@code Map} with
-     *        keys being image variable names as used in the Jiffle script
-     *        and image parameters
-     * 
-     * @param progressListener an optional progress listener (may be {@code null})
-     * 
-     * @return the job ID that can be used to query progress
-     * 
-     * @throws JiffleExecutorException if the {@code Jiffle} object was not
-     *         compiled correctly
-     */
-    public int submit(Jiffle jiffle, 
-            Map<String, RenderedImage> images,
-            JiffleProgressListener progressListener)
-            throws JiffleExecutorException {
-
-        synchronized(_lock) {
-            if (taskService.isShutdown()) {
-                throw new IllegalStateException("Submitting task after executor shutdown");
-            }
-            
-            try {
-                if (!jiffle.isCompiled()) {
-                    jiffle.compile();
-                }
-                
-                return submit(jiffle.getRuntimeInstance(), images, progressListener);
-                
-            } catch (JiffleException ex) {
-                throw new JiffleExecutorException(ex);
-            }
-        }
-    }
-    
-    /**
      * Submits an {@code JiffleDirectRuntime} object for execution. Depending 
      * on existing tasks and the number of threads available to the executor 
      * there could be a delay before the task starts. Clients can receive 
@@ -347,16 +303,11 @@ import jaitools.jiffle.JiffleException;
      * 
      * @param runtime the run-time instance to execute
      * 
-     * @param images source and destination images as a {@code Map} with
-     *        keys being image variable names as used in the Jiffle script
-     *        and image parameters
-     * 
      * @param progressListener an optional progress listener (may be {@code null})
      * 
      * @return the job ID that can be used to query progress
      */
     public int submit(JiffleDirectRuntime runtime,
-            Map<String, RenderedImage> images,
             JiffleProgressListener progressListener) {
 
         synchronized (_lock) {
@@ -377,7 +328,6 @@ import jaitools.jiffle.JiffleException;
                     this,
                     id,
                     runtime,
-                    images,
                     progressListener));
 
             return id;

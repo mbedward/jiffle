@@ -1,7 +1,7 @@
 init {
-  // image center coordinates
-  xc = xmin() + width() / 2;
-  yc = ymin() + height() / 2;
+  // image centre coordinates
+  xc = width() / 2;
+  yc = height() / 2;
 
   // constant term
   C = M_PI * 8;

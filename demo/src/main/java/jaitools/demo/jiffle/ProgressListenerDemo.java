@@ -25,20 +25,14 @@ import java.awt.EventQueue;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.RenderedImage;
-import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
-import jaitools.CollectionFactory;
-import jaitools.jiffle.Jiffle;
-import jaitools.jiffle.JiffleException;
 import jaitools.jiffle.runtime.AbstractDirectRuntime;
 import jaitools.jiffle.runtime.AbstractProgressListener;
-import jaitools.jiffle.runtime.JiffleDirectRuntime;
 import jaitools.jiffle.runtime.JiffleExecutor;
 import jaitools.jiffle.runtime.JiffleExecutorException;
 
@@ -90,11 +84,7 @@ public class ProgressListenerDemo {
         listener.setUpdateInterval(0.1);
         
         JiffleExecutor executor = new JiffleExecutor();
-
-        PretendJiffle jiffle = new PretendJiffle();
-        Map<String, RenderedImage> emptyImageMap = CollectionFactory.map();
-        
-        executor.submit(jiffle, emptyImageMap, listener);
+        executor.submit(new PretendJiffleRuntime(), listener);
     }
     
 
@@ -195,29 +185,6 @@ public class ProgressListenerDemo {
 
     
     /**
-     * The mock Jiffle used in this demo. It delivers our mock runtime
-     * object to the executor.
-     */
-    class PretendJiffle extends Jiffle {
-        @Override
-        public boolean isCompiled() {
-            return true;
-        }
-
-        @Override
-        public Map<String, ImageRole> getImageParams() {
-            Map<String, ImageRole> emptyParams = CollectionFactory.map();
-            return emptyParams;
-        }
-
-        @Override
-        public JiffleDirectRuntime getRuntimeInstance() throws JiffleException {
-            return new PretendJiffleRuntime();
-        }
-    }
-
-    
-    /**
      * Mock runtime object that pretends to process pixels by
      * having a little sleep each time.
      */
@@ -251,5 +218,13 @@ public class ProgressListenerDemo {
         protected Double getDefaultValue(int index) {
             return null;
         }
+
+        @Override
+        public long getNumPixels() {
+            return NUM_PIXELS;
+        }
+        
+        
+
     }
 }

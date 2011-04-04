@@ -1,4 +1,4 @@
-package com.googlecode.jaitools.jiffle.docs;
+package jaitools.jiffle.docs;
 
 import jaitools.imageutils.ImageUtils;
 import jaitools.jiffle.JiffleBuilder;

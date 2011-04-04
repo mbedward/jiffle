@@ -27,6 +27,7 @@ import jaitools.jiffle.runtime.AbstractJiffleRuntime;
 import jaitools.jiffle.runtime.CoordinateTransform;
 import jaitools.jiffle.runtime.JiffleDirectRuntime;
 import jaitools.jiffle.runtime.JiffleProgressListener;
+import java.util.Map;
 
 
 /**
@@ -70,6 +71,10 @@ public abstract class MockDirectBaseClass
     }
 
     public void writeToImage(String destImageName, double x, double y, int band, double value) {
+        throw new UnsupportedOperationException("Should not be called");
+    }
+
+    public Map<String, RenderedImage> getImages() {
         throw new UnsupportedOperationException("Should not be called");
     }
 

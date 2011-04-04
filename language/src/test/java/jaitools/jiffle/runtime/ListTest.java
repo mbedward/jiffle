@@ -172,7 +172,7 @@ public class ListTest extends StatementsTestBase {
         Evaluator e = new Evaluator() {
             int x = 0;
             int y = 0;
-            final int MAX = WIDTH - 1;
+            final int MAX = IMG_WIDTH - 1;
             
             public double eval(double val) {
                 int sum = 0;
@@ -181,7 +181,7 @@ public class ListTest extends StatementsTestBase {
                 sum += n*y;
                 if (y < MAX) sum += n*(y+1);
                 
-                x = (x + 1) % WIDTH;
+                x = (x + 1) % IMG_WIDTH;
                 if (x == 0) y++ ;
                 
                 return sum;

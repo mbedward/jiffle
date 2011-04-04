@@ -25,7 +25,7 @@ variable *src*, and the maximum value found is written to the output image, repr
 Now let's look at a Java method which takes the script (in the form of a file) and an input image, and uses
 JiffleBuilder to run the script, returning the resulting image to the caller.
 
-.. literalinclude:: /../src/main/java/com/googlecode/jaitools/jiffle/docs/FirstJiffleBuilderExample.java
+.. literalinclude:: /../src/main/java/jaitools/jiffle/docs/FirstJiffleBuilderExample.java
    :language: java
    :start-after: // docs start method
    :end-before: // docs end method

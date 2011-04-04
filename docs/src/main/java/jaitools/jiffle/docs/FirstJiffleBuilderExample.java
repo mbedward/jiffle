@@ -1,4 +1,4 @@
-package com.googlecode.jaitools.jiffle.docs;
+package jaitools.jiffle.docs;
 
 import java.awt.image.RenderedImage;
 import java.io.File;

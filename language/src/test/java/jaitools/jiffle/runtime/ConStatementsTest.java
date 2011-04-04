@@ -99,9 +99,9 @@ public class ConStatementsTest extends StatementsTestBase {
         
         System.out.println("   " + script);
         
-        final double threshold = WIDTH * WIDTH / 2;
+        final double threshold = IMG_WIDTH * IMG_WIDTH / 2;
         TiledImage src1 = createSequenceImage();
-        TiledImage src2 = ImageUtils.createConstantImage(WIDTH, WIDTH, threshold);
+        TiledImage src2 = ImageUtils.createConstantImage(IMG_WIDTH, IMG_WIDTH, threshold);
         
         Evaluator e = new Evaluator() {
             public double eval(double val) {
@@ -111,7 +111,7 @@ public class ConStatementsTest extends StatementsTestBase {
                 
         JiffleBuilder builder = new JiffleBuilder();
         builder.script(script).source("src1", src1).source("src2", src2);
-        builder.dest("dest", WIDTH, WIDTH);
+        builder.dest("dest", IMG_WIDTH, IMG_WIDTH);
         RenderedImage dest = builder.run().getImage("dest");
         
         assertImage(src1, dest, e);

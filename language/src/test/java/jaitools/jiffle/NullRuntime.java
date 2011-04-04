@@ -20,10 +20,11 @@
 
 package jaitools.jiffle;
 
+import java.awt.geom.Rectangle2D;
+
+import jaitools.jiffle.runtime.CoordinateTransform;
 import jaitools.jiffle.runtime.JiffleRuntime;
 import jaitools.jiffle.runtime.JiffleRuntimeException;
-import java.awt.geom.Rectangle2D;
-import java.util.Map;
 
 /**
  * A stub class used in unit tests.
@@ -40,27 +41,13 @@ public class NullRuntime implements JiffleRuntime {
 
     public void setVar(String varName, Double value) throws JiffleRuntimeException {}
 
-    public void setWorldByStepDistance(Rectangle2D bounds, double xstep, double ystep) {
-    }
+    public void setWorldByStepDistance(Rectangle2D bounds, double xstep, double ystep) {}
 
-    public void setWorldByNumSteps(Rectangle2D bounds, int nx, int ny) {
-    }
+    public void setWorldByNumSteps(Rectangle2D bounds, int nx, int ny) {}
 
     public boolean isWorldSet() {
         return true;
     }
-
-    public void setImageParams(Map imageParams) {
-    }
-
-    public String[] getSourceVarNames() {
-        return new String[0];
-    }
-
-    public String[] getDestinationVarNames() {
-        return new String[0];
-    }
-
 
     public double getMinX() {
         return 0;
@@ -97,5 +84,7 @@ public class NullRuntime implements JiffleRuntime {
     public long getNumPixels() {
         return 0;
     }
+
+    public void setDefaultTransform(CoordinateTransform tr) {}
 
 }

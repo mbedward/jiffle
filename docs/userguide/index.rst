@@ -14,6 +14,7 @@ Contents:
    introduction
    language-summary
    runtime
+   coordinates
    clever
    glossary
 

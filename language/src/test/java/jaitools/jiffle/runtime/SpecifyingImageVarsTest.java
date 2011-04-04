@@ -122,7 +122,7 @@ public class SpecifyingImageVarsTest extends StatementsTestBase {
         }
         
         if (destVarName != null && destVarName.length() > 0) {
-            destImg = ImageUtils.createConstantImage(WIDTH, WIDTH, 0d);
+            destImg = ImageUtils.createConstantImage(IMG_WIDTH, IMG_WIDTH, 0d);
             runtimeInstance.setDestinationImage(destVarName, destImg);
         }
         

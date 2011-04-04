@@ -216,4 +216,18 @@ public abstract class AbstractDirectRuntime extends AbstractJiffleRuntime implem
         setWorldByStepDistance(rect, 1, 1);
     }
 
+    /**
+     * Returns the images set for this runtime object as a {@code Map} with
+     * variable name as key and iamge as value. The returned {@code Map} is
+     * a copy of the one held by this object, so it can be safely modified
+     * by the caller.
+     * 
+     * @return images keyed by variable name
+     */
+    public Map getImages() {
+        Map copy = new HashMap();
+        copy.putAll(images);
+        return copy;
+    }
+
 }

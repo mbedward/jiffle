@@ -60,8 +60,19 @@ public abstract class AbstractJiffleRuntime implements JiffleRuntime {
     /** Number of pixels calculated from bounds and step distances. */
     private long _numPixels;
     
+    private class TransformInfo {
+        CoordinateTransform transform;
+        boolean isDefault;
+    }
+
+    /** 
+     * A default transform to apply to all images set without an explicit
+     * transform. 
+     */
+    private CoordinateTransform _defaultTransform = new IdentityCoordinateTransform();
+    
     /** World to image coordinate transforms with image name as key. */
-    private Map<String, CoordinateTransform> _transformLookup;
+    private Map<String, TransformInfo> _transformLookup;
 
     /** Holds information about an image-scope variable. */
     public class ImageScopeVar {
@@ -119,7 +130,7 @@ public abstract class AbstractJiffleRuntime implements JiffleRuntime {
         _FN = new JiffleFunctions();
         _stk = new IntegerStack();
         
-        _transformLookup = new HashMap<String, CoordinateTransform>();
+        _transformLookup = new HashMap<String, TransformInfo>();
         _xstep = Double.NaN;
         _ystep = Double.NaN;
     }
@@ -283,14 +294,42 @@ public abstract class AbstractJiffleRuntime implements JiffleRuntime {
     }
     
     protected void setTransform(String imageVarName, CoordinateTransform tr) {
+        TransformInfo info = new TransformInfo();
+        
+        if (tr == null) {
+            info.transform = _defaultTransform;
+            info.isDefault = true;
+            
+        } else {
+            info.transform = tr;
+            info.isDefault = false;
+        }
+        
+        _transformLookup.put(imageVarName, info);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setDefaultTransform(CoordinateTransform tr) {
         if (tr == null) {
             tr = new IdentityCoordinateTransform();
         }
-        _transformLookup.put(imageVarName, tr);
+        _defaultTransform = tr;
+        
+        for (String name : _transformLookup.keySet()) {
+            TransformInfo info = _transformLookup.get(name);
+            if (info.isDefault) {
+                info.transform = _defaultTransform;
+                _transformLookup.put(name, info);
+            }
+        }
     }
     
+    
+    
     protected CoordinateTransform getTransform(String imageVarName) {
-        return _transformLookup.get(imageVarName);
+        return _transformLookup.get(imageVarName).transform;
     }
 
     /**
