@@ -34,7 +34,10 @@ import javax.media.jai.TiledImage;
 
 import jaitools.CollectionFactory;
 import jaitools.imageutils.ImageUtils;
+import jaitools.jiffle.runtime.CoordinateTransform;
+import jaitools.jiffle.runtime.IdentityCoordinateTransform;
 import jaitools.jiffle.runtime.JiffleDirectRuntime;
+import java.awt.geom.Rectangle2D;
 
 /**
  * A builder script which makes it easy to compile and run basic Jiffle scripts.
@@ -112,12 +115,25 @@ import jaitools.jiffle.runtime.JiffleDirectRuntime;
  */
 public class JiffleBuilder {
     
-    private Jiffle compiledInstance;
-
+    private static final double EPS = 1.0e-8;
+    
+    private static class WorldInfo {
+        Rectangle2D bounds;
+        double xres;
+        double yres;
+    }
+    
+    private WorldInfo worldInfo;
+    
+    /*
+     * We use this class, rather than a private collection of WeakReferences,
+     * to ensure that both weak and strong references are visible to the
+     * client. Otherwise, the weak references get garbage collected too soon.
+     */
     private static class ImageRef {
         Object ref;
         boolean weak;
-
+        
         ImageRef(RenderedImage image, boolean weak) {
             if (weak) {
                 ref = new WeakReference<RenderedImage>(image);
@@ -140,6 +156,9 @@ public class JiffleBuilder {
     private String script;
     private final Map<String, Jiffle.ImageRole> imageParams;
     private final Map<String, ImageRef> images;
+    
+    private CoordinateTransform _defaultTransform;
+    private final Map<String, CoordinateTransform> transforms;
 
     /**
      * Creates a new JiffleBuilder instance.
@@ -147,6 +166,7 @@ public class JiffleBuilder {
     public JiffleBuilder() {
         imageParams = CollectionFactory.orderedMap();
         images = CollectionFactory.orderedMap();
+        transforms = CollectionFactory.orderedMap();
     }
 
     /**
@@ -155,10 +175,72 @@ public class JiffleBuilder {
      * arguments they will also be freed.
      */
     public void clear() {
-        compiledInstance = null;
+        worldInfo = null;
+        _defaultTransform = null;
         script = null;
         imageParams.clear();
         images.clear();
+        transforms.clear();
+    }
+    
+    /**
+     * Sets the bound and resolution of the processing area. If the client 
+     * does not explicitly set the processing area the default is used
+     * (first destination or source image bounds and resolution).
+     * 
+     * @param worldBounds bounds in world units
+     * @param xres pixel width in world units
+     * @param yres pixel height in world units
+     * 
+     * @return the instance of this class to allow method chaining
+     */
+    public JiffleBuilder worldAndRes(Rectangle2D worldBounds, double xres, double yres) {
+        if (worldBounds == null || worldBounds.isEmpty()) {
+            throw new IllegalArgumentException("bounds must not be null or empty");
+        }
+        if (xres <= EPS) {
+            throw new IllegalArgumentException("xres must be greater than zero");
+        }
+        if (xres <= EPS) {
+            throw new IllegalArgumentException("xres must be greater than zero");
+        }
+        
+        return doSetWorld(worldBounds, xres, yres);
+    }
+    
+    /**
+     * Sets the bound and resolution of the processing area. If the client 
+     * does not explicitly set the processing area the default is used
+     * (first destination or source image bounds and resolution).
+     * 
+     * @param worldBounds bounds in world units
+     * @param numX number of pixels in the X direction
+     * @param numY number of pixels in the Y direction
+     * 
+     * @return the instance of this class to allow method chaining
+     */
+    public JiffleBuilder worldAndNumPixels(Rectangle2D worldBounds, int numX, int numY) {
+        if (worldBounds == null || worldBounds.isEmpty()) {
+            throw new IllegalArgumentException("bounds must not be null or empty");
+        }
+        if (numX <= 0) {
+            throw new IllegalArgumentException("numX must be greater than zero");
+        }
+        if (numY <= 0) {
+            throw new IllegalArgumentException("numY must be greater than zero");
+        }
+        
+        double xres = worldBounds.getWidth() / numX;
+        double yres = worldBounds.getHeight() / numY;
+        return doSetWorld(worldBounds, xres, yres);
+    }
+    
+    private JiffleBuilder doSetWorld(Rectangle2D worldBounds, double xres, double yres) {
+        worldInfo = new WorldInfo();
+        worldInfo.bounds = worldBounds;
+        worldInfo.xres = xres;
+        worldInfo.yres = yres;
+        return this;
     }
 
     /**
@@ -187,7 +269,8 @@ public class JiffleBuilder {
     }
 
     /**
-     * Associates a source image with a variable name in the script.
+     * Associates a variable name with a source image. The default coordinate
+     * system will be used for this image.
      * The image will be stored by the builder as a weak reference.
      *
      * @param varName variable name
@@ -195,9 +278,27 @@ public class JiffleBuilder {
      * @return the instance of this class to allow method chaining
      */
     public JiffleBuilder source(String varName, RenderedImage sourceImage) {
+        return source(varName, sourceImage, null);
+    }
+
+    /**
+     * Associates a variable name with a source image and coordinate transform.
+     * The image will be stored by the builder as a weak reference.
+     *
+     * @param varName variable name
+     * @param sourceImage the source image
+     * @param transform the transform to convert world coordinates to this image's
+     *        pixel coordinates
+     * 
+     * @return the instance of this class to allow method chaining
+     */
+    public JiffleBuilder source(String varName, RenderedImage sourceImage,
+            CoordinateTransform transform) {
+        
         imageParams.put(varName, Jiffle.ImageRole.SOURCE);
         // store as weak reference
         images.put(varName, new ImageRef(sourceImage, true));
+        transforms.put(varName, transform);
         return this;
     }
 
@@ -227,6 +328,35 @@ public class JiffleBuilder {
 
     /**
      * Creates a new destination image and associates it with a variable name
+     * in the script.
+     * <p>
+     * Note: a {@code JiffleBuilder} maintains only {@code WeakReferences}
+     * to all source images and any destination images passed to it via
+     * the {@link #dest(String, WritableRenderedImage)} method. However,
+     * a strong reference is stored to any destination images created with this
+     * method. This can be freed later by calling {@link #clear()} or
+     * {@link #removeImage(String varName)}.
+     *
+     * @param varName variable name
+     * @param destBounds the bounds of the new destination image
+     * @param transform the transform to convert world coordinates to this image's
+     *        pixel coordinates
+     *
+     * @return the instance of this class to allow method chaining
+     */
+    public JiffleBuilder dest(String varName, Rectangle destBounds,
+            CoordinateTransform transform) {
+        
+        if (destBounds == null || destBounds.isEmpty()) {
+            throw new IllegalArgumentException("destBounds argument cannot be null or empty");
+        }
+
+        return dest(varName, destBounds.x, destBounds.y, 
+                destBounds.width, destBounds.height, transform);
+    }
+
+    /**
+     * Creates a new destination image and associates it with a variable name
      * in the script. The minimum pixel X and Y ordinates of the destination
      * image will be 0.
      * <p>
@@ -249,6 +379,31 @@ public class JiffleBuilder {
 
     /**
      * Creates a new destination image and associates it with a variable name
+     * in the script. The minimum pixel X and Y ordinates of the destination
+     * image will be 0.
+     * <p>
+     * Note: a {@code JiffleBuilder} maintains only {@code WeakReferences}
+     * to all source images and any destination images passed to it via
+     * the {@link #dest(String, WritableRenderedImage)} method. However,
+     * a strong reference is stored to any destination images created with this
+     * method. This can be freed later by calling {@link #clear()} or
+     * {@link #removeImage(String varName)}.
+     *
+     * @param varName variable name
+     * @param width image width (pixels)
+     * @param height image height (pixels)
+     * @param transform the transform to convert world coordinates to this image's
+     *        pixel coordinates
+     *
+     * @return the instance of this class to allow method chaining
+     */
+    public JiffleBuilder dest(String varName, int width, int height,
+            CoordinateTransform transform) {
+        return dest(varName, 0, 0, width, height, transform);
+    }
+
+    /**
+     * Creates a new destination image and associates it with a variable name
      * in the script.
      * <p>
      * Note: a {@code JiffleBuilder} maintains only {@code WeakReferences}
@@ -267,13 +422,56 @@ public class JiffleBuilder {
      * @return the instance of this class to allow method chaining
      */
     public JiffleBuilder dest(String varName, int minx, int miny, int width, int height) {
+        return dest(varName, minx, miny, width, height, null);
+    }
+
+    /**
+     * Creates a new destination image and associates it with a variable name
+     * in the script.
+     * <p>
+     * Note: a {@code JiffleBuilder} maintains only {@code WeakReferences}
+     * to all source images and any destination images passed to it via
+     * the {@link #dest(String, WritableRenderedImage)} method. However,
+     * a strong reference is stored to any destination images created with this
+     * method. This can be freed later by calling {@link #clear()} or
+     * {@link #removeImage(String varName)}.
+     *
+     * @param varName variable name
+     * @param minx minimum pixel X ordinate
+     * @param miny minimum pixel Y ordinate
+     * @param width image width (pixels)
+     * @param height image height (pixels)
+     * @param transform the transform to convert world coordinates to this image's
+     *        pixel coordinates
+     *
+     * @return the instance of this class to allow method chaining
+     */
+    public JiffleBuilder dest(String varName, int minx, int miny, 
+            int width, int height, CoordinateTransform transform) {
+        
         TiledImage image = ImageUtils.createConstantImage(minx, miny, width, height, 0d);
         imageParams.put(varName, Jiffle.ImageRole.DEST);
         // store as strong reference
         images.put(varName, new ImageRef(image, false));
+        transforms.put(varName, transform);
         return this;
     }
 
+    /**
+     * Sets a destination image associated with a variable name in the script.
+     * <p>
+     * See {@link #dest(String, WritableRenderedImage, CoordinateTransform)}
+     * for more details about this method.
+     * 
+     * @param varName variable name
+     * @param destImage the destination image
+     *
+     * @return the instance of this class to allow method chaining
+     */
+    public JiffleBuilder dest(String varName, WritableRenderedImage destImage) {
+        return dest(varName, destImage, null);
+    }
+    
     /**
      * Sets a destination image associated with a variable name in the script.
      * <p>
@@ -281,35 +479,57 @@ public class JiffleBuilder {
      * it's not a good idea to create an image on the fly when calling this
      * method...
      * <pre><code>
-     * // creating image on the fly
-     * builder.dest("foo", ImageUtils.createConstantImage(width, height, 0d));
+     * // Creating image on the fly
+     * builder.dest("foo", ImageUtils.createConstantImage(width, height, 0d), transform);
      *
-     * // later... img will be null here
+     * // Later - oops, null is returned here
      * RenderedImage img = builder.getImage("foo");
      * </code></pre>
      * To avoid this problem, create your image locally...
      * <pre><code>
      * WritableRenderedImage img = ImageUtils.createConstantImage(width, height, 0d);
-     * builder.dest("foo", img);
+     * builder.dest("foo", img, transform);
      * </code></pre>
      * Or use on of the {@code dest} methods with image bounds arguments to
      * create it for you
      * <pre><code>
-     * builder.dest("foo", width, height);
+     * builder.dest("foo", width, height, transform);
      *
-     * // later... we will get a valid reference to the image
+     * // Now, we can retrieve the image successfully
      * RenderedImage img = builder.getImage("foo");
      * </code></pre>
      *
      * @param varName variable name
      * @param destImage the destination image
+     * @param transform the transform to convert world coordinates to this image's
+     *        pixel coordinates
      *
      * @return the instance of this class to allow method chaining
      */
-    public JiffleBuilder dest(String varName, WritableRenderedImage destImage) {
+    public JiffleBuilder dest(String varName, WritableRenderedImage destImage, 
+            CoordinateTransform transform) {
         imageParams.put(varName, Jiffle.ImageRole.DEST);
         // store as weak reference
         images.put(varName, new ImageRef(destImage, true));
+        transforms.put(varName, transform);
+        return this;
+    }
+    
+    /**
+     * Sets a default {@code CoordinateTransform} instance to use with all
+     * images that are passed to the builder without an explicit transform
+     * of their own. If {@code transform} is {@code null}, the system default
+     * transform will be used for any such images.
+     * 
+     * @param transform a transform to use as the default; or {@code null} for
+     *        the system default transform
+     * 
+     * @return the instance of this class to allow method chaining
+     * 
+     * @see jaitools.jiffle.runtime.JiffleRuntime#setDefaultTransform(CoordinateTransform) 
+     */
+    public JiffleBuilder defaultTransform(CoordinateTransform transform) {
+        _defaultTransform = transform == null ? new IdentityCoordinateTransform() : transform;
         return this;
     }
     
@@ -340,22 +560,29 @@ public class JiffleBuilder {
             throw new IllegalStateException("Jiffle script has not been set yet");
         }
 
-        compiledInstance = new Jiffle(script, imageParams);
-        JiffleDirectRuntime runtime = compiledInstance.getRuntimeInstance();
+        Jiffle jiffle = new Jiffle(script, imageParams);
+        JiffleDirectRuntime runtime = jiffle.getRuntimeInstance();
+        
+        runtime.setDefaultTransform(_defaultTransform);
+        if (worldInfo != null) {
+            runtime.setWorldByStepDistance(worldInfo.bounds, worldInfo.xres, worldInfo.yres);
+        }
+        
         for (String var : images.keySet()) {
             RenderedImage img = images.get(var).get();
             if (img == null) {
                 throw new JiffleException(
                         "Image for variable " + var + " has been garbage collected");
             }
-
+            
+            CoordinateTransform transform = transforms.get(var);
             switch (imageParams.get(var)) {
                 case SOURCE:
-                    runtime.setSourceImage(var, img);
+                    runtime.setSourceImage(var, img, transform);
                     break;
 
                 case DEST:
-                    runtime.setDestinationImage(var, (WritableRenderedImage)img);
+                    runtime.setDestinationImage(var, (WritableRenderedImage)img, transform);
                     break;
             }
         }
@@ -363,27 +590,6 @@ public class JiffleBuilder {
         return runtime;
     }
     
-    /**
-     * Gets the compiled {@link Jiffle} instance for the currently set script and 
-     * images.
-     *
-     * @return the compiled instance
-     *
-     * @throws JiffleException if the script has not been set yet or if
-     *         compilation errors occur
-     */
-    public Jiffle getCompiledJiffle() throws JiffleException {
-        if (script == null) {
-            throw new IllegalStateException("Jiffle script has not been set yet");
-        }
-        
-        if (compiledInstance == null) {
-            compiledInstance = new Jiffle(script, imageParams);
-        }
-        
-        return compiledInstance;
-    }
-
     /**
      * Gets the Java run-time class code generated from the compiled script.
      *
@@ -393,7 +599,13 @@ public class JiffleBuilder {
      *         compilation errors occur
      */
     public String getRuntimeSource() throws JiffleException {
-        return getCompiledJiffle().getRuntimeSource(Jiffle.RuntimeModel.DIRECT, true);
+        if (script == null) {
+            throw new IllegalStateException("Jiffle script has not been set yet");
+        }
+        
+        Jiffle jiffle = new Jiffle(script, imageParams);
+
+        return jiffle.getRuntimeSource(Jiffle.RuntimeModel.DIRECT, true);
     }
 
     /**
@@ -424,6 +636,9 @@ public class JiffleBuilder {
      * <p>
      * In the case of a destination image the object returned can be cast
      * to {@link WritableRenderedImage}.
+     * <p>
+     * <strong>Note:</strong> Thie method also removes any {@code CoordinateTransform}
+     * associated with the image.
      *
      * @param varName variable name
      *
@@ -432,6 +647,7 @@ public class JiffleBuilder {
      */
     public RenderedImage removeImage(String varName) {
         ImageRef ref = images.remove(varName);
+        transforms.remove(varName);
         if (ref != null) {
             return ref.get();
         }
