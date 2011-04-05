@@ -19,28 +19,18 @@
  */
 
 /**
- * Jiffle scripting language.
- * <p>
- * Jiffle is a language for raster algebra. Using it you can create images from
- * mathematical and logical expressions which may, in turn, use data from other
- * images. The main intention of Jiffle is to free you from having to write lots
- * of Java and JAI boiler-plate code. Jiffle also allows much more flexibility
- * that is possible with JAI's ImageFunction.
- * <p>
- * Jiffle is a superset of the r.mapcalc language used for raster algebra in
- * GRASS GIS. Although there are minor differences between the two languages,
- * including the form of variable names allowable, many r.mapcalc scripts should
- * run under Jiffle with little or no changes required.
- * <p>
- * Jiffle adds additional features to those offered in r.mapcalc including more
- * statistical functions, choice of scope for variables, and syntax to access
- * specified bands and pixels in input images.
+ * Jiffle is a scripting language for creating and analysing raster images.
+ * The main intention of Jiffle is to free you from having to write lots
+ * of Java and JAI boiler-plate code.
  * <p>
  * Jiffle scripts are compiled to bytecode. The compiler first
- * translates the script into Java source which is then passed to Jiffle's
+ * translates the script into Java source which is then passed to an
  * embedded Janino compiler to produce executable bytecode in memory. The
- * resulting run-time instance can then be used by client code as a normal
- * Java object.
+ * resulting run-time object can then be used by client code as a normal
+ * compiled java class.
+ * <p>
+ * For an introduction to Jiffle see the User Guide at:
+ * http://jai-tools.org/docs/jiffle/latest/html/index.html
  */
 
 package jaitools.jiffle;

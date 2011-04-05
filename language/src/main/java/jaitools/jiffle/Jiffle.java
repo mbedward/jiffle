@@ -62,24 +62,20 @@ import java.util.logging.Logger;
  * Example of use:
  * <pre><code>
  * // A script to write sequential values to image pixels
- * String script = "init { n = 0; } dest = n++ ;" ;
+ * String script = "images { dest=write; } dest = x() + y() * width();" ;
  *
- * // We tell Jiffle about variable names that represent images
- * // (in this case, only "dest") via a Map of parameters
- * Map&lt;String, Jiffle.ImageRole&gt; imageParams = CollectionFactory.map();
- * imageParams.put("dest", Jiffle.ImageRole.DEST);
+ * Jiffle jiffle = new Jiffle();
+ * jiffle.setScript(script);
+ * jifle.compile();
  *
- * // Using this constructor results in the script being compiled
- * // immediately (any errors will generate JiffleExceptions)
- * Jiffle jiffle = new Jiffle(script, imageParams);
- *
- * // Now get a runtime object
+ * // Now we get the runtime object from the compiled Jiffle object
  * JiffleDirectRuntime runtime = jiffle.getRuntimeInstance();
  *
- * // Create an image to hold the results of the script and pass it
- * // to the runtime object
+ * // Create an image to hold the results of the script
  * final int width = 10;
- * TiledImage destImg = ImageUtils.createConstantImage(width, width, 0.0d);
+ * WritableRenderedImage destImg = ImageUtils.createConstantImage(width, width, 0.0d);
+ * 
+ * // Associate this image with the variable name used in the script
  * runtime.setDestinationImage("dest", destImg);
  *
  * // Evaluate the script for all destination image pixels
@@ -89,10 +85,10 @@ import java.util.logging.Logger;
  * {@code jaitools.demo.jiffle} package in the JAI-tools demo module.
  *
  * <h4>Implementation note</h4>
- * The Jiffle compiler is really a Jiffle to Java translator.
- * When a client requests a runtime object, the script is translated and
- * the resulting Java source is passed to an embedded Janino compiler
- * which compiles the source to bytecode in memory.
+ * The Jiffle compiler is actually a Jiffle to Java translator.
+ * When a client requests a runtime object, the script is translated into 
+ * Java source for a runtime class. This source code is then passed to an 
+ * embedded Janino compiler which produces the runtime object.
  *
  * @see JiffleBuilder
  * @see jaitools.jiffle.runtime.JiffleExecutor
