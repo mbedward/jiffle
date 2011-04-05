@@ -98,7 +98,7 @@ public class WorldCoordsTest extends RuntimeTestBase {
         runtime.setWorldByNumPixels(worldBounds, IMG_WIDTH, IMG_WIDTH);
         
         // Get the transform from world to image coordinates
-        // CoordinateTransform tr = CoordinateTransforms.unitInterval(
+        // CoordinateTransform tr = CoordinateTransforms.unitBounds(
         //        new Rectangle(0, 0, IMG_WIDTH, IMG_WIDTH));
         CoordinateTransform tr = CoordinateTransforms.getTransform(worldBounds, imageBounds);
         
@@ -176,7 +176,7 @@ public class WorldCoordsTest extends RuntimeTestBase {
         runtime.setWorldByNumPixels(worldBounds, IMG_WIDTH, IMG_WIDTH);
 
         Rectangle imageBounds = new Rectangle(0, 0, IMG_WIDTH, IMG_WIDTH);
-        CoordinateTransform tr = CoordinateTransforms.unitInterval(imageBounds);
+        CoordinateTransform tr = CoordinateTransforms.unitBounds(imageBounds);
         runtime.setDefaultTransform(tr);
         
         runtime.setSourceImage("src", srcImg);
@@ -191,6 +191,45 @@ public class WorldCoordsTest extends RuntimeTestBase {
                 }
                 move();
                 return z;
+            }
+        };
+        
+        assertImage(srcImg, destImg, e);
+    }
+    
+    /**
+     * Uses a coordinate transform to relate two non-overlapping images
+     */
+    @Test
+    public void nonOverlappingSourceAndDestImages() throws Exception {
+        System.out.println("   non-overlapping images");
+
+        final int XO = -10;
+        final int YO = 10;
+        
+        RenderedImage srcImg = ImageUtils.createConstantImage(XO, YO, IMG_WIDTH, IMG_WIDTH, 0);
+        WritableRenderedImage destImg = ImageUtils.createConstantImage(IMG_WIDTH, IMG_WIDTH, 0d);
+        
+        Rectangle srcBounds = new Rectangle(XO, YO, IMG_WIDTH, IMG_WIDTH);
+        
+        // The world bounds are the bounds of the destination image
+        Rectangle worldBounds = new Rectangle(0, 0, IMG_WIDTH, IMG_WIDTH);
+        
+        String script = "images { src=read; dest=write; } dest = src;" ;
+        JiffleDirectRuntime runtime = getRuntime(script);
+        
+        runtime.setWorldByResolution(worldBounds, 1, 1);
+        
+        CoordinateTransform srcTr = CoordinateTransforms.getTransform(worldBounds, srcBounds);
+        runtime.setSourceImage("src", srcImg, srcTr);
+        runtime.setDestinationImage("dest", destImg);
+        
+        runtime.evaluateAll(null);
+        
+        Evaluator e = new Evaluator() {
+            @Override
+            public double eval(double val) {
+                return val;
             }
         };
         

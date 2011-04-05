@@ -70,7 +70,7 @@ public class CoordinateTransforms {
      * 
      * @throws IllegalArgumentException if {@code imageBounds} is {@code null} or empty
      */
-    public static CoordinateTransform unitInterval(Rectangle imageBounds) {
+    public static CoordinateTransform unitBounds(Rectangle imageBounds) {
         if (imageBounds == null || imageBounds.isEmpty()) {
             throw new IllegalArgumentException("imageBounds must not be null or empty");
         }
