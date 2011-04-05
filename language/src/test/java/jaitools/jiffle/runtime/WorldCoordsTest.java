@@ -27,6 +27,7 @@ import java.awt.image.WritableRenderedImage;
 
 import jaitools.imageutils.ImageUtils;
 import jaitools.jiffle.Jiffle;
+import jaitools.jiffle.JiffleException;
 
 import org.junit.Test;
 
@@ -167,6 +168,34 @@ public class WorldCoordsTest extends StatementsTestBase {
         
         assertImage(null, destImg, e);
     }
+    
+    /**
+     * Setting an image with a transform without having previously set the world
+     * bounds should throw a JiffleException.
+     */
+    @Test(expected=JiffleException.class)
+    public void forgetTheWorldBeforeImageWithTransform() throws Exception {
+        System.out.println("   forget to set the world before setting image with transform");
+        
+        JiffleDirectRuntime runtime = getRuntime("images {dest=write;} dest = 42;");
+        WritableRenderedImage destImage = ImageUtils.createConstantImage(IMG_WIDTH, IMG_WIDTH, 0d);
+        CoordinateTransform tr = CoordinateTransforms.translation(10, 10);
+        runtime.setDestinationImage("dest", destImage, tr);
+    }
+    
+    /**
+     * Setting a default transform without having previously set the world
+     * bounds should throw a JiffleException.
+     */
+    @Test(expected=JiffleException.class)
+    public void forgetTheWorldBeforeDefaultTransform() throws Exception {
+        System.out.println("   forget to set the world before setting default transform");
+        
+        JiffleDirectRuntime runtime = getRuntime("images {dest=write;} dest = 42;");
+        CoordinateTransform tr = CoordinateTransforms.translation(10, 10);
+        runtime.setDefaultTransform(tr);
+    }
+    
     
     private JiffleDirectRuntime getRuntime(String script) throws Exception {
         Jiffle jiffle = new Jiffle();

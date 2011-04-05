@@ -20,6 +20,7 @@
 
 package jaitools.jiffle.runtime;
 
+import jaitools.jiffle.JiffleException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,20 +49,56 @@ public abstract class AbstractIndirectRuntime extends AbstractJiffleRuntime impl
     }
 
     public void setDestinationImage(String varName) {
-        setDestinationImage(varName, null);
+        try {
+            doSetDestinationImage(varName, null);
+        } catch (WorldNotSetException ex) {
+            // Passing a null transform does not cause an Exception
+        }
     }
 
-    public void setDestinationImage(String varName, CoordinateTransform tr) {
+    public void setDestinationImage(String varName, CoordinateTransform tr) 
+            throws JiffleException {
+        try {
+            doSetDestinationImage(varName, tr);
+        } catch (WorldNotSetException ex) {
+            throw new JiffleException(String.format(
+                    "Setting a coordinate tranform for a source (%s) without"
+                    + "having first set the world bounds and resolution", varName));
+        }
+    }
+    
+    private void doSetDestinationImage(String varName, CoordinateTransform tr)
+            throws WorldNotSetException {
+        
         destImageName = varName;
         setTransform(varName, tr);
     }
 
     public void setSourceImage(String varName) {
-        setSourceImage(varName, null);
+        try {
+            doSetSourceImage(varName, null);
+        } catch (WorldNotSetException ex) {
+            // Passing a null transform does not cause an Exception
+        }
     }
 
-    public void setSourceImage(String varName, CoordinateTransform tr) {
+    public void setSourceImage(String varName, CoordinateTransform tr) 
+            throws JiffleException {
+        
+        try {
+            doSetSourceImage(varName, tr);
+        } catch (WorldNotSetException ex) {
+            throw new JiffleException(String.format(
+                    "Setting a coordinate tranform for a source (%s) without"
+                    + "having first set the world bounds and resolution", varName));
+        }
+    }
+
+    private void doSetSourceImage(String varName, CoordinateTransform tr)
+            throws WorldNotSetException {
+        
         sourceImageNames.add(varName);
         setTransform(varName, tr);
     }
+
 }

@@ -20,6 +20,7 @@
 
 package jaitools.jiffle.runtime;
 
+import jaitools.jiffle.JiffleException;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.RenderedImage;
@@ -79,31 +80,66 @@ public abstract class AbstractDirectRuntime extends AbstractJiffleRuntime implem
      * {@inheritDoc}
      */
     public void setDestinationImage(String varName, WritableRenderedImage image) {
-        setDestinationImage(varName, image, null);
+        try {
+            doSetDestinationImage(varName, image, null);
+        } catch (WorldNotSetException ex) {
+            // No exception can be caused by a null transform
+        }
     }
     
     /**
      * {@inheritDoc}
      */
     public void setDestinationImage(String varName, WritableRenderedImage image, 
-            CoordinateTransform tr) {
+            CoordinateTransform tr) throws JiffleException {
+        
+        try {
+            doSetDestinationImage(varName, image, tr);
+            
+        } catch (WorldNotSetException ex) {
+            throw new JiffleException(String.format(
+                    "Setting a coordinate tranform for a destination (%s) without"
+                    + "having first set the world bounds and resolution", varName));
+        }
+    }
+    
+    private void doSetDestinationImage(String varName, WritableRenderedImage image, 
+            CoordinateTransform tr) throws WorldNotSetException {
         
         images.put(varName, image);
         writers.put(varName, RandomIterFactory.createWritable(image, null));
         setTransform(varName, tr);
     }
-
+    
     /**
      * {@inheritDoc}
      */
     public void setSourceImage(String varName, RenderedImage image) {
-        setSourceImage(varName, image, null);
+        try {
+            doSetSourceImage(varName, image, null);
+        } catch (WorldNotSetException ex) {
+            // No exception can be caused by a null transform
+        }
     }
     
     /**
      * {@inheritDoc}
      */
-    public void setSourceImage(String varName, RenderedImage image, CoordinateTransform tr) {
+    public void setSourceImage(String varName, RenderedImage image, CoordinateTransform tr) 
+            throws JiffleException {
+        try {
+            doSetSourceImage(varName, image, tr);
+            
+        } catch (WorldNotSetException ex) {
+            throw new JiffleException(String.format(
+                    "Setting a coordinate tranform for a source (%s) without"
+                    + "having first set the world bounds and resolution", varName));
+        }
+    }
+    
+    private void doSetSourceImage(String varName, RenderedImage image, CoordinateTransform tr)
+            throws WorldNotSetException {
+        
         images.put(varName, image);
         readers.put(varName, RandomIterFactory.create(image, null));
         setTransform(varName, tr);

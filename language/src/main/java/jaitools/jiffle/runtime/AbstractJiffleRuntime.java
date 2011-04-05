@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import jaitools.jiffle.Jiffle;
+import jaitools.jiffle.JiffleException;
 
 
 /**
@@ -304,7 +305,9 @@ public abstract class AbstractJiffleRuntime implements JiffleRuntime {
         return _numPixels;
     }
     
-    protected void setTransform(String imageVarName, CoordinateTransform tr) {
+    protected void setTransform(String imageVarName, CoordinateTransform tr) 
+            throws WorldNotSetException {
+        
         TransformInfo info = new TransformInfo();
         
         if (tr == null) {
@@ -312,6 +315,10 @@ public abstract class AbstractJiffleRuntime implements JiffleRuntime {
             info.isDefault = true;
             
         } else {
+            if (!isWorldSet()) {
+                throw new WorldNotSetException();
+            }
+            
             info.transform = tr;
             info.isDefault = false;
         }
@@ -322,8 +329,15 @@ public abstract class AbstractJiffleRuntime implements JiffleRuntime {
     /**
      * {@inheritDoc}
      */
-    public void setDefaultTransform(CoordinateTransform tr) {
-        if (tr == null) {
+    public void setDefaultTransform(CoordinateTransform tr) throws JiffleException {
+        if (tr != null) {
+            if (!isWorldSet()) {
+                throw new JiffleException(
+                        "Setting a default coordinate tranform without having "
+                        + "first set the world bounds and resolution");
+            }
+            
+        } else {
             tr = new IdentityCoordinateTransform();
         }
         _defaultTransform = tr;

@@ -24,6 +24,9 @@ import java.awt.image.RenderedImage;
 import java.awt.image.WritableRenderedImage;
 import java.util.Map;
 
+import jaitools.jiffle.JiffleException;
+
+
 /**
  * Defines methods implemented by runtime classes adopting the direct evaluation
  * model. In this model, the runtime object writes values to the destination
@@ -49,8 +52,12 @@ public interface JiffleDirectRuntime extends JiffleRuntime {
      * @param varName script variable representing the destination image
      * @param image writable image
      * @param tr transform for processing area to image coordinates
+     * 
+     * @throws JiffleException if the world bounds and resolution have not
+     *         been set previously
      */
-    void setDestinationImage(String varName, WritableRenderedImage image, CoordinateTransform tr);
+    void setDestinationImage(String varName, WritableRenderedImage image, CoordinateTransform tr)
+            throws JiffleException;
     
     /**
      * Associates a variable name with a destination image. Equivalent to:
@@ -78,8 +85,12 @@ public interface JiffleDirectRuntime extends JiffleRuntime {
      * @param varName script variable representing the source image
      * @param image writable image
      * @param tr transform for processing area to image coordinates
+     * 
+     * @throws JiffleException if the world bounds and resolution have not
+     *         been set previously
      */
-    void setSourceImage(String varName, RenderedImage image, CoordinateTransform tr);
+    void setSourceImage(String varName, RenderedImage image, CoordinateTransform tr)
+            throws JiffleException;
 
     /**
      * Associates a variable name with a source image. Equivalent to:
