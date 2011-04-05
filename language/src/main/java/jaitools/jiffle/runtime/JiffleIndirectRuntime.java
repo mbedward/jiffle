@@ -20,6 +20,8 @@
 
 package jaitools.jiffle.runtime;
 
+import jaitools.jiffle.JiffleException;
+
 
 /**
  * Defines methods implemented by runtime classes adopting the indirect 
@@ -45,8 +47,12 @@ public interface JiffleIndirectRuntime extends JiffleRuntime {
      * 
      * @param varName script variable representing the destination image
      * @param tr transform for processing area to image coordinates
+     * 
+     * @throws JiffleException if the world bounds and resolution have not
+     *         been set previously
      */
-    void setDestinationImage(String varName, CoordinateTransform tr);
+    void setDestinationImage(String varName, CoordinateTransform tr)
+            throws JiffleException;
     
     /**
      * Specifies the name of the script variable which represents the destination
@@ -74,8 +80,12 @@ public interface JiffleIndirectRuntime extends JiffleRuntime {
      * @param varName script variable representing the source image
      * @param image writable image
      * @param tr transform for processing area to image coordinates
+     * 
+     * @throws JiffleException if the world bounds and resolution have not
+     *         been set previously
      */
-    void setSourceImage(String varName, CoordinateTransform tr);
+    void setSourceImage(String varName, CoordinateTransform tr)
+            throws JiffleException;
     
     /**
      * Associates a variable name with a source image. Equivalent to:

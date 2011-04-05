@@ -21,6 +21,7 @@
 package jaitools.jiffle.runtime;
 
 import jaitools.jiffle.Jiffle.ImageRole;
+import jaitools.jiffle.JiffleException;
 import java.awt.geom.Rectangle2D;
 import java.util.Map;
 
@@ -65,8 +66,11 @@ public interface JiffleRuntime {
      * 
      * @param tr the coordinate transform to use as the default; or {@code null}
      *        for the system default
+     * 
+     * @throws JiffleException if the world bounds and resolution have not
+     *         been set previously
      */
-    void setDefaultTransform(CoordinateTransform tr);
+    void setDefaultTransform(CoordinateTransform tr) throws JiffleException;
     
     /**
      * Gets the min X ordinate of the processing area.
