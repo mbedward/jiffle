@@ -41,9 +41,8 @@ public interface JiffleIndirectRuntime extends JiffleRuntime {
      * to image (pixel) coordinates. If {@code tr} is {@code null} the default
      * identify transform will be used.
      * <p> 
-     * Note that Jiffle uses truncation rather than rounding to reduce the
-     * transformed coordinates to integers, so this should be taken into account
-     * when defining the transform.
+     * Note that Jiffle uses rounding to reduce the transformed coordinates to 
+     * integers.
      * 
      * @param varName script variable representing the destination image
      * @param tr transform for processing area to image coordinates
@@ -73,9 +72,8 @@ public interface JiffleIndirectRuntime extends JiffleRuntime {
      * to image (pixel) coordinates. If {@code tr} is {@code null} the default
      * identify transform will be used.
      * <p> 
-     * Note that Jiffle uses truncation rather than rounding to reduce the
-     * transformed coordinates to integers, so this should be taken into account
-     * when defining the transform.
+     * Note that Jiffle uses rounding to reduce the transformed coordinates to 
+     * integers.
      * 
      * @param varName script variable representing the source image
      * @param image writable image
