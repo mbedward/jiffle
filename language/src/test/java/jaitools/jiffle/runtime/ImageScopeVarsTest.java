@@ -30,7 +30,7 @@ import org.junit.Test;
  * @since 0.1
  * @version $Id$
  */
-public class ImageScopeVarsTest extends StatementsTestBase {
+public class ImageScopeVarsTest extends RuntimeTestBase {
 
     @Test
     public void increment() throws Exception {

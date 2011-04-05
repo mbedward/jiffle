@@ -29,7 +29,7 @@ import org.junit.Test;
  * @since 0.1
  * @version $Id$
  */
-public class SimpleStatementsTest extends StatementsTestBase {
+public class SimpleStatementsTest extends RuntimeTestBase {
     
     @Test
     public void srcValue() throws Exception {
@@ -259,11 +259,9 @@ public class SimpleStatementsTest extends StatementsTestBase {
                 + "dest = n;" ;
         
         Evaluator e = new Evaluator() {
-            int x = 0;
-
             public double eval(double val) {
                 double value = x + 1;
-                x = (x + 1) % IMG_WIDTH;
+                move();
                 return value;
             }
         };

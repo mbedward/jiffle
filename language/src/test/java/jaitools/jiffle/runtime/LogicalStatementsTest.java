@@ -32,7 +32,7 @@ import jaitools.numeric.CompareOp;
  * @since 0.1
  * @version $Id$
  */
-public class LogicalStatementsTest extends StatementsTestBase {
+public class LogicalStatementsTest extends RuntimeTestBase {
     
     @Test
     public void logical1() throws Exception {

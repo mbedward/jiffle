@@ -20,7 +20,11 @@
 
 package jaitools.jiffle.runtime;
 
-import javax.media.jai.TiledImage;
+import java.awt.image.RenderedImage;
+import java.awt.image.WritableRenderedImage;
+
+import javax.media.jai.iterator.RectIter;
+import javax.media.jai.iterator.RectIterFactory;
 
 import jaitools.CollectionFactory;
 import jaitools.imageutils.ImageUtils;
@@ -39,7 +43,7 @@ import org.junit.Test;
  * @since 0.1
  * @version $Id$
  */
-public class FunctionsTest extends StatementsTestBase {
+public class FunctionsTest extends RuntimeTestBase {
     
     @Test(expected=JiffleException.class)
     public void undefinedFunctionName() throws Exception {
@@ -90,10 +94,9 @@ public class FunctionsTest extends StatementsTestBase {
         System.out.println("   " + script);
         
         Evaluator e = new Evaluator() {
-            int x = 0;
             public double eval(double val) {
                 double z = Math.acos((double)x / IMG_WIDTH);
-                x = (x + 1) % IMG_WIDTH;
+                move();
                 return z;
             }
         };
@@ -107,10 +110,9 @@ public class FunctionsTest extends StatementsTestBase {
         System.out.println("   " + script);
         
         Evaluator e = new Evaluator() {
-            int x = 0;
             public double eval(double val) {
                 double z = Math.asin((double)x / IMG_WIDTH);
-                x = (x + 1) % IMG_WIDTH;
+                move();
                 return z;
             }
         };
@@ -124,10 +126,9 @@ public class FunctionsTest extends StatementsTestBase {
         System.out.println("   " + script);
         
         Evaluator e = new Evaluator() {
-            int x = 0;
             public double eval(double val) {
                 double z = Math.atan((double)x / IMG_WIDTH);
-                x = (x + 1) % IMG_WIDTH;
+                move();
                 return z;
             }
         };
@@ -181,10 +182,9 @@ public class FunctionsTest extends StatementsTestBase {
         System.out.println("   " + script);
         
         Evaluator e = new Evaluator() {
-            int x = 0;
             public double eval(double val) {
                 Double z = 1.0 / x;
-                x = (x + 1) % IMG_WIDTH;
+                move();
                 return z.isInfinite() ? 1.0 : 0.0;
             }
         };
@@ -198,12 +198,9 @@ public class FunctionsTest extends StatementsTestBase {
         System.out.println("   " + script);
         
         Evaluator e = new Evaluator() {
-            int x = 0;
-            int y = 0;
             public double eval(double val) {
                 Double z = (double)y / x;
-                x = (x + 1) % IMG_WIDTH;
-                if (x == 0) y++ ;
+                move();
                 return z.isNaN() ? 1.0 : 0.0;
             }
         };
@@ -217,12 +214,9 @@ public class FunctionsTest extends StatementsTestBase {
         System.out.println("   " + script);
         
         Evaluator e = new Evaluator() {
-            int x = 0;
-            int y = 0;
             public double eval(double val) {
                 Double z = (double)y / x;
-                x = (x + 1) % IMG_WIDTH;
-                if (x == 0) y++ ;
+                move();
                 return z.isNaN() ? 1.0 : 0.0;
             }
         };
@@ -285,20 +279,30 @@ public class FunctionsTest extends StatementsTestBase {
         Jiffle jiffle = new Jiffle(script, imageParams);
         JiffleDirectRuntime runtime = jiffle.getRuntimeInstance();
         
-        TiledImage src = createRowValueImage();
-        TiledImage dest = ImageUtils.createConstantImage(IMG_WIDTH, IMG_WIDTH, 0d);
+        RenderedImage src = createRowValueImage();
+        WritableRenderedImage dest = ImageUtils.createConstantImage(IMG_WIDTH, IMG_WIDTH, 0d);
         
         runtime.setSourceImage("src", src);
         runtime.setDestinationImage("dest", dest);
         runtime.evaluateAll(null);
 
+        RectIter srcIter = RectIterFactory.create(src, null);
+        RectIter destIter = RectIterFactory.create(dest, null);
+        
         for (int y = 0; y < IMG_WIDTH; y++) {
             for (int x = 0; x < IMG_WIDTH; x++) {
-                double val = src.getSample(x, y, 0);
-                double z = dest.getSample(x, y, 0);
+                double val = srcIter.getSampleDouble();
+                double z = destIter.getSampleDouble();
                 assertTrue(CompareOp.acompare(z, val) >= 0);
                 assertTrue(CompareOp.acompare(z, 2*val) <= 0);
+                
+                srcIter.nextPixelDone();
+                destIter.nextPixelDone();
             }
+            srcIter.nextLineDone();
+            srcIter.startPixels();
+            destIter.nextLineDone();
+            destIter.startPixels();
         }
     }
     
@@ -313,21 +317,31 @@ public class FunctionsTest extends StatementsTestBase {
         Jiffle jiffle = new Jiffle(script, imageParams);
         JiffleDirectRuntime runtime = jiffle.getRuntimeInstance();
         
-        TiledImage src = createRowValueImage();
-        TiledImage dest = ImageUtils.createConstantImage(IMG_WIDTH, IMG_WIDTH, 0d);
+        RenderedImage src = createRowValueImage();
+        WritableRenderedImage dest = ImageUtils.createConstantImage(IMG_WIDTH, IMG_WIDTH, 0d);
         
         runtime.setSourceImage("src", src);
         runtime.setDestinationImage("dest", dest);
         runtime.evaluateAll(null);
 
+        RectIter srcIter = RectIterFactory.create(src, null);
+        RectIter destIter = RectIterFactory.create(dest, null);
+        
         for (int y = 0; y < IMG_WIDTH; y++) {
             for (int x = 0; x < IMG_WIDTH; x++) {
-                double val = src.getSample(x, y, 0);
-                double z = dest.getSample(x, y, 0);
+                double val = srcIter.getSampleDouble();
+                double z = destIter.getSampleDouble();
                 assertEquals(Math.round(z), z, CompareOp.DTOL);
                 assertTrue(CompareOp.acompare(z, val) >= 0);
                 assertTrue(CompareOp.acompare(z, 2*val + 1) <= 0);
+                
+                srcIter.nextPixelDone();
+                destIter.nextPixelDone();
             }
+            srcIter.nextLineDone();
+            srcIter.startPixels();
+            destIter.nextLineDone();
+            destIter.startPixels();
         }
     }
     

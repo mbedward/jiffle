@@ -22,16 +22,16 @@ package jaitools.jiffle;
 
 import java.awt.Rectangle;
 import java.awt.image.RenderedImage;
+import java.awt.image.WritableRenderedImage;
+import java.io.File;
 import java.net.URL;
 
-import javax.media.jai.TiledImage;
 import javax.media.jai.iterator.RandomIter;
 import javax.media.jai.iterator.RandomIterFactory;
 
 import jaitools.imageutils.ImageUtils;
 import jaitools.jiffle.runtime.JiffleDirectRuntime;
-import jaitools.jiffle.runtime.StatementsTestBase;
-import java.io.File;
+import jaitools.jiffle.runtime.RuntimeTestBase;
 
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -44,7 +44,7 @@ import org.junit.Test;
  * @since 0.1
  * @version $Id$
  */
-public class JiffleBuilderTest extends StatementsTestBase {
+public class JiffleBuilderTest extends RuntimeTestBase {
     
     private JiffleBuilder jb;
     
@@ -58,15 +58,14 @@ public class JiffleBuilderTest extends StatementsTestBase {
         System.out.println("   basic script with provided dest image");
         String script = "dest = con(src1 > 10, src1, null);" ;
 
-        TiledImage srcImg1 = createSequenceImage();
-        TiledImage destImg = ImageUtils.createConstantImage(IMG_WIDTH, IMG_WIDTH, 0d);
+        RenderedImage srcImg1 = createSequenceImage();
+        WritableRenderedImage destImg = ImageUtils.createConstantImage(IMG_WIDTH, IMG_WIDTH, 0d);
 
         jb.script(script).source("src1", srcImg1).dest("dest", destImg);
         JiffleDirectRuntime runtime = jb.getRuntime();
         runtime.evaluateAll(null);
 
         Evaluator e = new Evaluator() {
-
             public double eval(double val) {
                 return val > 10 ? val : Double.NaN;
             }

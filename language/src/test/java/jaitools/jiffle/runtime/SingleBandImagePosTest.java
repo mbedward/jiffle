@@ -42,7 +42,7 @@ import org.junit.Test;
  * @since 0.1
  * @version $Id$
  */
-public class SingleBandImagePosTest extends StatementsTestBase {
+public class SingleBandImagePosTest extends RuntimeTestBase {
     
     @Test
     public void relativeReferences() throws Exception {
@@ -52,7 +52,6 @@ public class SingleBandImagePosTest extends StatementsTestBase {
         
         testScript(src, new Evaluator() {
             double lastVal;
-            int x;
 
             public double eval(double val) {
                 double outVal;
@@ -62,8 +61,8 @@ public class SingleBandImagePosTest extends StatementsTestBase {
                     outVal = Double.NaN;
                 }
                 
-                x = (x + 1) % IMG_WIDTH;
                 lastVal = val;
+                move();
                 return outVal;
             }
         });
@@ -77,8 +76,6 @@ public class SingleBandImagePosTest extends StatementsTestBase {
         
         testScript(src, new Evaluator() {
             double val55;
-            int x;
-            int y;
 
             public double eval(double val) {
                 if (x == 5 && y == 5) {
@@ -90,12 +87,7 @@ public class SingleBandImagePosTest extends StatementsTestBase {
                     outVal = val55;
                 } 
                 
-                x++ ;
-                if (x == IMG_WIDTH) {
-                    x = 0;
-                    y++ ;
-                }
-                
+                move();
                 return outVal;
             }
         });

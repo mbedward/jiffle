@@ -37,7 +37,7 @@ import static org.junit.Assert.*;
  * @since 0.1
  * @version $Id$
  */
-public class SpecifyingImageVarsTest extends StatementsTestBase {
+public class SpecifyingImageVarsTest extends RuntimeTestBase {
     
     @Test
     public void destVarInImagesBlock() throws Exception {

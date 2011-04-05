@@ -20,10 +20,11 @@
 
 package jaitools.jiffle.runtime;
 
+import java.awt.image.RenderedImage;
+
 import jaitools.imageutils.ImageUtils;
 import jaitools.jiffle.JiffleBuilder;
-import java.awt.image.RenderedImage;
-import javax.media.jai.TiledImage;
+
 import org.junit.Test;
 
 /**
@@ -32,7 +33,7 @@ import org.junit.Test;
  * @since 0.1
  * @version $Id$
  */
-public class ConStatementsTest extends StatementsTestBase {
+public class ConStatementsTest extends RuntimeTestBase {
 
     @Test
     public void con1Arg() throws Exception {
@@ -100,8 +101,8 @@ public class ConStatementsTest extends StatementsTestBase {
         System.out.println("   " + script);
         
         final double threshold = IMG_WIDTH * IMG_WIDTH / 2;
-        TiledImage src1 = createSequenceImage();
-        TiledImage src2 = ImageUtils.createConstantImage(IMG_WIDTH, IMG_WIDTH, threshold);
+        RenderedImage src1 = createSequenceImage();
+        RenderedImage src2 = ImageUtils.createConstantImage(IMG_WIDTH, IMG_WIDTH, threshold);
         
         Evaluator e = new Evaluator() {
             public double eval(double val) {

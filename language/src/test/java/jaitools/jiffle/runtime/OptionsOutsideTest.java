@@ -23,8 +23,6 @@ package jaitools.jiffle.runtime;
 import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 
-import javax.media.jai.TiledImage;
-
 import jaitools.imageutils.ImageUtils;
 import jaitools.jiffle.JiffleBuilder;
 
@@ -39,7 +37,7 @@ import org.junit.Test;
  * @since 0.1
  * @version $Id$
  */
-public class OptionsOutsideTest extends StatementsTestBase {
+public class OptionsOutsideTest extends RuntimeTestBase {
     
     private JiffleBuilder builder;
     
@@ -69,7 +67,7 @@ public class OptionsOutsideTest extends StatementsTestBase {
             0, 0, 0, 0
         };
         
-        TiledImage srcImg = ImageUtils.createImageFromArray(srcData, 4, 4);
+        RenderedImage srcImg = ImageUtils.createImageFromArray(srcData, 4, 4);
         
         builder.script(script).source("src", srcImg).dest("dest", 4, 4).run();
         
@@ -96,7 +94,7 @@ public class OptionsOutsideTest extends StatementsTestBase {
         System.out.println("   reading outside image bounds with option not set");
         
         String script = "dest = src[$-1, 0];";
-        TiledImage srcImg = ImageUtils.createConstantImage(4, 4, 0);
+        RenderedImage srcImg = ImageUtils.createConstantImage(4, 4, 0);
         
         builder.script(script).source("src", srcImg).dest("dest", 4, 4).run();
     }
@@ -122,13 +120,12 @@ public class OptionsOutsideTest extends StatementsTestBase {
     private void assertOutsideEqualsValue(String stringValue, final Double expectedValue) 
             throws Exception {
         String script = "options { outside = " + stringValue + "; } dest = src[-1, 0];" ;
-        TiledImage srcImg = ImageUtils.createConstantImage(IMG_WIDTH, IMG_WIDTH, 1);
+        RenderedImage srcImg = ImageUtils.createConstantImage(IMG_WIDTH, IMG_WIDTH, 1);
         
         Evaluator e = new Evaluator() {
-            int x = 0;
             public double eval(double val) {
                 double z = x == 0 ? expectedValue : 1;
-                x = (x + 1) % IMG_WIDTH;
+                move();
                 return z;
             }
         };

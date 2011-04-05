@@ -19,11 +19,12 @@
  */
 package jaitools.jiffle.runtime;
 
-import javax.media.jai.TiledImage;
+import java.awt.image.RenderedImage;
+
+import jaitools.imageutils.ImageUtils;
 
 import org.junit.Test;
 
-import jaitools.imageutils.ImageUtils;
 
 /**
  * Unit tests for the evaluation of expressions with Jiffle's image
@@ -33,7 +34,7 @@ import jaitools.imageutils.ImageUtils;
  * @since 0.1
  * @version $Id$
  */
-public class ProxyFunctionsTest extends StatementsTestBase {
+public class ProxyFunctionsTest extends RuntimeTestBase {
 
     @Test
     public void x() throws Exception {
@@ -42,10 +43,9 @@ public class ProxyFunctionsTest extends StatementsTestBase {
         String script = "dest = x();" ;
 
         Evaluator e = new Evaluator() {
-            int x = 0;
             public double eval(double val) {
                 double xx = x;
-                x = (x + 1) % IMG_WIDTH;
+                move();
                 return xx;
             }
         };
@@ -60,12 +60,9 @@ public class ProxyFunctionsTest extends StatementsTestBase {
         String script = "dest = y();" ;
 
         Evaluator e = new Evaluator() {
-            int x = 0;
-            int y = 0;
             public double eval(double val) {
                 double yy = y;
-                x = (x + 1) % IMG_WIDTH;
-                if (x == 0) y++ ;
+                move();
                 return yy;
             }
         };
@@ -78,7 +75,7 @@ public class ProxyFunctionsTest extends StatementsTestBase {
         System.out.println("   xmin()");
 
         String script = "dest = xmin();" ;
-        TiledImage srcImg = ImageUtils.createConstantImage(-5, 5, 10, 20, 0);
+        RenderedImage srcImg = ImageUtils.createConstantImage(-5, 5, 10, 20, 0);
 
         Evaluator e = new Evaluator() {
             public double eval(double val) {
@@ -94,7 +91,7 @@ public class ProxyFunctionsTest extends StatementsTestBase {
         System.out.println("   ymin()");
 
         String script = "dest = ymin();" ;
-        TiledImage srcImg = ImageUtils.createConstantImage(-5, 5, 10, 20, 0);
+        RenderedImage srcImg = ImageUtils.createConstantImage(-5, 5, 10, 20, 0);
 
         Evaluator e = new Evaluator() {
             public double eval(double val) {

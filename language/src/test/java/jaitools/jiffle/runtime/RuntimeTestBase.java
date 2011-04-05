@@ -33,14 +33,13 @@ import jaitools.jiffle.Jiffle;
 import static org.junit.Assert.*;
 
 /**
- * Base class for unit tests of evaluation of simple statements with a single source
- * and destination image.
+ * Base class for unit tests of runtime methods.
  * 
  * @author Michael Bedward
  * @since 0.1
  * @version $Id$
  */
-public abstract class StatementsTestBase {
+public abstract class RuntimeTestBase {
 
     protected static final int IMG_WIDTH = 10;
     protected static final int NUM_PIXELS = IMG_WIDTH * IMG_WIDTH;
@@ -51,11 +50,21 @@ public abstract class StatementsTestBase {
     protected Map<String, Jiffle.ImageRole> imageParams;
     protected JiffleDirectRuntime runtimeInstance;
 
-    public interface Evaluator {
-        double eval(double val);
+    public abstract class Evaluator {
+        int x = 0;
+        int y = 0;
+        
+        public void move() {
+            if (++x >= IMG_WIDTH) {
+                x = 0;
+                y++ ;
+            }
+        }
+        
+        public abstract double eval(double val);
     }
     
-    protected TiledImage createSequenceImage() {
+    protected RenderedImage createSequenceImage() {
         TiledImage img = ImageUtils.createConstantImage(IMG_WIDTH, IMG_WIDTH, 0.0);
         int k = 0;
         for (int y = 0; y < IMG_WIDTH; y++) {
@@ -66,7 +75,7 @@ public abstract class StatementsTestBase {
         return img;
     }
     
-    protected TiledImage createRowValueImage() {
+    protected RenderedImage createRowValueImage() {
         TiledImage img = ImageUtils.createConstantImage(IMG_WIDTH, IMG_WIDTH, 0.0);
         for (int y = 0; y < IMG_WIDTH; y++) {
             for (int x = 0; x < IMG_WIDTH; x++) {
@@ -77,11 +86,11 @@ public abstract class StatementsTestBase {
     }
 
     protected void testScript(String script, Evaluator evaluator) throws Exception {
-        TiledImage srcImg = createSequenceImage();
+        RenderedImage srcImg = createSequenceImage();
         testScript(script, srcImg, evaluator);
     }
 
-    protected void testScript(String script, TiledImage srcImg, Evaluator evaluator) throws Exception {
+    protected void testScript(String script, RenderedImage srcImg, Evaluator evaluator) throws Exception {
         imageParams = CollectionFactory.map();
         imageParams.put("dest", Jiffle.ImageRole.DEST);
         imageParams.put("src", Jiffle.ImageRole.SOURCE);
@@ -92,7 +101,7 @@ public abstract class StatementsTestBase {
         testRuntime(srcImg, runtimeInstance, evaluator);
     }
 
-    protected void testRuntime(TiledImage srcImg, JiffleDirectRuntime runtime, Evaluator evaluator) {
+    protected void testRuntime(RenderedImage srcImg, JiffleDirectRuntime runtime, Evaluator evaluator) {
         runtime.setSourceImage("src", srcImg);
 
         TiledImage destImg = ImageUtils.createConstantImage(
