@@ -60,7 +60,7 @@ public class RunProportionalRipples {
         
         // We use the CoordinateTransforms helper class to create a transform that
         // will convert proportional coordinates into pixel positions.
-        CoordinateTransform transform = CoordinateTransforms.unitInterval(imageBounds);
+        CoordinateTransform transform = CoordinateTransforms.unitBounds(imageBounds);
 
         // Set the world bounds and resolution
         runtimeObj.setWorldByNumPixels(worldBounds, destImage.getWidth(), destImage.getHeight());
@@ -86,7 +86,7 @@ public class RunProportionalRipples {
         // The world bounds are the unit rectangle
         Rectangle2D worldBounds = new Rectangle2D.Double(0, 0, 1, 1);
         
-        CoordinateTransform transform = CoordinateTransforms.unitInterval(imageBounds);
+        CoordinateTransform transform = CoordinateTransforms.unitBounds(imageBounds);
         
         JiffleBuilder builder = new JiffleBuilder();
         
