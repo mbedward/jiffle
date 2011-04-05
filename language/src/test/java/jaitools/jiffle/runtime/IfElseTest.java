@@ -29,7 +29,7 @@ import org.junit.Test;
  * @since 0.1
  * @version $Id$
  */
-public class IfElseTest extends StatementsTestBase {
+public class IfElseTest extends RuntimeTestBase {
     
     @Test
     public void ifWithExpression() throws Exception {

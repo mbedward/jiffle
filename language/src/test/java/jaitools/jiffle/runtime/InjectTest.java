@@ -36,7 +36,7 @@ import org.junit.Test;
  * @since 0.1
  * @version $Id$
  */
-public class InjectTest extends StatementsTestBase {
+public class InjectTest extends RuntimeTestBase {
     
     @Test
     public void varWithDefault() throws Exception {

@@ -28,6 +28,7 @@ import java.awt.image.WritableRenderedImage;
 import jaitools.imageutils.ImageUtils;
 import jaitools.jiffle.Jiffle;
 import jaitools.jiffle.JiffleException;
+import java.awt.geom.Point2D;
 
 import org.junit.Test;
 
@@ -38,7 +39,7 @@ import org.junit.Test;
  * @since 0.1
  * @version $Id$
  */
-public class WorldCoordsTest extends StatementsTestBase {
+public class WorldCoordsTest extends RuntimeTestBase {
     
     /**
      * Working with UTM-style bounding coordinates
@@ -67,18 +68,12 @@ public class WorldCoordsTest extends StatementsTestBase {
         runtime.evaluateAll(null);
         
         Evaluator e = new Evaluator() {
-            int x = 0;
-            int y = 0;
             public double eval(double val) {
                 int right = x >= 5 ? 1 : 0;
                 int top = y >= 5 ? 1 : 0;
                 double z = right + 2 * top;
                 
-                if (++x == IMG_WIDTH) {
-                    x = 0;
-                    y++ ;
-                }
-                
+                move();
                 return z;
             }
         };
@@ -146,27 +141,60 @@ public class WorldCoordsTest extends StatementsTestBase {
         runtime.evaluateAll(null);
         
         Evaluator e = new Evaluator() {
-            int ix = 0;
-            int iy = 0;
-            double x = XO;
-            double y = YO;
+            Point2D.Double pos = new Point2D.Double(XO, YO);
             
             public double eval(double val) {
-                double z = RES + RES + x + y;
+                double z = RES + RES + pos.x + pos.y;
                 
-                ix++;
-                x += RES;
-                if (ix == IMG_WIDTH) {
-                    ix = 0;
-                    x = XO;
-                    iy++ ;
-                    y += RES;
+                move();
+                pos.x += RES;
+                if (x == 0) {
+                    pos.x = XO;
+                    pos.y += RES;
                 }
                 return z;
             }
         };
         
         assertImage(null, destImg, e);
+    }
+    
+    @Test
+    public void setDefaultTransform() throws Exception {
+        System.out.println("   set default transform");
+        
+        String script = 
+                  "images { src=read; dest=write; } \n"
+                + "dest = con(x() > 0.5 && y() < 0.5, src, 0);" ;
+        
+        JiffleDirectRuntime runtime = getRuntime(script);
+        
+        RenderedImage srcImg = createRowValueImage();
+        WritableRenderedImage destImg = ImageUtils.createConstantImage(IMG_WIDTH, IMG_WIDTH, 0d);
+        
+        Rectangle worldBounds = new Rectangle(0, 0, 1, 1);
+        runtime.setWorldByNumPixels(worldBounds, IMG_WIDTH, IMG_WIDTH);
+
+        Rectangle imageBounds = new Rectangle(0, 0, IMG_WIDTH, IMG_WIDTH);
+        CoordinateTransform tr = CoordinateTransforms.unitInterval(imageBounds);
+        runtime.setDefaultTransform(tr);
+        
+        runtime.setSourceImage("src", srcImg);
+        runtime.setDestinationImage("dest", destImg);
+        runtime.evaluateAll(null);
+        
+        Evaluator e = new Evaluator() {
+            public double eval(double val) {
+                double z = 0;
+                if (x > IMG_WIDTH / 2 && y < IMG_WIDTH / 2) {
+                    z = val;
+                }
+                move();
+                return z;
+            }
+        };
+        
+        assertImage(srcImg, destImg, e);
     }
     
     /**

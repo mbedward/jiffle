@@ -30,7 +30,7 @@ import org.junit.Test;
  * @since 0.1
  * @version $Id$
  */
-public class LoopTest extends StatementsTestBase {
+public class LoopTest extends RuntimeTestBase {
 
     @Test
     public void whileLoopWithSimpleStatement() throws Exception {
@@ -41,11 +41,9 @@ public class LoopTest extends StatementsTestBase {
                 + "dest = n;" ;
         
         Evaluator e = new Evaluator() {
-            int x = 0;
-            
             public double eval(double val) {
                 int xx = x;
-                x = (x + 1) % IMG_WIDTH;
+                move();
                 return xx;
             }
         };
@@ -63,11 +61,11 @@ public class LoopTest extends StatementsTestBase {
                 + "dest = n;" ;
         
         Evaluator e = new Evaluator() {
-            int x = 0;
             public double eval(double val) {
                 int n = 0;
                 for (int i = 0; i < x; i++) n += i;
-                x = (x + 1) % IMG_WIDTH;
+                
+                move();
                 return n;
             }
         };
@@ -84,11 +82,9 @@ public class LoopTest extends StatementsTestBase {
                 + "dest = n;" ;
         
         Evaluator e = new Evaluator() {
-            int x = 0;
-            
             public double eval(double val) {
                 int xx = x;
-                x = (x + 1) % IMG_WIDTH;
+                move();
                 return xx + 1;
             }
         };
@@ -106,11 +102,10 @@ public class LoopTest extends StatementsTestBase {
                 + "dest = n;" ;
         
         Evaluator e = new Evaluator() {
-            int x = 0;
             public double eval(double val) {
                 int n = 0;
                 for (int i = 0; i <= x; i++) n += i;
-                x = (x + 1) % IMG_WIDTH;
+                move();
                 return n;
             }
         };
@@ -127,13 +122,9 @@ public class LoopTest extends StatementsTestBase {
                 + "dest = z;" ;
         
         Evaluator e = new Evaluator() {
-            int x = 0;
-            int y = 0;
-
             public double eval(double val) {
                 double z = x + y + 3;
-                x = (x + 1) % IMG_WIDTH;
-                if (x == 0) y++ ;
+                move();
                 return z;
             }
         };
@@ -154,13 +145,9 @@ public class LoopTest extends StatementsTestBase {
                 + "dest = z;" ;
         
         Evaluator e = new Evaluator() {
-            int x = 0;
-            int y = 0;
-
             public double eval(double val) {
                 double z = 2*(x + y + 3);
-                x = (x + 1) % IMG_WIDTH;
-                if (x == 0) y++ ;
+                move();
                 return z;
             }
         };
@@ -177,12 +164,10 @@ public class LoopTest extends StatementsTestBase {
                 + "dest = z;" ;
         
         Evaluator e = new Evaluator() {
-            int x = 0;
-
             public double eval(double val) {
                 double z = 0;
                 for (int i = -1; i <= 5; i++) z += val * i;
-                x = (x + 1) % IMG_WIDTH;
+                move();
                 return z;
             }
         };
@@ -202,12 +187,10 @@ public class LoopTest extends StatementsTestBase {
                 + "dest = z;" ;
         
         Evaluator e = new Evaluator() {
-            int x = 0;
-
             public double eval(double val) {
                 double z = 0;
                 for (int i = -1; i <= 5; i++) z += val * i;
-                x = (x + 1) % IMG_WIDTH;
+                move();
                 return z;
             }
         };
@@ -229,11 +212,10 @@ public class LoopTest extends StatementsTestBase {
                 + "dest = n;" ;
         
         Evaluator e = new Evaluator() {
-            int x = 0;
             public double eval(double val) {
                 int n = 0;
                 for (int i = 0; i < x; i++) n += i;
-                x = (x + 1) % IMG_WIDTH;
+                move();
                 return (n < 10 ? n : 10);
             }
         };
@@ -258,11 +240,10 @@ public class LoopTest extends StatementsTestBase {
                 + "dest = n;" ;
         
         Evaluator e = new Evaluator() {
-            int x = 0;
             public double eval(double val) {
                 int n = 0;
                 for (int i = 0; i < x; i++) n += i;
-                x = (x + 1) % IMG_WIDTH;
+                move();
                 return (n < 10 ? n : 10);
             }
         };
@@ -361,13 +342,12 @@ public class LoopTest extends StatementsTestBase {
                 + "dest = z;";
         
         Evaluator e = new Evaluator() {
-            int x = 0;
             public double eval(double val) {
                 double z = val;
                 if (x > 0) z += val - 1;
                 if (x < IMG_WIDTH-1) z += val + 1;
                 
-                x = (x + 1) % IMG_WIDTH;
+                move();
                 return z;
             }
         };

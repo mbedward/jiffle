@@ -20,7 +20,7 @@
 
 package jaitools.jiffle.runtime;
 
-import javax.media.jai.TiledImage;
+import java.awt.image.RenderedImage;
 import org.junit.Test;
 
 /**
@@ -30,7 +30,7 @@ import org.junit.Test;
  * @since 0.1
  * @version $Id$
  */
-public class ListTest extends StatementsTestBase {
+public class ListTest extends RuntimeTestBase {
 
     @Test
     public void createEmptyList() throws Exception {
@@ -167,11 +167,9 @@ public class ListTest extends StatementsTestBase {
     }
 
     private void assertListAppend(String script) throws Exception {
-        TiledImage srcImg = createRowValueImage();
+        RenderedImage srcImg = createRowValueImage();
         
         Evaluator e = new Evaluator() {
-            int x = 0;
-            int y = 0;
             final int MAX = IMG_WIDTH - 1;
             
             public double eval(double val) {
@@ -181,9 +179,7 @@ public class ListTest extends StatementsTestBase {
                 sum += n*y;
                 if (y < MAX) sum += n*(y+1);
                 
-                x = (x + 1) % IMG_WIDTH;
-                if (x == 0) y++ ;
-                
+                move();
                 return sum;
             }
         };

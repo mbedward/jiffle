@@ -29,7 +29,7 @@ import org.junit.Test;
  * @since 0.1
  * @version $Id$
  */
-public class StatsFunctionsTest extends StatementsTestBase {
+public class StatsFunctionsTest extends RuntimeTestBase {
 
     @Test
     public void max2Arg() throws Exception {
@@ -73,12 +73,10 @@ public class StatsFunctionsTest extends StatementsTestBase {
         
         Evaluator e = new Evaluator() {
             final int MAXY = IMG_WIDTH - 1;
-            int x = 0;
-            int y = 0;
+            
             public double eval(double val) {
                 double z = Math.min(MAXY, y + 1);
-                x = (x + 1) % IMG_WIDTH;
-                if (x == 0) y++ ;
+                move();
                 return z;
             }
         };
@@ -96,12 +94,10 @@ public class StatsFunctionsTest extends StatementsTestBase {
         
         Evaluator e = new Evaluator() {
             final int MAXY = IMG_WIDTH - 1;
-            int x = 0;
-            int y = 0;
+
             public double eval(double val) {
                 double z = y == MAXY ? 0 : Math.max(0, y-1);
-                x = (x + 1) % IMG_WIDTH;
-                if (x == 0) y++ ;
+                move();
                 return z;
             }
         };
