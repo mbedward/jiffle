@@ -21,6 +21,7 @@
 package jaitools.jiffle;
 
 import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.RenderedImage;
 import java.awt.image.WritableRenderedImage;
 import java.io.BufferedReader;
@@ -30,56 +31,18 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.Map;
 
-import javax.media.jai.TiledImage;
-
 import jaitools.CollectionFactory;
 import jaitools.imageutils.ImageUtils;
 import jaitools.jiffle.runtime.CoordinateTransform;
 import jaitools.jiffle.runtime.IdentityCoordinateTransform;
 import jaitools.jiffle.runtime.JiffleDirectRuntime;
-import java.awt.geom.Rectangle2D;
 
 /**
- * A builder script which makes it easy to compile and run basic Jiffle scripts.
+ * A builder class which makes it easier to compile and run basic Jiffle scripts.
  * <p>
  * When working with Jiffle objects directly you end up writing a certain 
  * amount of boiler-plate code for image parameters etc. JiffleBuilder offers
  * concise, chained methods to help you get the job done with fewer keystrokes.
- * <p>
- * For comparison, first look at this example of creating a Jiffle object and 
- * retrieving the runtime instance 'by hand':
- * <pre><code>
- * // A script to sum values from two source images
- * String sumScript = "dest = foo + bar;" ;
- *
- * // Image parameters
- * Map&lt;String, Jiffle.ImageRole.SOURCE&gt; imageParams = CollectionFactory.map();
- * imageParams.put("dest", Jiffle.ImageRole.DEST);
- * imageParams.put("foo", Jiffle.ImageRole.SOURCE);
- * imageParams.put("bar", Jiffle.ImageRole.SOURCE);
- *
- * // Create a compiled Jiffle object
- * Jiffle jiffle = new Jiffle(sumScript, imageParams);
- *
- * // Get the runtime object
- * JiffleDirectRuntime runtime = jiffle.getRuntimeInstance();
- *
- * // Set the source images
- * RenderedImage fooImg = ...
- * RenderedImage barImg = ...
- * runtime.setSourceImage("foo", fooImg);
- * runtime.setSourceImage("bar", barImg);
- *
- * // Create an image for the results and submit it to
- * // the runtime object
- * WritableRenderedImage destImg = ImageUtils.createConstantImage(
- *         fooImg.getWidth(), fooImg.getHeight, 0d);
- * runtime.setDestinationImage("dest", destImg);
- *
- * // Now run the script
- * runtime.evaluateAll(null);
- * </code></pre>
- * Now here is the same task done using JiffleBuilder:
  * <pre><code>
  * // A script to sum values from two source images
  * String sumScript = "dest = foo + bar;" ;
@@ -107,7 +70,8 @@ import java.awt.geom.Rectangle2D;
  * JiffleBuilder jb = new JiffleBuilder();
  * RenderedImage wavesImg = jb.script(script).dest("waves", 500, 200).run().getImage("waves");
  * </code></pre>
- * 
+ * {@code JiffleBuilder} also provides support for setting world units and 
+ * coordinate transforms.
  *
  * @author Michael Bedward
  * @since 0.1
@@ -449,7 +413,7 @@ public class JiffleBuilder {
     public JiffleBuilder dest(String varName, int minx, int miny, 
             int width, int height, CoordinateTransform transform) {
         
-        TiledImage image = ImageUtils.createConstantImage(minx, miny, width, height, 0d);
+        WritableRenderedImage image = ImageUtils.createConstantImage(minx, miny, width, height, 0d);
         imageParams.put(varName, Jiffle.ImageRole.DEST);
         // store as strong reference
         images.put(varName, new ImageRef(image, false));

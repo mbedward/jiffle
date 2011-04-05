@@ -21,7 +21,7 @@
 /**
  * Jiffle parser and support classes. In addition to the hand-written classes
  * in this package, further parser classes are generated from the ANTLR grammars
- * that define the language syntax and steps in Abstract Syntax Tree (AST)
+ * which define the language syntax and the steps in Abstract Syntax Tree (AST)
  * construction.
  * <p>
  * The Jiffle compiler works by first creating an AST from the input Jiffle
