@@ -1,6 +1,0 @@
-init {
-  threshold = 10;
-  count = 0;
-}
-
-count += src > threshold;
