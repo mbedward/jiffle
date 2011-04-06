@@ -30,7 +30,7 @@
  * compiled java class.
  * <p>
  * For an introduction to Jiffle see the User Guide at:
- * http://jai-tools.org/docs/jiffle/latest/html/index.html
+ * http://jai-tools.org/docs/jiffle/latest/userguide/html/index.html
  */
 
 package jaitools.jiffle;
