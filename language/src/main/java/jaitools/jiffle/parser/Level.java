@@ -24,7 +24,7 @@ package jaitools.jiffle.parser;
  * Constants used by the Jiffle script and tree parsers to identify the level
  * of a parser message (error or warning).
  * 
- * @see ParserMessage
+ * @see Message
  * 
  * @author Michael Bedward
  * @since 0.1

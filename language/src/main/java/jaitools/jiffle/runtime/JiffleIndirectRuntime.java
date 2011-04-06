@@ -26,7 +26,7 @@ import jaitools.jiffle.JiffleException;
 /**
  * Defines methods implemented by runtime classes adopting the indirect 
  * evaluation model. In this model, there is only a single destination image
- * and the {@link #evaluate(int, int)} method passes values back to the caller 
+ * and the {@link #evaluate(double, double)} method passes values back to the caller 
  * rather than writing them to the destination image directly.
  *
  * @author Michael Bedward
@@ -76,7 +76,6 @@ public interface JiffleIndirectRuntime extends JiffleRuntime {
      * integers.
      * 
      * @param varName script variable representing the source image
-     * @param image writable image
      * @param tr transform for processing area to image coordinates
      * 
      * @throws JiffleException if the world bounds and resolution have not
@@ -94,7 +93,6 @@ public interface JiffleIndirectRuntime extends JiffleRuntime {
      * commonly when working directly with image coordinates.
      * 
      * @param varName script variable representing the source image
-     * @param image writable image
      */
     void setSourceImage(String varName);
 

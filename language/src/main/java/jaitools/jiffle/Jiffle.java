@@ -213,8 +213,8 @@ public class Jiffle {
      * 
      * @param params defines the names and roles of image variables
      *        referred to in the script.
+     * @throws JiffleException on compilation errors
      * 
-     * @throws JiffleException if there are any errors compiling the script
      */
     public Jiffle(String script, Map<String, ImageRole> params)
             throws JiffleException {
@@ -240,8 +240,7 @@ public class Jiffle {
      * @param params defines the names and roles of image variables
      *        referred to in the script.
      * 
-     * @throws JiffleException if the file cannot be read or if there are 
-     *         any errors compiling the script
+     * @throws JiffleException on compilation errors
      */
     public Jiffle(File scriptFile, Map<String, ImageRole> params)
             throws JiffleException {
@@ -257,7 +256,7 @@ public class Jiffle {
      * and runtime objects.
      * 
      * @param script a Jiffle script
-     * @throws JiffleException if the script is null or empty
+     * @throws JiffleException if the script is empty or {@code null}
      */
     public final void setScript(String script) throws JiffleException {
         if (script == null || script.trim().length() == 0) {
@@ -277,7 +276,7 @@ public class Jiffle {
      * and runtime objects.
      * 
      * @param scriptFile a file containing a Jiffle script
-     * @throws JiffleException on errors reading the script file
+     * @throws JiffleException if the script is empty or {@code null}
      */
     public final void setScript(File scriptFile) throws JiffleException {
         BufferedReader reader = null;
@@ -367,8 +366,7 @@ public class Jiffle {
     /**
      * Compiles the script into Java source for the runtime class.
      * 
-     * @throws JiffleException if no script has been set or if any errors
-     *         occur during compilation
+     * @throws JiffleException on compilation errors
      */
     public final void compile() throws JiffleException {
         if (theScript == null) {
@@ -414,7 +412,8 @@ public class Jiffle {
      * The {@code Jiffle} object must be compiled before calling this method.
      * 
      * @return the runtime object
-     * @throws JiffleException if the runtime object could not be created
+     * @throws JiffleException if the script has not been compiled or if errors
+     *         occur in creating the runtime instance
      */
     public JiffleDirectRuntime getRuntimeInstance() throws JiffleException {
         return (JiffleDirectRuntime) createRuntimeInstance(
@@ -429,7 +428,8 @@ public class Jiffle {
      * 
      * @param model the {@link Jiffle.RuntimeModel}
      * @return the runtime object
-     * @throws JiffleException if the runtime object could not be created
+     * @throws JiffleException  if the script has not been compiled or if errors
+     *         occur in creating the runtime instance
      */
     public JiffleRuntime getRuntimeInstance(RuntimeModel model) throws JiffleException {
         switch (model) {
@@ -462,7 +462,8 @@ public class Jiffle {
      * @param baseClass the runtime base class
      * 
      * @return the runtime object
-     * @throws JiffleException if the runtime object could not be created
+     * @throws JiffleException  if the script has not been compiled or if errors
+     *         occur in creating the runtime instance
      */
     public <T extends JiffleRuntime> T getRuntimeInstance(Class<T> baseClass) throws JiffleException {
         RuntimeModel model = RuntimeModel.get(baseClass);
@@ -483,8 +484,8 @@ public class Jiffle {
      * 
      * @return source for the runtime class
      * 
-     * @throws JiffleException if this instance has not yet been compiled
-     *         or if there is an error creating the runtime source
+     * @throws JiffleException  if the script has not been compiled or if errors
+     *         occur in creating the runtime source code
      */
     public String getRuntimeSource(boolean scriptInDocs)
             throws JiffleException {
@@ -500,9 +501,9 @@ public class Jiffle {
      *        in the class javadocs
      * 
      * @return source for the runtime class
+     * @throws JiffleException   if the script has not been compiled or if errors
+     *         occur in creating the runtime source code
      * 
-     * @throws JiffleException if this instance has not yet been compiled
-     *         or if there is an error creating the runtime source
      */
     public String getRuntimeSource(RuntimeModel model, boolean scriptInDocs)
             throws JiffleException {

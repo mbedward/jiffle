@@ -82,7 +82,8 @@ public class FunctionInfo {
      * 
      * @param runtimeName Java name used in runtime class source
      * 
-     * @param provider the provider: one of {@link #JIFFLE}, {@link #MATH} or {@link #PROXY}
+     * @param provider the provider: one of {@link Provider#JIFFLE}, 
+     *        {@link Provider#MATH} or {@link Provider#PROXY}
      * 
      * @param isVolatile {@code true} if the function returns a new value on each
      *        invocation regardless of pixel position (e.g. rand()); {@code false}
@@ -148,8 +149,7 @@ public class FunctionInfo {
     }
 
     /**
-     * Gets the number of arguments used by the function or {@link #VARARG}
-     * for a variable argument function.
+     * Gets the number of arguments used by the function.
      *
      * @return number of arguments
      */

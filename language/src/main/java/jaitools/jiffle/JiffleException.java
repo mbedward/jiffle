@@ -52,8 +52,6 @@ public class JiffleException extends Exception {
 
     /**
      * Creates a new instance with the given list of messages.
-     * This is used by Jiffle to take parsing error messages from 
-     * {@link jaitools.jiffle.parser.ErrorReporter} objects.
      * 
      * @param errors list of error messages
      */

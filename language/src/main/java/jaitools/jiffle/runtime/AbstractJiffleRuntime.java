@@ -75,14 +75,31 @@ public abstract class AbstractJiffleRuntime implements JiffleRuntime {
     /** World to image coordinate transforms with image name as key. */
     private Map<String, TransformInfo> _transformLookup;
 
-    /** Holds information about an image-scope variable. */
+    /** 
+     * Holds information about an image-scope variable. 
+     * This class is only public to work around a problem in the 
+     * Janino compiler involving private nested classes. It is
+     * not intended for client use.
+     */
     public class ImageScopeVar {
         
+        /** Variable name. */
         public String name;
+        
+        /** Whether a default value was provided in the script init block. */
         public boolean hasDefaultValue;
+
+        /** Whether a run-time value has been set. */
         public boolean isSet;
+
+        /** The current value. */
         public double value;
 
+        /**
+         * Constructor.
+         * @param name variable name
+         * @param hasDefaultValue whether a default value is defined in the script
+         */
         public ImageScopeVar(String name, boolean hasDefaultValue) {
             this.name = name;
             this.hasDefaultValue = hasDefaultValue;
@@ -305,6 +322,15 @@ public abstract class AbstractJiffleRuntime implements JiffleRuntime {
         return _numPixels;
     }
     
+    /**
+     * Sets a coordinate transform to use with the image represented by
+     * {@code imageVarName}.
+     * 
+     * @param imageVarName variable name
+     * @param tr the transform or {@code null} for the default transform
+     * 
+     * @throws WorldNotSetException if world bounds and resolution are not yet set
+     */
     protected void setTransform(String imageVarName, CoordinateTransform tr) 
             throws WorldNotSetException {
         
@@ -353,6 +379,14 @@ public abstract class AbstractJiffleRuntime implements JiffleRuntime {
     
     
     
+    /**
+     * Gets the coordinate transform to use with the image represented by
+     * {@code imageVarName}.
+     * 
+     * @param imageVarName variable name
+     * 
+     * @return the coordinate transform
+     */
     protected CoordinateTransform getTransform(String imageVarName) {
         return _transformLookup.get(imageVarName).transform;
     }

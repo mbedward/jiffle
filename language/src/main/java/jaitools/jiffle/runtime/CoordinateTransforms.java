@@ -45,6 +45,9 @@ public class CoordinateTransforms {
     /**
      * Creates a scaling transform.
      * 
+     * @param xscale scale on the X axis
+     * @param yscale scale on the Y axis
+     * 
      * @return a new transform instance
      */
     public static CoordinateTransform scale(double xscale, double yscale) {
@@ -53,6 +56,9 @@ public class CoordinateTransforms {
     
     /**
      * Creates a translation transform.
+     * 
+     * @param dx translation in the X direction
+     * @param dy translation in the Y direction
      * 
      * @return a new transform instance
      */

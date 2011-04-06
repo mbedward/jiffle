@@ -75,8 +75,8 @@ public class JiffleExecutorDemo extends JiffleDemoBase {
     }
 
     /**
-     * Constructor. Creates an instance of {@link jaitools.jiffle.runtime.JiffleInterpeter}
-     * and sets up interpreter event handlers.
+     * Constructor. Creates an instance of {@link JiffleExecutor}
+     * and sets up event handling.
      */
     public JiffleExecutorDemo() {
         executor = new JiffleExecutor(1);
