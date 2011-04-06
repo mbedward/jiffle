@@ -20,10 +20,8 @@
 
 package jaitools.jiffle.runtime;
 
-import java.awt.image.RenderedImage;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -35,8 +33,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import jaitools.DaemonThreadFactory;
-import jaitools.jiffle.Jiffle;
-import jaitools.jiffle.JiffleException;
 
 
 /**
@@ -258,7 +254,7 @@ import jaitools.jiffle.JiffleException;
      * 
      * @param listener the listener
      * 
-     * @see {@link JiffleEvent}
+     * @see JiffleEvent
      */
     public void addEventListener(JiffleEventListener listener) {
         synchronized(_lock) {

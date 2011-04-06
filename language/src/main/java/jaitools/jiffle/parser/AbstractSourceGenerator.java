@@ -267,6 +267,14 @@ public abstract class AbstractSourceGenerator extends ErrorHandlingTreeParser im
         }
     }
 
+    /**
+     * Prepares the Jiffle source for inclusion in the run-time class javadocs.
+     * Comments are stripped from the script and it is split into lines.
+     * 
+     * @param script the Jiffle source
+     * 
+     * @return prepared script as a list of lines
+     */
     protected List<String> prepareScriptForComments(String script) {
         ANTLRStringStream stream = new ANTLRStringStream(script);
         

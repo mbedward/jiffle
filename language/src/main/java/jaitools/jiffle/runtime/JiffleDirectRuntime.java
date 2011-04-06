@@ -30,7 +30,7 @@ import jaitools.jiffle.JiffleException;
 /**
  * Defines methods implemented by runtime classes adopting the direct evaluation
  * model. In this model, the runtime object writes values to the destination
- * image(s) directly within its {@link #evaluate(int, int)} method. It also
+ * image(s) directly within its {@link #evaluate(double, double)} method. It also
  * provides an {@link #evaluateAll(JiffleProgressListener)} method.
  *
  * @author Michael Bedward

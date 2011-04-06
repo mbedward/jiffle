@@ -44,10 +44,10 @@ public class JiffleExecutorTask implements Callable<JiffleExecutorResult> {
      * Creates a new task. The image variable names (keys) in {@code images}
      * must correspond to those known by the runtime object.
      * 
+     * @param executor the {@code JiffleExecutor} running this task
      * @param id job ID allocated by the {@link JiffleExecutor}.
      * @param runtime the {@link JiffleDirectRuntime} instance
-     * @param images a {@code Map} with image variable name as key and the
-     *        corresponding source or destination image as value 
+     * @param progressListener  
      */
     public JiffleExecutorTask(
             JiffleExecutor executor,

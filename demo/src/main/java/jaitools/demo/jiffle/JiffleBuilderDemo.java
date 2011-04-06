@@ -41,7 +41,7 @@ import jaitools.swing.ImageFrame;
 public class JiffleBuilderDemo extends JiffleDemoBase {
 
     /**
-     * Compiles and runs the "ripple" script using {@link JiffleBuilder).
+     * Compiles and runs the "ripple" script using {@link JiffleBuilder}.
      * @param args ignored
      * @throws Exception if there are errors compiling the script.
      */

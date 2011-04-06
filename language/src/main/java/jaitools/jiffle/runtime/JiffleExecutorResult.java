@@ -44,7 +44,6 @@ public class JiffleExecutorResult {
      * 
      * @param taskID the task ID assigned by the executor
      * @param runtime the run-time instance
-     * @param images source and destination images keyed by script variable name
      * @param completed whether the task was completed successfully
      */
     public JiffleExecutorResult(int taskID, JiffleDirectRuntime runtime, boolean completed) {
