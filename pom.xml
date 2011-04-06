@@ -9,7 +9,7 @@
     <packaging>pom</packaging>
     <name>Jiffle project</name>
     <description>
-        Jiffle is a scripting language to create and analyse raster images.
+        Jiffle is a scripting language for creating and analysing raster images.
     </description>
     <url>http://code.google.com/p/jiffle/</url>
     <inceptionYear>2011</inceptionYear>
