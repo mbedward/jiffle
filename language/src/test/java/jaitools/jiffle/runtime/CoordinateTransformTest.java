@@ -85,10 +85,10 @@ public class CoordinateTransformTest {
     }
     
     @Test
-    public void getTransform() throws Exception {
+    public void getTransformDefault() throws Exception {
         System.out.println("   getTransform method");
         
-        Rectangle world = new Rectangle(750000, 6550000, 10000, 10000);
+        Rectangle world = new Rectangle(0, 0, 10000, 10000);
         Rectangle image = new Rectangle(10, -10, 100, 100);
         CoordinateTransform tr = CoordinateTransforms.getTransform(world, image);
         
@@ -96,6 +96,34 @@ public class CoordinateTransformTest {
         
         assertPoint(image.x + image.width, image.y + image.height, 
                 tr.worldToImage(world.x + world.width, world.y + world.height, null));
+    }
+    
+    @Test
+    public void getTransformReverseYDir() throws Exception {
+        System.out.println("   getTransform with reversed Y axis");
+        
+        Rectangle world = new Rectangle(5000, 4000, 10000, 10000);
+        Rectangle image = new Rectangle(10, -10, 100, 100);
+        CoordinateTransform tr = CoordinateTransforms.getTransform(world, image, false, true);
+        
+        assertPoint(image.x, image.y, tr.worldToImage(world.x, world.y + world.height, null));
+        
+        assertPoint(image.x + image.width, image.y + image.height, 
+                tr.worldToImage(world.x + world.width, world.y, null));
+    }
+    
+    @Test
+    public void getTransformReverseXDir() throws Exception {
+        System.out.println("   getTransform with reversed X axis");
+        
+        Rectangle world = new Rectangle(5000, 4000, 10000, 10000);
+        Rectangle image = new Rectangle(10, -10, 100, 100);
+        CoordinateTransform tr = CoordinateTransforms.getTransform(world, image, true, false);
+        
+        assertPoint(image.x, image.y, tr.worldToImage(world.x + world.width, world.y, null));
+        
+        assertPoint(image.x + image.width, image.y + image.height, 
+                tr.worldToImage(world.x, world.y + world.height, null));
     }
     
     @Test
