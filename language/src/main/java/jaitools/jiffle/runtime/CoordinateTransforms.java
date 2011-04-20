@@ -86,15 +86,41 @@ public class CoordinateTransforms {
 
     /**
      * Gets the transform which converts from {@code worldBounds} to {@code imageBounds}.
+     * This method is a shortcut for {@code getTransform(worldBounds, imageBounds, false, false)}.
      * 
-     * @param worldBounds
-     * @param imageBounds
+     * @param worldBounds the coordinate bounds in world (user-defined) units
+     * @param imageBounds the image bounds
      * 
      * @return a new transform instance
      * 
      * @throws IllegalArgumentException if either argument is {@code null} or empty
      */
     public static CoordinateTransform getTransform(Rectangle2D worldBounds, Rectangle imageBounds) {
+        return getTransform(worldBounds, imageBounds, false, false);
+    }
+    
+    /**
+     * Gets the transform which converts from {@code worldBounds} to {@code imageBounds}.
+     * The two {@code boolean} arguments provide the option of treating the world X and/or Y
+     * axis direction as reversed in relation to the corresponding image axis direction.
+     * <p>
+     * Example: for an image representing a geographic area, aligned such that the image
+     * Y-axis was parallel with the world north-south axis, then setting {@code reverseY}
+     * to {@code true} will result in correct transformation of world to image coordinates.
+     * 
+     * @param worldBounds the coordinate bounds in world (user-defined) units
+     * @param imageBounds the image bounds
+     * @param reverseX whether to treat the direction of the world X axis as reversed
+     *        in relation to the image X axis
+     * @param reverseY whether to treat the direction of the world Y axis as reversed
+     *        in relation to the image Y axis
+     * 
+     * @return a new transform instance
+     * 
+     * @throws IllegalArgumentException if either argument is {@code null} or empty
+     */
+    public static CoordinateTransform getTransform(Rectangle2D worldBounds, Rectangle imageBounds,
+            boolean reverseX, boolean reverseY) {
         if (worldBounds == null || worldBounds.isEmpty()) {
             throw new IllegalArgumentException("worldBounds must not be null or empty");
         }
@@ -105,12 +131,27 @@ public class CoordinateTransforms {
         double xscale = (imageBounds.getMaxX() - imageBounds.getMinX()) / 
                 (worldBounds.getMaxX() - worldBounds.getMinX());
         
-        double xoff = imageBounds.getMinX() - xscale * worldBounds.getMinX();
+        double xoff;
+        if (reverseX) {
+            xscale = -xscale;
+            xoff = imageBounds.getMinX() - xscale * worldBounds.getMaxX();
+                    
+        } else {
+            xoff = imageBounds.getMinX() - xscale * worldBounds.getMinX();
+        }
         
         double yscale = (imageBounds.getMaxY() - imageBounds.getMinY()) / 
                 (worldBounds.getMaxY() - worldBounds.getMinY());
         
-        double yoff = imageBounds.getMinY() - yscale * worldBounds.getMinY();
+        double yoff;
+        if (reverseY) {
+            yscale = -yscale;
+            yoff = imageBounds.getMinY() - yscale * worldBounds.getMaxY();
+                    
+        } else {
+            yoff = imageBounds.getMinY() - yscale * worldBounds.getMinY();
+        }
+        
         
         return new AffineCoordinateTransform(new AffineTransform(xscale, 0, 0, yscale, xoff, yoff));
     }
