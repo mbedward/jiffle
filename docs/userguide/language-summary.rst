@@ -216,23 +216,56 @@ Here is the same example, but this time using the **array** form of the foreach 
 while loop
 ++++++++++
 
-A conditional loop which executes the target statement or block while its conditional expression is non-zero.  Examples::
+A conditional loop which executes the target statement or block while its conditional expression is non-zero::
 
-  // code example here
+  ynbr = y() - 500;
+  total = 0;
+  while (ynbr <= y() + 500) {
+      xnbr = x() - 500;
+      while (xnbr <= x() + 500) {
+          total += srcimage[$xnbr, $ynbr];
+          xnbr += 100;
+      }
+      ynbr += 100;
+  }
 
 until loop
 ++++++++++
 
-A conditional loop which executes the target statement or block until its conditional expression is non-zero.  Examples::
+A conditional loop which executes the target statement or block until its conditional expression is non-zero::
 
-  // code example here
+  ynbr = y() - 500;
+  total = 0;
+  until (ynbr > y() + 500) {
+      xnbr = x() - 500;
+      until (xnbr > x() + 500) {
+          total += srcimage[$xnbr, $ynbr];
+          xnbr += 100;
+      }
+      ynbr += 100;
+  }
 
 break and breakif statements
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Jiffle provides the **break** statement to unconditionally exit a loop as well as **breakif** for conditional exit::
+Jiffle provides the **break** statement to unconditionally exit a loop::
 
-  // code example here
+  n = 0;
+  foreach (i in 1:10) {
+      if (foo[i] != null) {
+          n++ ;
+      } else {
+          break;
+      }
+  }
+  
+There is also a **breakif** statement::
+
+  n = 0;
+  foreach (i in 1:10) {
+      breakif(foo[i] == null);
+      n++ ;
+  }
 
 
 Functions
@@ -373,9 +406,9 @@ Name              Returns
 
 ``y()``           Y ordinate of the current processing position (world units)
 
-``xstep()``       Pixel width (world units)
+``xres()``        Pixel width (world units)
 
-``ystep()``       Pixel height (world units)
+``yres()``        Pixel height (world units)
 
 ===============   ================================================
 
@@ -412,9 +445,13 @@ The images block
 
 Used to associate variables with source (read-only) and destination (write-only) images. Example::
 
-  images { src = read; result = write; }
+  images { 
+      foo = read; 
+      bar = read;
+      result = write; 
+  }
   
-As shown in the above snippet, the block contains declarations of the form *name = (read | write)*. IF this block is
+As shown in the above snippet, the block contains declarations of the form *name = (read | write)*. If this block is
 provided, the Jiffle compiler expects that it contains declarations for all image variables used in the script. It not
 provided, variable names can be defined as representing source or destination images using methods provided by the
 Jiffle and JiffleBuilder classes. These methods are described further in :doc:`runtime`.
@@ -437,18 +474,56 @@ If an initial value is not provided, one must be *injected* at run-time. See XXX
 Specifying source image position
 --------------------------------
 
+Pixel position and image band are specified using square bracket notation.
+
 .. _relative-pixel-position:
-
-Relative pixel position
-~~~~~~~~~~~~~~~~~~~~~~~
-
-
 
 Absolute pixel position
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-Specified band 
-~~~~~~~~~~~~~~
+Absolute positions are specified using a ``$`` prefix (similar to the syntax used in some spreadsheet programs)::
+
+  // Example: access the value at x=50 y=42
+  value = srcimage[ $50, $42 ];
+
+Variables and expressions can also appear in the brackets::
+
+  value = srcimage[ $xpos, $(min(width() - 1, y() + 10)) ];
+
+Relative pixel position
+~~~~~~~~~~~~~~~~~~~~~~~
+
+When values are not prefixed they are treated as offsets, relative to the current processing position::
+
+  // Example: access the value at x+2, y-1
+  value = srcimage[ 2, -1 ];
+
+As with absolute positions, variables and expressions can also be used::
+
+  value = srcimage[ dx, dy ];
+
+Specifying the band 
+~~~~~~~~~~~~~~~~~~~
+
+The image band is specified as a single value, variable or expression in square brackets. It is always treated as an
+absolute specifier::
+
+  // Get value from band 2 at the current processing position
+  value = srcimage[ 2 ];
+
+As with pixel position, the band can be specified using a variable or an expression.
+
+Specifying both pixel and band
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When specifying both band and pixel position, the band comes first::
+
+  // Get the value for band 1, pixel position x=50, y=42
+  value = srcimage[ 1 ][ $50, $42 ]
+
+  // Get the value for band 1 at offset dx=-1, dy=3
+  value = srcimage[ 1 ][ -1, 3 ]
+
 
 .. _reserved-words:
 

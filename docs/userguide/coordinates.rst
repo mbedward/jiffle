@@ -63,14 +63,20 @@ You can define your own processing area using one of two methods::
 Creating coordinate transforms
 ------------------------------
 
+The script below reads images representing tree cover in 1990 and 2010 and calculates the proportional change of tree
+cover in a 1km block around each pixel. It defines a constant, RADIUS, which is expressed in map units (metres).  The
+xres() and yres() functions are used to get the pixel width and height in metres, while the x() and y() functions return
+the location (map reference) of the current pixel being processed.
 
-Example
-~~~~~~~
+.. literalinclude:: /../src/main/resources/jaitools/jiffle/docs/treechange.jfl
 
-Before going into any more detail, let's look at an example where we run the
-modified *ripples* script (above):
 
-.. literalinclude:: /../src/main/java/jaitools/jiffle/docs/RunProportionalRipples.java
+If all three images have the same bounds and resolution, we can use a single CoordinateTransform to convert between world locations and image locations:
+
+.. literalinclude:: /../src/main/java/jaitools/jiffle/docs/TreeChange.java
    :language: java
-   :start-after: // docs start jiffle method
-   :end-before: // docs end jiffle method
+   :start-after: // docs start
+   :end-before: // docs end
+
+If the images had different bounds and/or resolutions, we would give each its own CoordinateTransform.
+
