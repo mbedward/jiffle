@@ -23,7 +23,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */   
 
-package jaitools.media.jai.jiffleop;
+package org.jaitools.media.jai.jiffleop;
 
 import java.awt.Dimension;
 import java.awt.Rectangle;
@@ -35,7 +35,7 @@ import javax.media.jai.RenderedOp;
 import javax.media.jai.iterator.RectIter;
 import javax.media.jai.iterator.RectIterFactory;
 
-import jaitools.jiffle.JiffleBuilder;
+import org.jaitools.jiffle.JiffleBuilder;
 
 import org.junit.After;
 import org.junit.Before;

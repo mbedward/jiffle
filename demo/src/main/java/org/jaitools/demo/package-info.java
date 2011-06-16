@@ -1,5 +1,5 @@
 /* 
- *  Copyright (c) 2011, Michael Bedward. All rights reserved. 
+ *  Copyright (c) 2009-2010, Michael Bedward. All rights reserved. 
  *   
  *  Redistribution and use in source and binary forms, with or without modification, 
  *  are permitted provided that the following conditions are met: 
@@ -23,18 +23,8 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */   
 
-package jaitools.demo.jiffle;
-
 /**
- * Defines some common fields for use in Jiffle demo applications.
- * 
- * @author Michael Bedward
- * @since 1.1
- * @version $Id$
+ * Support classes for Jiffle example programs.
  */
-public abstract class JiffleDemoBase {
-    
-    public static final int WIDTH = 500;
-    public static final int HEIGHT = 500;
-    
-}
+
+package org.jaitools.demo;

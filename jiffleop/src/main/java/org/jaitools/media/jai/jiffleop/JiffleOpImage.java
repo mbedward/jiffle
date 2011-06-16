@@ -23,7 +23,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */   
 
-package jaitools.media.jai.jiffleop;
+package org.jaitools.media.jai.jiffleop;
 
 import java.awt.Rectangle;
 import java.awt.image.Raster;
@@ -36,10 +36,10 @@ import javax.media.jai.ImageLayout;
 import javax.media.jai.OpImage;
 import javax.media.jai.PlanarImage;
 
-import jaitools.CollectionFactory;
-import jaitools.jiffle.Jiffle;
-import jaitools.jiffle.JiffleException;
-import jaitools.jiffle.runtime.JiffleIndirectRuntime;
+import org.jaitools.CollectionFactory;
+import org.jaitools.jiffle.Jiffle;
+import org.jaitools.jiffle.JiffleException;
+import org.jaitools.jiffle.runtime.JiffleIndirectRuntime;
 
 /**
  * Jiffle operation.

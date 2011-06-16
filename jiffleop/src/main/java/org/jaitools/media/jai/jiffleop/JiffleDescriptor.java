@@ -23,9 +23,10 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */   
 
-package jaitools.media.jai.jiffleop;
+package org.jaitools.media.jai.jiffleop;
 
 import java.awt.Rectangle;
+
 import javax.media.jai.OperationDescriptorImpl;
 import javax.media.jai.registry.RenderedRegistryMode;
 
@@ -64,7 +65,7 @@ public class JiffleDescriptor extends OperationDescriptorImpl {
         super(new String[][]{
                     {"GlobalName", "Jiffle"},
                     {"LocalName", "Jiffle"},
-                    {"Vendor", "jaitools.media.jai"},
+                    {"Vendor", "org.jaitools.media.jai"},
                     {"Description", "Execute a Jiffle script"},
                     {"DocURL", "http://code.google.com/p/jai-tools/"},
                     {"Version", "1.2.0"},

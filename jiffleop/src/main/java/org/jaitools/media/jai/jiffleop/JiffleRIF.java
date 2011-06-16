@@ -23,7 +23,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */   
 
-package jaitools.media.jai.jiffleop;
+package org.jaitools.media.jai.jiffleop;
 
 import java.awt.Dimension;
 import java.awt.Rectangle;
@@ -40,7 +40,7 @@ import javax.media.jai.JAI;
 import javax.media.jai.PlanarImage;
 import javax.media.jai.RasterFactory;
 
-import jaitools.CollectionFactory;
+import org.jaitools.CollectionFactory;
 
 /**
  * The image factory for the "Jiffle" operation.

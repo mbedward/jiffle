@@ -22,7 +22,7 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */   
-package jaitools.demo.jiffle;
+package org.jaitools.demo.jiffle;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -31,8 +31,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URISyntaxException;
 
-import jaitools.demo.ImageChoice;
-import jaitools.jiffle.JiffleException;
+import org.jaitools.demo.ImageChoice;
+import org.jaitools.jiffle.JiffleException;
 
 /**
  * Helper class with for Jiffle demo applications.

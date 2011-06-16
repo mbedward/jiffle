@@ -23,7 +23,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */   
 
-package jaitools.demo.jiffle;
+package org.jaitools.demo.jiffle;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -42,10 +42,10 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 
-import jaitools.demo.ImageChoice;
-import jaitools.jiffle.JiffleBuilder;
-import jaitools.jiffle.JiffleException;
-import jaitools.swing.SimpleImagePane;
+import org.jaitools.demo.ImageChoice;
+import org.jaitools.jiffle.JiffleBuilder;
+import org.jaitools.jiffle.JiffleException;
+import org.jaitools.swing.SimpleImagePane;
 
 /**
  * A browser for Jiffle example scripts. Displays the script in a text

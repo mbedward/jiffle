@@ -22,42 +22,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */   
-package jaitools.demo.jiffle;
 
-import jaitools.demo.ImageChoice;
-import java.io.File;
-
-import jaitools.jiffle.JiffleBuilder;
-import jaitools.swing.ImageFrame;
+package org.jaitools.demo.jiffle;
 
 /**
- * Demonstrates using JiffleBuilder to compile and run a script.
- * <p>
- * Jiffle saves you from having to write lots of tedious JAI and Java AWT code.<br>
- * JiffleBuilder saves you from having to write lots of tedious Jiffle code !
- * Specifically, it uses concise chained methods to set the script, associate
- * variable names with images, and optionally create an image to receive the
- * processing results.
- *
+ * Defines some common fields for use in Jiffle demo applications.
+ * 
  * @author Michael Bedward
  * @since 1.1
  * @version $Id$
  */
-public class JiffleBuilderDemo extends JiffleDemoBase {
-
-    /**
-     * Compiles and runs the "ripple" script using {@link JiffleBuilder}.
-     * @param args ignored
-     * @throws Exception if there are errors compiling the script.
-     */
-    public static void main(String[] args) throws Exception {
-        JiffleBuilderDemo me = new JiffleBuilderDemo();
-        File f = JiffleDemoHelper.getScriptFile(args, ImageChoice.RIPPLES);
-        String script = JiffleDemoHelper.readScriptFile(f);
-        JiffleBuilder jb = new JiffleBuilder();
-        jb.script(script).dest("result", WIDTH, HEIGHT).getRuntime().evaluateAll(null);
-
-        ImageFrame frame = new ImageFrame(jb.getImage("result"), "Jiffle image demo");
-        frame.setVisible(true);
-    }
+public abstract class JiffleDemoBase {
+    
+    public static final int WIDTH = 500;
+    public static final int HEIGHT = 500;
+    
 }

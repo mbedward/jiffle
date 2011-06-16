@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
   
     <parent>
-        <groupId>com.googlecode.jaitools</groupId>
+        <groupId>org.jaitools</groupId>
         <artifactId>jiffle</artifactId>
         <version>0.2-SNAPSHOT</version>
     </parent>

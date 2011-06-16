@@ -22,49 +22,42 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */   
+package org.jaitools.demo.jiffle;
 
-package jaitools.media.jai.jiffleop;
+import java.io.File;
 
-import java.awt.image.renderable.RenderedImageFactory;
-import javax.media.jai.OperationDescriptor;
-import javax.media.jai.OperationRegistry;
-import javax.media.jai.OperationRegistrySpi;
-import javax.media.jai.registry.RenderedRegistryMode;
+import org.jaitools.demo.ImageChoice;
+import org.jaitools.jiffle.JiffleBuilder;
+import org.jaitools.swing.ImageFrame;
 
 /**
- * OperationRegistrySpi implementation to register the "Jiffle"
- * operation and its associated image factories.
+ * Demonstrates using JiffleBuilder to compile and run a script.
+ * <p>
+ * Jiffle saves you from having to write lots of tedious JAI and Java AWT code.<br>
+ * JiffleBuilder saves you from having to write lots of tedious Jiffle code !
+ * Specifically, it uses concise chained methods to set the script, associate
+ * variable names with images, and optionally create an image to receive the
+ * processing results.
  *
  * @author Michael Bedward
- * @since 0.1
+ * @since 1.1
  * @version $Id$
  */
-public class JiffleSpi implements OperationRegistrySpi {
-
-    /** The name of the product to which these operations belong. */
-    private String productName = "jaitools.media.jai.jiffleop";
- 
-    /** Default constructor. */
-    public JiffleSpi() {}
+public class JiffleBuilderDemo extends JiffleDemoBase {
 
     /**
-     * Registers the MaskedConvolve operation and its
-     * associated image factories across all supported operation modes.
-     *
-     * @param registry The registry with which to register the operations
-     * and their factories.
+     * Compiles and runs the "ripple" script using {@link JiffleBuilder}.
+     * @param args ignored
+     * @throws Exception if there are errors compiling the script.
      */
-    public void updateRegistry(OperationRegistry registry) {
-        OperationDescriptor op = new JiffleDescriptor();
-        registry.registerDescriptor(op);
-        String descName = op.getName();
-        
-        RenderedImageFactory rif = new JiffleRIF();
+    public static void main(String[] args) throws Exception {
+        JiffleBuilderDemo me = new JiffleBuilderDemo();
+        File f = JiffleDemoHelper.getScriptFile(args, ImageChoice.RIPPLES);
+        String script = JiffleDemoHelper.readScriptFile(f);
+        JiffleBuilder jb = new JiffleBuilder();
+        jb.script(script).dest("result", WIDTH, HEIGHT).getRuntime().evaluateAll(null);
 
-        registry.registerFactory(RenderedRegistryMode.MODE_NAME,
-                                 descName,
-                                 productName,
-                                 rif);
-
+        ImageFrame frame = new ImageFrame(jb.getImage("result"), "Jiffle image demo");
+        frame.setVisible(true);
     }
 }

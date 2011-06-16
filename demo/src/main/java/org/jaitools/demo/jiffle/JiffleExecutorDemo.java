@@ -22,24 +22,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */   
-package jaitools.demo.jiffle;
+package org.jaitools.demo.jiffle;
 
 import java.awt.image.RenderedImage;
 import java.awt.image.WritableRenderedImage;
 import java.io.File;
 import java.util.Map;
 
-import jaitools.CollectionFactory;
-import jaitools.demo.ImageChoice;
-import jaitools.imageutils.ImageUtils;
-import jaitools.jiffle.Jiffle;
-import jaitools.jiffle.runtime.JiffleExecutor;
-import jaitools.jiffle.runtime.JiffleExecutorResult;
-import jaitools.jiffle.runtime.JiffleDirectRuntime;
-import jaitools.jiffle.runtime.JiffleEvent;
-import jaitools.jiffle.runtime.JiffleEventListener;
-import jaitools.jiffle.runtime.NullProgressListener;
-import jaitools.swing.ImageFrame;
+import org.jaitools.CollectionFactory;
+import org.jaitools.demo.ImageChoice;
+import org.jaitools.imageutils.ImageUtils;
+import org.jaitools.jiffle.Jiffle;
+import org.jaitools.jiffle.runtime.JiffleExecutor;
+import org.jaitools.jiffle.runtime.JiffleExecutorResult;
+import org.jaitools.jiffle.runtime.JiffleDirectRuntime;
+import org.jaitools.jiffle.runtime.JiffleEvent;
+import org.jaitools.jiffle.runtime.JiffleEventListener;
+import org.jaitools.jiffle.runtime.NullProgressListener;
+import org.jaitools.swing.ImageFrame;
 
 
 /**
@@ -47,15 +47,15 @@ import jaitools.swing.ImageFrame;
  * <br>
  * There are two options for running a Jiffle script...
  * <ol type="1">
- * <li>Directly, by getting a {@link jaitools.jiffle.runtime.JiffleRuntime} object
+ * <li>Directly, by getting a {@link org.jaitools.jiffle.runtime.JiffleRuntime} object
  *     from the compiled {@code Jiffle} object.
  * <li>Indirectly, by submitting a Jiffle object to a
- *     {@link jaitools.jiffle.runtime.JiffleExecutor}.
+ *     {@link org.jaitools.jiffle.runtime.JiffleExecutor}.
  * </ol>
  * The advantage of the second method for computationally demanding tasks
  * is that execution is carried out in a separate thread. The caller is informed
  * about completion or failure via {@link JiffleEvent}s and can track progress 
- * using a {@link jaitools.jiffle.runtime.JiffleProgressListener}.
+ * using a {@link org.jaitools.jiffle.runtime.JiffleProgressListener}.
  * 
  * @author Michael Bedward
  * @since 1.1

@@ -1,10 +1,10 @@
 #
 # Image operation descriptors :
 #
-descriptor  jaitools.media.jai.jiffleop.JiffleDescriptor
+descriptor  org.jaitools.media.jai.jiffleop.JiffleDescriptor
 
 
 #
 # "rendered" factory objects
 #
-rendered  jaitools.media.jai.jiffleop.JiffleRIF  jaitools.media.jai  Jiffle  Jiffle
+rendered  org.jaitools.media.jai.jiffleop.JiffleRIF  org.jaitools.media.jai  Jiffle  Jiffle

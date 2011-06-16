@@ -23,7 +23,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */   
 
-package jaitools.demo.jiffle;
+package org.jaitools.demo.jiffle;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -36,10 +36,10 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
-import jaitools.jiffle.runtime.AbstractDirectRuntime;
-import jaitools.jiffle.runtime.AbstractProgressListener;
-import jaitools.jiffle.runtime.JiffleExecutor;
-import jaitools.jiffle.runtime.JiffleExecutorException;
+import org.jaitools.jiffle.runtime.AbstractDirectRuntime;
+import org.jaitools.jiffle.runtime.AbstractProgressListener;
+import org.jaitools.jiffle.runtime.JiffleExecutor;
+import org.jaitools.jiffle.runtime.JiffleExecutorException;
 
 
 /**

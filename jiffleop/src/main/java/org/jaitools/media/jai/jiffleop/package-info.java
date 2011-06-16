@@ -1,5 +1,5 @@
 /* 
- *  Copyright (c) 2009-2010, Michael Bedward. All rights reserved. 
+ *  Copyright (c) 2009-2011, Michael Bedward. All rights reserved. 
  *   
  *  Redistribution and use in source and binary forms, with or without modification, 
  *  are permitted provided that the following conditions are met: 
@@ -24,7 +24,7 @@
  */   
 
 /**
- * Support classes for Jiffle example programs.
+ * Jiffle as an image operator.
  */
 
-package jaitools.demo;
+package org.jaitools.media.jai.jiffleop;

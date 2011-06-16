@@ -23,7 +23,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */   
 
-package jaitools.demo.jiffle;
+package org.jaitools.demo.jiffle;
 
 import java.awt.image.RenderedImage;
 import java.io.File;
@@ -31,12 +31,12 @@ import java.util.Map;
 
 import javax.media.jai.TiledImage;
 
-import jaitools.CollectionFactory;
-import jaitools.demo.ImageChoice;
-import jaitools.imageutils.ImageUtils;
-import jaitools.jiffle.Jiffle;
-import jaitools.jiffle.runtime.JiffleDirectRuntime;
-import jaitools.swing.ImageFrame;
+import org.jaitools.CollectionFactory;
+import org.jaitools.demo.ImageChoice;
+import org.jaitools.imageutils.ImageUtils;
+import org.jaitools.jiffle.Jiffle;
+import org.jaitools.jiffle.runtime.JiffleDirectRuntime;
+import org.jaitools.swing.ImageFrame;
 
 /**
  * Demonstrates how to retrieve and use a runtime object from a compiled 

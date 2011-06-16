@@ -23,7 +23,7 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */   
 
-package jaitools.demo.jiffle;
+package org.jaitools.demo.jiffle;
 
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
@@ -51,11 +51,11 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
-import jaitools.CollectionFactory;
-import jaitools.imageutils.ImageUtils;
-import jaitools.jiffle.Jiffle;
-import jaitools.jiffle.runtime.JiffleDirectRuntime;
-import jaitools.swing.SimpleImagePane;
+import org.jaitools.CollectionFactory;
+import org.jaitools.imageutils.ImageUtils;
+import org.jaitools.jiffle.Jiffle;
+import org.jaitools.jiffle.runtime.JiffleDirectRuntime;
+import org.jaitools.swing.SimpleImagePane;
 
 /**
  * John Conway's Game of Life implemented with Jiffle. 
@@ -111,7 +111,7 @@ import jaitools.swing.SimpleImagePane;
  * The <b>options</b> block at the top of the script sets a value to be returned
  * for any neighbour positions that are beyond the bounds of the image. Without
  * this option, the runtime object would throw a 
- * {@link jaitools.jiffle.runtime.JiffleRuntimeException} at the very first pixel
+ * {@link org.jaitools.jiffle.runtime.JiffleRuntimeException} at the very first pixel
  * when trying to access the relative neighbour position {@code world[-1, -1]}.
  * <p>
  * 

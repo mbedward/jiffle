@@ -23,53 +23,49 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */   
 
-package jaitools.demo;
+package org.jaitools.media.jai.jiffleop;
+
+import java.awt.image.renderable.RenderedImageFactory;
+
+import javax.media.jai.OperationDescriptor;
+import javax.media.jai.OperationRegistry;
+import javax.media.jai.OperationRegistrySpi;
+import javax.media.jai.registry.RenderedRegistryMode;
 
 /**
- * Constants to identify Jiffle scripts used to create example
- * images for JAI-tools demo applications.
- * 
+ * OperationRegistrySpi implementation to register the "Jiffle"
+ * operation and its associated image factories.
+ *
  * @author Michael Bedward
- * @since 1.1
+ * @since 0.1
  * @version $Id$
  */
-public enum ImageChoice {
+public class JiffleSpi implements OperationRegistrySpi {
+
+    /** The name of the product to which these operations belong. */
+    private String productName = "org.jaitools.media.jai.jiffleop";
+ 
+    /** Default constructor. */
+    public JiffleSpi() {}
 
     /**
-     * Chessboard pattern with 0 and 1 values.
+     * Registers the MaskedConvolve operation and its
+     * associated image factories across all supported operation modes.
+     *
+     * @param registry The registry with which to register the operations
+     * and their factories.
      */
-    CHESSBOARD("chessboard", "result"), 
-    /**
-     * Complex interference pattern.
-     */
-    INTERFERENCE("interference", "result"), 
-    /**
-     * Binary image of the Mandelbrot set.
-     */
-    MANDELBROT("mandelbrot", "result"),
-    /**
-     * Concentric, sinusoidal ripples.
-     */
-    RIPPLES("ripple", "result"), 
-    /**
-     * Sort of a square circle thing.
-     */
-    SQUIRCLE("squircle", "result");
+    public void updateRegistry(OperationRegistry registry) {
+        OperationDescriptor op = new JiffleDescriptor();
+        registry.registerDescriptor(op);
+        String descName = op.getName();
+        
+        RenderedImageFactory rif = new JiffleRIF();
 
-    private String name;
-    private String destImageVarName;
+        registry.registerFactory(RenderedRegistryMode.MODE_NAME,
+                                 descName,
+                                 productName,
+                                 rif);
 
-    private ImageChoice(String name, String destImageVarName) {
-        this.name = name;
-        this.destImageVarName = destImageVarName;
-    }
-    
-    @Override
-    public String toString() {
-        return name;
-    }
-    
-    public String getDestImageVarName() {
-        return destImageVarName;
     }
 }
