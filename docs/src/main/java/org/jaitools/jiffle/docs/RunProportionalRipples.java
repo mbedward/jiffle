@@ -1,19 +1,19 @@
-package jaitools.jiffle.docs;
+package org.jaitools.jiffle.docs;
 
-import jaitools.jiffle.runtime.JiffleDirectRuntime;
 import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.WritableRenderedImage;
 import java.util.Map;
 
-import jaitools.CollectionFactory;
-import jaitools.imageutils.ImageUtils;
-import jaitools.jiffle.Jiffle;
-import jaitools.jiffle.JiffleBuilder;
-import jaitools.jiffle.JiffleException;
-import jaitools.jiffle.runtime.CoordinateTransform;
-import jaitools.jiffle.runtime.CoordinateTransforms;
-import jaitools.swing.ImageFrame;
+import org.jaitools.CollectionFactory;
+import org.jaitools.imageutils.ImageUtils;
+import org.jaitools.jiffle.Jiffle;
+import org.jaitools.jiffle.JiffleBuilder;
+import org.jaitools.jiffle.JiffleException;
+import org.jaitools.jiffle.runtime.CoordinateTransform;
+import org.jaitools.jiffle.runtime.CoordinateTransforms;
+import org.jaitools.jiffle.runtime.JiffleDirectRuntime;
+import org.jaitools.swing.ImageFrame;
 
 
 public class RunProportionalRipples {

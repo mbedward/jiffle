@@ -1,11 +1,11 @@
-package jaitools.jiffle.docs;
+package org.jaitools.jiffle.docs;
 
 import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 
-import jaitools.jiffle.runtime.CoordinateTransform;
-import jaitools.jiffle.runtime.CoordinateTransforms;
-import jaitools.jiffle.runtime.JiffleDirectRuntime;
+import org.jaitools.jiffle.runtime.CoordinateTransform;
+import org.jaitools.jiffle.runtime.CoordinateTransforms;
+import org.jaitools.jiffle.runtime.JiffleDirectRuntime;
 
 public class TreeChange {
 

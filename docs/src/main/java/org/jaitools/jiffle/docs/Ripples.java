@@ -1,14 +1,16 @@
-package jaitools.jiffle.docs;
+package org.jaitools.jiffle.docs;
 
-import jaitools.imageutils.ImageUtils;
-import jaitools.jiffle.JiffleBuilder;
-import jaitools.swing.ImageFrame;
 import java.awt.image.RenderedImage;
 import java.awt.image.WritableRenderedImage;
 import java.io.File;
+
 import javax.media.jai.TiledImage;
 import javax.media.jai.iterator.RectIterFactory;
 import javax.media.jai.iterator.WritableRectIter;
+
+import org.jaitools.imageutils.ImageUtils;
+import org.jaitools.jiffle.JiffleBuilder;
+import org.jaitools.swing.ImageFrame;
 
 public class Ripples {
 

@@ -1,10 +1,10 @@
-package jaitools.jiffle.docs;
+package org.jaitools.jiffle.docs;
 
 import java.awt.image.RenderedImage;
 import java.io.File;
 
-import jaitools.jiffle.JiffleBuilder;
-import jaitools.jiffle.JiffleException;
+import org.jaitools.jiffle.JiffleBuilder;
+import org.jaitools.jiffle.JiffleException;
 
 public class FirstJiffleBuilderExample {
     

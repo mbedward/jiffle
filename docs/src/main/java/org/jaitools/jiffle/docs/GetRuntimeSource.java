@@ -2,11 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package jaitools.jiffle.docs;
+package org.jaitools.jiffle.docs;
 
-import jaitools.jiffle.Jiffle;
-import jaitools.jiffle.JiffleBuilder;
-import jaitools.jiffle.JiffleException;
+import org.jaitools.jiffle.Jiffle;
+import org.jaitools.jiffle.JiffleBuilder;
+import org.jaitools.jiffle.JiffleException;
 
 /**
  *
