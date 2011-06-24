@@ -18,7 +18,7 @@ Compiling and running scripts with JiffleBuilder
 
 Using JiffleBuilder is the easiest way to get started with Jiffle. Let's look at running the following script which :
 
-.. literalinclude:: /../src/main/resources/jaitools/jiffle/docs/FilledCircle.jfl
+.. literalinclude:: /../src/main/resources/org/jaitools/jiffle/docs/FilledCircle.jfl
 
 This script implements a MAX filter: a 3x3 kernel is placed over each pixel in the input image, represented by the
 variable *src*, and the maximum value found is written to the output image, represented by *dest* [*]_. 
@@ -26,7 +26,7 @@ variable *src*, and the maximum value found is written to the output image, repr
 Now let's look at a Java method which takes the script (in the form of a file) and an input image, and uses
 JiffleBuilder to run the script, returning the resulting image to the caller.
 
-.. literalinclude:: /../src/main/java/jaitools/jiffle/docs/FirstJiffleBuilderExample.java
+.. literalinclude:: /../src/main/java/org/jaitools/jiffle/docs/FirstJiffleBuilderExample.java
    :language: java
    :start-after: // docs start method
    :end-before: // docs end method

@@ -436,7 +436,7 @@ The following script retrieves the maximum value in a 3x3 kernel centred on each
 destination image. It uses the outside option to treat kernel locations beyond the source image's edge as null values
 which will be ignored by the *max* function:
 
-.. literalinclude:: /../src/main/resources/jaitools/jiffle/docs/MaxFilter.jfl
+.. literalinclude:: /../src/main/resources/org/jaitools/jiffle/docs/MaxFilter.jfl
 
 If the *outside* option is not set, any request for a value beyond an image's bounds will cause a JiffleRuntimeException.
 
