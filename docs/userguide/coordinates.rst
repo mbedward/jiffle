@@ -8,7 +8,7 @@ with source and destination images that have non-overlapping bounds or different
 
 To get the flavour of this, let's look again at the *ripples* script which we saw in the :doc:`introduction`:
 
-.. literalinclude:: /../src/main/resources/jaitools/jiffle/docs/Ripples.jfl
+.. literalinclude:: /../src/main/resources/org/jaitools/jiffle/docs/Ripples.jfl
 
 The variables *dx* and *dy* are the proportional X and Y distances of the current pixel from the image centre *(xc,
 yc)*. We use these to calculate the scalar proportional distance *d* which is then fed to the trigonometric function.
@@ -18,7 +18,7 @@ It could be generalized by using the coordinate functions *xmin()*, *ymin()*, *w
 If we re-write the script to work in proportional coordinates directly, rather than image coordinates, it becomes a lot
 simpler:
 
-.. literalinclude:: /../src/main/resources/jaitools/jiffle/docs/RipplesProportionalCoords.jfl
+.. literalinclude:: /../src/main/resources/org/jaitools/jiffle/docs/RipplesProportionalCoords.jfl
 
 We no longer need the variables *xc* and *yc* because the proportional X and Y distances from the image centre are now
 simply *2 * (x() - 0.5)* and *2 * (y() - 0.5)* respectively. Also, unlike the previous script, this one will work
@@ -68,12 +68,12 @@ cover in a 1km block around each pixel. It defines a constant, RADIUS, which is 
 xres() and yres() functions are used to get the pixel width and height in metres, while the x() and y() functions return
 the location (map reference) of the current pixel being processed.
 
-.. literalinclude:: /../src/main/resources/jaitools/jiffle/docs/treechange.jfl
+.. literalinclude:: /../src/main/resources/org/jaitools/jiffle/docs/treechange.jfl
 
 
 If all three images have the same bounds and resolution, we can use a single CoordinateTransform to convert between world locations and image locations:
 
-.. literalinclude:: /../src/main/java/jaitools/jiffle/docs/TreeChange.java
+.. literalinclude:: /../src/main/java/org/jaitools/jiffle/docs/TreeChange.java
    :language: java
    :start-after: // docs start
    :end-before: // docs end

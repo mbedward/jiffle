@@ -25,14 +25,14 @@ the sunlit surface of a still pond...*
 Here is the Java code to plot the function. It uses a JAI [*]_ iterator to set pixel values. We'll omit the import statements and just
 concentrate on the method itself:
 
-.. literalinclude:: /../src/main/java/jaitools/jiffle/docs/Ripples.java
+.. literalinclude:: /../src/main/java/org/jaitools/jiffle/docs/Ripples.java
    :language: java
    :start-after: // docs-begin-method
    :end-before: // docs-end-method
   
 Now here is the equivalent Jiffle script:
 
-.. literalinclude:: /../src/main/resources/jaitools/jiffle/docs/Ripples.jfl
+.. literalinclude:: /../src/main/resources/org/jaitools/jiffle/docs/Ripples.jfl
 
 Compared to the Java method, the Jiffle script:
 
@@ -49,7 +49,7 @@ the necessary Java code to actually run it. To be fair, we didn't show the impor
 for the Java method either, but in the interest of even-handedness, here is one way to run that script within a Java
 program:
 
-.. literalinclude:: /../src/main/java/jaitools/jiffle/docs/Ripples.java
+.. literalinclude:: /../src/main/java/org/jaitools/jiffle/docs/Ripples.java
    :start-after: // docs-begin-builder-example
    :end-before: // docs-end-builder-example
 
