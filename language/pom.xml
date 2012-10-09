@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.jaitools</groupId>
         <artifactId>jiffle</artifactId>
-        <version>0.3-SNAPSHOT</version>
+        <version>0.2.1</version>
     </parent>
     <artifactId>jt-jiffle-language</artifactId>
     <packaging>jar</packaging>
