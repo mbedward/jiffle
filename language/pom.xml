@@ -7,36 +7,38 @@
     </parent>
     <artifactId>jt-jiffle-language</artifactId>
     <packaging>jar</packaging>
-    <name>Jiffle language</name>
+    <name>Jiffle language (antlr4)</name>
     <description>
-        Jiffle is a scripting language for creating and analysing raster images.
+        Jiffle raster algebra scripting language
     </description>
 
     <build>
         <plugins>
             <plugin>
                 <groupId>org.antlr</groupId>
-                <artifactId>antlr3-maven-plugin</artifactId>
-                <version>3.3</version>
+                <artifactId>antlr4-maven-plugin</artifactId>
+                <version>4.1</version>
                 <executions>
                     <execution>
                         <goals>
-                            <goal>antlr</goal>
+                            <goal>antlr4</goal>
                         </goals>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
     </build>
+    
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>jt-utils</artifactId>
+            <!-- version set in parent pom -->
         </dependency>
         <dependency>
             <groupId>org.antlr</groupId>
-            <artifactId>antlr</artifactId>
-            <version>3.3</version>
+            <artifactId>antlr4-runtime</artifactId>
+            <!-- version set in parent pom -->
         </dependency>
         <dependency>
             <groupId>org.codehaus.janino</groupId>
