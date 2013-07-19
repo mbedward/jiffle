@@ -27,7 +27,7 @@
 
 grammar Jiffle;
 
-script          : specialBlock* statement+ EOF
+script          : specialBlock* statement+ 
                 ;
 
 specialBlock    : optionsBlock
@@ -189,13 +189,9 @@ listLiteral     : LSQUARE expressionList RSQUARE
 // Lexer rules
 /////////////////////////////////////////////////
 
-COMMENT : LINE_COMMENT | BLOCK_COMMENT ;
-    
-fragment
 LINE_COMMENT
     : '//' ~('\n'|'\r')* '\r'? '\n' -> channel(HIDDEN) ;
 
-fragment
 BLOCK_COMMENT
     : '/*' .*? '*/' -> channel(HIDDEN) ;
 
@@ -249,7 +245,7 @@ GE      : '>=';
 LE      : '<=';
 LT      : '<';
 EQ      : '==';
-NE      : '=';
+NE      : '!=';
 AND     : '&&';
 OR      : '||';
 XOR     : '^|';
