@@ -1,5 +1,5 @@
 /* 
- *  Copyright (c) 2011, Michael Bedward. All rights reserved. 
+ *  Copyright (c) 2011-2013, Michael Bedward. All rights reserved. 
  *   
  *  Redistribution and use in source and binary forms, with or without modification, 
  *  are permitted provided that the following conditions are met: 
@@ -26,7 +26,7 @@
 package org.jaitools.jiffle.parser;
 
 /**
- * An exception thrown when the Jiffle parser aborts due to errors.
+ * Thrown when the Jiffle parser aborts due to errors it can't cope with.
  * 
  * @author Michael Bedward
  * @since 0.1

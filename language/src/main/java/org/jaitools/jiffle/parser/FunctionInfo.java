@@ -1,5 +1,5 @@
 /* 
- *  Copyright (c) 2011, Michael Bedward. All rights reserved. 
+ *  Copyright (c) 2011-2013, Michael Bedward. All rights reserved. 
  *   
  *  Redistribution and use in source and binary forms, with or without modification, 
  *  are permitted provided that the following conditions are met: 
@@ -21,8 +21,7 @@
  *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
- */   
-
+ */
 package org.jaitools.jiffle.parser;
 
 import java.util.Arrays;
@@ -30,27 +29,34 @@ import java.util.List;
 
 import org.jaitools.CollectionFactory;
 
-
 /**
- * Used by the {@link FunctionLookup} class when servicing lookup requests
- * from the Jiffle compiler.
- * 
+ * Holds the description of a Jiffle function.
+ *
  * @author Michael Bedward
  * @since 0.1
  * @version $Id$
  */
 public class FunctionInfo {
-    
-    /** Constants to indicate the runtime provider of a function */
-    public enum Provider {
-        /** Indicates a function provided by JiffleFunctions class */
-        JIFFLE("jiffle"),
-        /** Indicates a function provided by java.lang.Math */
-        MATH("math"),
-        /** Indicates a function that is a proxy for a runtime class variable */
-        PROXY("proxy");
 
+    /**
+     * Constants to indicate the runtime provider of a function
+     */
+    public enum Provider {
+
+        /**
+         * Indicates a function provided by JiffleFunctions class
+         */
+        JIFFLE("jiffle"),
+        /**
+         * Indicates a function provided by java.lang.Math
+         */
+        MATH("math"),
+        /**
+         * Indicates a function that is a proxy for a runtime class variable
+         */
+        PROXY("proxy");
         private String name;
+
         private Provider(String name) {
             this.name = name;
         }
@@ -72,46 +78,68 @@ public class FunctionInfo {
             return null;
         }
     }
-    
     private final String jiffleName;
     private final String runtimeName;
     private final Provider provider;
     private final boolean isVolatile;
-    private final String returnType;
-    private final List<String> argTypes;
+    private final JiffleType returnType;
+    private final List<JiffleType> argTypes;
 
     /**
      * Creates a function info object.
      *
      * @param jiffleName name of the function used in Jiffle scripts
-     * 
+     *
      * @param runtimeName Java name used in runtime class source
-     * 
-     * @param provider the provider: one of {@link Provider#JIFFLE}, 
+     *
+     * @param provider the provider: one of {@link Provider#JIFFLE},
      *        {@link Provider#MATH} or {@link Provider#PROXY}
-     * 
-     * @param isVolatile {@code true} if the function returns a new value on each
-     *        invocation regardless of pixel position (e.g. rand()); {@code false}
-     *        otherwise
-     * 
-     * @param returnType function return type ("D", "List")
-     * 
-     * @param argTypes array of Strings specifying argument types; 
-     *        null or empty for no-arg functions
+     *
+     * @param isVolatile {@code true} if the function returns a new value on
+     * each invocation regardless of pixel position (e.g. rand()); {@code false}
+     * otherwise
+     *
+     * @param returnType function return type label
+     *
+     * @param argTypeLabels array of Strings specifying argument types (null or
+     * empty for no-arg functions)
+     *
+     * @see JiffleType
      */
-    public FunctionInfo(String jiffleName, String runtimeName, Provider provider, 
-            boolean isVolatile, String returnType, String ...argTypes) {
-        
+    public FunctionInfo(String jiffleName, String runtimeName, Provider provider,
+            boolean isVolatile, String returnTypeLabel, String... argTypeLabels) {
+
         this.jiffleName = jiffleName;
         this.runtimeName = runtimeName;
         this.provider = provider;
         this.isVolatile = isVolatile;
-        this.returnType = returnType;
-        
+
+        this.returnType = getTypeForLabel(returnTypeLabel, jiffleName, "return type");
         this.argTypes = CollectionFactory.list();
-        if (argTypes != null && argTypes.length > 0) {
-            this.argTypes.addAll(Arrays.asList(argTypes));
+        if (argTypes != null && argTypeLabels.length > 0) {
+            int i = 1;
+            for (String label : argTypeLabels) {
+                JiffleType t = getTypeForLabel(label, jiffleName, "arg " + i);
+                argTypes.add(t);
+                i++;
+            }
         }
+    }
+    
+    /*
+     * Helper for constructor. Takes care of exception handling for 
+     * unmatched type labels.
+     */
+    private JiffleType getTypeForLabel(String typeLabel, String fnName, String context) {
+        try {
+            return JiffleType.get(typeLabel);
+        } catch (JiffleTypeException ex) {
+            // A problem here means that the properities file is suspect so
+            // we better throw a major exception.
+            String msg = "Type error getting info for " + fnName + " " + context;
+            throw new IllegalStateException(msg, ex);
+        }
+        
     }
 
     /**
@@ -124,8 +152,8 @@ public class FunctionInfo {
     }
 
     /**
-     * Gets the Java source for the function provider and name used
-     * in the runtime class.
+     * Gets the Java source for the function provider and name used in the
+     * runtime class.
      *
      * @return runtime class source for the function
      */
@@ -144,8 +172,8 @@ public class FunctionInfo {
     }
 
     /**
-     * Tests if this function is volatile, ie. returns a different value
-     * on each invocation regardless of image position.
+     * Tests if this function is volatile, ie. returns a different value on each
+     * invocation regardless of image position.
      *
      * @return {@code true} if volatile, {@code false} otherwise
      */
@@ -172,42 +200,42 @@ public class FunctionInfo {
     public boolean isProxy() {
         return provider == Provider.PROXY;
     }
-    
+
     /**
      * Gets the function return type.
-     * 
+     *
      * @return return type: "D" or "List"
      */
-    public String getReturnType() {
+    public JiffleType getReturnType() {
         return returnType;
     }
 
     /**
      * Tests if this object matches the given name and argument types.
-     * 
-     * @param name function name used in scripts
-     * @param argTypes argument type names; null or empty for no-arg functions
-     * 
+     *
+     * @param fnName function name used in scripts
+     * @param fnArgTypes argument types; null or empty for no-arg functions
+     *
      * @return {@code true} if this object matches; {@code false} otherwise
      */
-    public boolean matches(String name, List<String> argTypes) {
-        if (!this.jiffleName.equals(name)) {
+    public boolean matches(String fnName, List<JiffleType> fnArgTypes) {
+        if (!this.jiffleName.equals(fnName)) {
             return false;
         }
-        if ((argTypes == null || argTypes.isEmpty()) && !this.argTypes.isEmpty()) {
+        if ((fnArgTypes == null || fnArgTypes.isEmpty()) && !this.argTypes.isEmpty()) {
             return false;
         }
-        if (argTypes != null && (argTypes.size() != this.argTypes.size())) {
+        if (fnArgTypes != null && (fnArgTypes.size() != this.argTypes.size())) {
             return false;
         }
-        
+
         int k = 0;
-        for (String argType : this.argTypes) {
-            if (!argType.equals(argTypes.get(k++))) {
+        for (JiffleType argType : this.argTypes) {
+            if (argType != fnArgTypes.get(k++)) {
                 return false;
             }
         }
-        
+
         return true;
     }
 }

@@ -50,7 +50,7 @@ import org.jaitools.jiffle.parser.JiffleParser;
 import org.jaitools.jiffle.parser.JiffleParserException;
 import org.jaitools.jiffle.parser.Message;
 import org.jaitools.jiffle.parser.MessageTable;
-import org.jaitools.jiffle.parser.OptionsBlockReader;
+import org.jaitools.jiffle.parser.OptionsBlockWorker;
 import org.jaitools.jiffle.parser.ParsingErrorReporter;
 import org.jaitools.jiffle.parser.RuntimeSourceGenerator;
 import org.jaitools.jiffle.parser.SourceGenerator;
@@ -620,7 +620,7 @@ public class Jiffle {
     private void checkOptions() {
         CommonTreeNodeStream nodes = new CommonTreeNodeStream(primaryAST);
         nodes.setTokenStream(tokens);
-        OptionsBlockReader reader = new OptionsBlockReader(nodes, msgTable);
+        OptionsBlockWorker reader = new OptionsBlockWorker(nodes, msgTable);
         reader.downup(primaryAST);
     }
 

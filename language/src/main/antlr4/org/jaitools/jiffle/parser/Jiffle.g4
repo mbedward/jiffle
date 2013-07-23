@@ -75,15 +75,16 @@ block           : LCURLY statement* RCURLY
                 ;
 
 
-statement       : block
-                | IF parenExpression statement (ELSE statement)?
-                | WHILE parenExpression statement
-                | UNTIL parenExpression statement
-                | FOREACH LPAR ID IN loopSet RPAR statement
-                | BREAKIF LPAR expression RPAR SEMI
-                | BREAK SEMI
-                | expression SEMI
-                | SEMI
+statement       : block                                             # blockStmt
+                | IF parenExpression statement (ELSE statement)?    # ifStmt
+                | WHILE parenExpression statement                   # whileStmt
+                | UNTIL parenExpression statement                   # untilStmt
+                | FOREACH LPAR ID IN loopSet RPAR statement         # foreachStmt
+                | BREAKIF LPAR expression RPAR SEMI                 # breakifStmt
+                | BREAK SEMI                                        # breakStmt
+                | ID APPEND expression                              # listAppendStmt
+                | expression SEMI                                   # exprStmt
+                | SEMI                                              # emptyStmt
                 ;
 
 loopSet         : listLiteral
@@ -121,8 +122,11 @@ expression      : atom
                 | expression AND expression
                 | expression OR expression
                 | expression XOR expression
-                | expression QUESTION expression COLON expression  
-                | expression 
+                | expression QUESTION expression COLON expression
+                | assignment
+                ;
+
+assignment      : ID
                   ( ASSIGN<assoc=right>
                   | TIMESEQ<assoc=right>
                   | DIVEQ<assoc=right>
@@ -145,7 +149,6 @@ atom            : parenExpression
 
 identifiedAtom  : ID argumentList       # functionCall
                 | ID imagePos           # imageCall
-                | ID APPEND expression  # append
                 | ID                    # var
                 ;
 

@@ -1,5 +1,5 @@
 /* 
- *  Copyright (c) 2011-2013, Michael Bedward. All rights reserved. 
+ *  Copyright (c) 2013, Michael Bedward. All rights reserved. 
  *   
  *  Redistribution and use in source and binary forms, with or without modification, 
  *  are permitted provided that the following conditions are met: 
@@ -25,45 +25,21 @@
 
 package org.jaitools.jiffle.parser;
 
-/**
- * Constants representing the type of symbols tracked through scopes
- * during JIffle script compilation.
- * 
- * @author Michael Bedward
- * @since 0.1
- * @version $Id$
- */
-public enum SymbolType {
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
-    /** General scalar user variable. */
-    SCALAR("scalar", "General scalar user var"),
+/**
+ * Extends the base parse tree listener and adds a messages
+ * field and a method to walk a given tree.
+ * 
+ * @author michael
+ */
+public abstract class BaseWorker extends JiffleBaseListener {
     
-    /** A foreach loop variable. */
-    LOOP_VAR("loopvar", "Loop var"),
+    public CompilerMessages messages = new CompilerMessages();
     
-    /** A list variable. */
-    LIST("list", "List var");
-    
-    private final String name;
-    private final String desc;
-    
-    private SymbolType(String name, String desc) {
-        this.name = name;
-        this.desc = desc;
-    }
-    
-    /**
-     * Gets the description of this type.
-     * 
-     * @return the description
-     */
-    public String getDesc() {
-        return desc;
-    }
-    
-    @Override
-    public String toString() {
-        return "SymbolType{" + name + '}';
+    protected void walkTree(ParseTree tree) {
+        new ParseTreeWalker().walk(this, tree);
     }
     
 }

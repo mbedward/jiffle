@@ -1,5 +1,5 @@
 /* 
- *  Copyright (c) 2011-2013, Michael Bedward. All rights reserved. 
+ *  Copyright (c) 2013, Michael Bedward. All rights reserved. 
  *   
  *  Redistribution and use in source and binary forms, with or without modification, 
  *  are permitted provided that the following conditions are met: 
@@ -25,45 +25,49 @@
 
 package org.jaitools.jiffle.parser;
 
-/**
- * Constants representing the type of symbols tracked through scopes
- * during JIffle script compilation.
- * 
- * @author Michael Bedward
- * @since 0.1
- * @version $Id$
- */
-public enum SymbolType {
+import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeProperty;
+import org.jaitools.jiffle.parser.JiffleParser.LiteralContext;
 
-    /** General scalar user variable. */
-    SCALAR("scalar", "General scalar user var"),
+/**
+ * Generates Java sources for the runtime class.
+ *
+ * @author michael
+ */
+public class RuntimeSourceWorker extends BaseWorker {
     
-    /** A foreach loop variable. */
-    LOOP_VAR("loopvar", "Loop var"),
+    ParseTreeProperty<String> nodeSources = new ParseTreeProperty<String>();
     
-    /** A list variable. */
-    LIST("list", "List var");
-    
-    private final String name;
-    private final String desc;
-    
-    private SymbolType(String name, String desc) {
-        this.name = name;
-        this.desc = desc;
+    private void set(ParseTree ctx, String value) {
+        nodeSources.put(ctx, value);
     }
-    
-    /**
-     * Gets the description of this type.
-     * 
-     * @return the description
-     */
-    public String getDesc() {
-        return desc;
-    }
-    
+
     @Override
-    public String toString() {
-        return "SymbolType{" + name + '}';
+    public void exitLiteral(LiteralContext ctx) {
+        Token tok = ctx.getStart();
+        switch (tok.getType()) {
+            case JiffleParser.INT_LITERAL:
+            case JiffleParser.FLOAT_LITERAL:
+                set(ctx, tok.getText());
+                break;
+                
+            case JiffleParser.TRUE:
+                set(ctx, "1.0");
+                break;
+                
+            case JiffleParser.FALSE:
+                set(ctx, "0.0");
+                break;
+                
+            case JiffleParser.NULL:
+                set(ctx, "Double.NaN");
+                break;
+                
+            default:
+                throw new JiffleParserException("Unrecognized literal type: " + tok.getText());
+        }
     }
+    
     
 }

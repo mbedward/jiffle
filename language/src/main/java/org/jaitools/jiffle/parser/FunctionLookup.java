@@ -1,5 +1,5 @@
 /* 
- *  Copyright (c) 2011, Michael Bedward. All rights reserved. 
+ *  Copyright (c) 2011-2013, Michael Bedward. All rights reserved. 
  *   
  *  Redistribution and use in source and binary forms, with or without modification, 
  *  are permitted provided that the following conditions are met: 
@@ -33,8 +33,7 @@ import java.util.Properties;
 import org.jaitools.CollectionFactory;
 
 /**
- * A lookup service used by the Jiffle compiler when parsing function
- * calls in scripts.
+ * Looks up function descriptions for the Jiffle parser.
  * 
  * @author Michael Bedward
  * @since 0.1
@@ -102,10 +101,10 @@ public class FunctionLookup {
 
         } finally {
             try {
-                if (in != null) in.close();
-            } catch (Exception ex) {
-                // ignore
-            }
+                if (in != null) {
+                    in.close();
+                }
+            } catch (Exception ignore) {}
         }
     }
     
@@ -113,11 +112,11 @@ public class FunctionLookup {
      * Checks if a function is defined.
      *
      * @param jiffleName the name of the function used in a Jiffle script
-     * @param argTypes argument type names; null or empty for no-arg functions
+     * @param argTypes argument types; null or empty for no-arg functions
      *
      * @return {@code true} if defined; {@code false} otherwise
      */
-    public static boolean isDefined(String jiffleName, List<String> argTypes) {
+    public static boolean isDefined(String jiffleName, List<JiffleType> argTypes) {
         try {
             getInfo(jiffleName, argTypes);
         } catch (UndefinedFunctionException ex) {
@@ -131,12 +130,12 @@ public class FunctionLookup {
      * Gets the info for a function.
      *
      * @param jiffleName the name of the function used in a Jiffle script
-     * @param argTypes argument type names; null or empty for no-arg functions
+     * @param argTypes argument types; null or empty for no-arg functions
      *
      * @return function info
      * @throws UndefinedFunctionException if {@code jiffleName} is not recognized
      */
-    public static FunctionInfo getInfo(String jiffleName, List<String> argTypes)
+    public static FunctionInfo getInfo(String jiffleName, List<JiffleType> argTypes)
             throws UndefinedFunctionException {
 
         for (FunctionInfo info : lookup) {
@@ -146,7 +145,7 @@ public class FunctionLookup {
         }
         
         // should never get here
-        throw new UndefinedFunctionException("Unrecognized function: " + jiffleName);
+        throw new UndefinedFunctionException("Undefined function: " + jiffleName);
     }
     
     /**
@@ -156,12 +155,12 @@ public class FunctionLookup {
      * case of proxy (image info) functions.
      *
      * @param jiffleName the name of the function used in a Jiffle script
-     * @param argTypes argument type names; null or empty for no-arg functions
+     * @param argTypes argument types; null or empty for no-arg functions
      *
      * @return the runtime source
      * @throws UndefinedFunctionException if {@code jiffleName} is not recognized
      */
-    public static String getRuntimeExpr(String jiffleName, List<String> argTypes)
+    public static String getRuntimeExpr(String jiffleName, List<JiffleType> argTypes)
             throws UndefinedFunctionException {
         
         return getInfo(jiffleName, argTypes).getRuntimeExpr();
@@ -173,18 +172,18 @@ public class FunctionLookup {
      * has the same return type for all functions with the same root name.
      * 
      * @param jiffleName name to match
-     * @return the return type: D or List
+     * @return the return type
      * 
      * @throws UndefinedFunctionException if the name is not matched 
      */
-    public static String getReturnType(String jiffleName) throws UndefinedFunctionException {
+    public static JiffleType getReturnType(String jiffleName) throws UndefinedFunctionException {
         for (FunctionInfo info : lookup) {
             if (info.getJiffleName().equals(jiffleName)) {
                 return info.getReturnType();
             }
         }
         
-        throw new UndefinedFunctionException(jiffleName);
+        throw new UndefinedFunctionException("Undefined function: " + jiffleName);
     }
     
 }

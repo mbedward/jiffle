@@ -10,12 +10,12 @@ import org.jaitools.jiffle.parser.JiffleParser.OptionsBlockContext;
  *
  * @author michael
  */
-public class OptionsBlockReader extends TreeWorker {
+public class OptionsBlockWorker extends BaseWorker {
 
     public final Map<String, String> options;
     private boolean readBlock = false;
 
-    public OptionsBlockReader(ParseTree tree) {
+    public OptionsBlockWorker(ParseTree tree) {
         options = new HashMap<String, String>();
         walkTree(tree);
     }

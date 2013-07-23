@@ -1,5 +1,5 @@
 /* 
- *  Copyright (c) 2011, Michael Bedward. All rights reserved. 
+ *  Copyright (c) 2011-2013, Michael Bedward. All rights reserved. 
  *   
  *  Redistribution and use in source and binary forms, with or without modification, 
  *  are permitted provided that the following conditions are met: 
@@ -26,8 +26,8 @@
 package org.jaitools.jiffle.parser;
 
 /**
- * An exception thrown by {@link FunctionLookup} when the Jiffle compiler
- * is attempting to parse a call to an undefined function.
+ * Thrown by {@link FunctionLookup} when the Jiffle compiler
+ * finds a call to an undefined function.
  * 
  * @author Michael Bedward
  * @since 0.1
@@ -35,14 +35,8 @@ package org.jaitools.jiffle.parser;
  */
 public class UndefinedFunctionException extends Exception {
 
-    /**
-     * Creates a new exception with the unrecognized function name in
-     * the message.
-     * 
-     * @param funcName unrecognized function name
-     */
-    public UndefinedFunctionException(String funcName) {
-        super("Undefined function: " + funcName);
+    public UndefinedFunctionException(String msg) {
+        super(msg);
     }
     
 }

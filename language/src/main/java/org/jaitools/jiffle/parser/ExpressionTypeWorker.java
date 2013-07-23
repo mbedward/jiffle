@@ -1,5 +1,5 @@
 /* 
- *  Copyright (c) 2011-2013, Michael Bedward. All rights reserved. 
+ *  Copyright (c) 2013, Michael Bedward. All rights reserved. 
  *   
  *  Redistribution and use in source and binary forms, with or without modification, 
  *  are permitted provided that the following conditions are met: 
@@ -25,45 +25,30 @@
 
 package org.jaitools.jiffle.parser;
 
-/**
- * Constants representing the type of symbols tracked through scopes
- * during JIffle script compilation.
- * 
- * @author Michael Bedward
- * @since 0.1
- * @version $Id$
- */
-public enum SymbolType {
+import org.antlr.v4.runtime.tree.ParseTreeProperty;
+import org.jaitools.jiffle.parser.JiffleParser.FunctionCallContext;
 
-    /** General scalar user variable. */
-    SCALAR("scalar", "General scalar user var"),
+/**
+ * Labels expression nodes with their Jiffle types.
+ * 
+ * @author michael
+ */
+public class ExpressionTypeWorker extends BaseWorker {
     
-    /** A foreach loop variable. */
-    LOOP_VAR("loopvar", "Loop var"),
-    
-    /** A list variable. */
-    LIST("list", "List var");
-    
-    private final String name;
-    private final String desc;
-    
-    private SymbolType(String name, String desc) {
-        this.name = name;
-        this.desc = desc;
-    }
-    
-    /**
-     * Gets the description of this type.
-     * 
-     * @return the description
-     */
-    public String getDesc() {
-        return desc;
-    }
-    
+    ParseTreeProperty<JiffleType> types = new ParseTreeProperty<JiffleType>();
+
     @Override
-    public String toString() {
-        return "SymbolType{" + name + '}';
+    public void exitFunctionCall(FunctionCallContext ctx) {
+        String name = ctx.ID().getText();
+        try {
+            JiffleType t = FunctionLookup.getReturnType(name);
+            types.put(ctx, t);
+            
+        } catch (UndefinedFunctionException ex) {
+            // just give up
+            throw new JiffleParserException(ex);
+        }
     }
+    
     
 }
