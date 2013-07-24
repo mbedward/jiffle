@@ -218,20 +218,20 @@ public class FunctionInfo {
      *
      * @return {@code true} if this object matches; {@code false} otherwise
      */
-    public boolean matches(String fnName, List<JiffleType> fnArgTypes) {
+    public boolean matches(String fnName, JiffleType ...fnArgTypes) {
         if (!this.jiffleName.equals(fnName)) {
             return false;
         }
-        if ((fnArgTypes == null || fnArgTypes.isEmpty()) && !this.argTypes.isEmpty()) {
+        if ((fnArgTypes == null || fnArgTypes.length == 0) && !this.argTypes.isEmpty()) {
             return false;
         }
-        if (fnArgTypes != null && (fnArgTypes.size() != this.argTypes.size())) {
+        if (fnArgTypes != null && (fnArgTypes.length != this.argTypes.size())) {
             return false;
         }
 
         int k = 0;
         for (JiffleType argType : this.argTypes) {
-            if (argType != fnArgTypes.get(k++)) {
+            if (argType != fnArgTypes[k++]) {
                 return false;
             }
         }

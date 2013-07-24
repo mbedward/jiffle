@@ -147,7 +147,7 @@ public class OptionsBlockReaderTest {
         CommonTreeNodeStream nodes = new CommonTreeNodeStream(tree);
 
         msgTable = new MessageTable();
-        OptionsBlockReader reader = new OptionsBlockReader(nodes, msgTable);
+        OptionsBlockWorker reader = new OptionsBlockWorker(nodes, msgTable);
         reader.downup(tree);
 
         options = reader.getOptions();

@@ -12,8 +12,11 @@ package org.jaitools.jiffle.parser;
  * @author michael
  */
 public enum JiffleType {
-    SCALAR_DOUBLE("D"),
-    LIST("LIST");
+    /** Scalar double */
+    D("D"),
+    
+    /** List */
+    L("LIST");
     
     private final String label;
     
@@ -38,4 +41,5 @@ public enum JiffleType {
         
         throw new JiffleTypeException(label);
     }
+
 }

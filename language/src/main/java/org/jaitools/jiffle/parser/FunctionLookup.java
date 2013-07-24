@@ -116,7 +116,7 @@ public class FunctionLookup {
      *
      * @return {@code true} if defined; {@code false} otherwise
      */
-    public static boolean isDefined(String jiffleName, List<JiffleType> argTypes) {
+    public static boolean isDefined(String jiffleName, JiffleType ...argTypes) {
         try {
             getInfo(jiffleName, argTypes);
         } catch (UndefinedFunctionException ex) {
@@ -135,7 +135,7 @@ public class FunctionLookup {
      * @return function info
      * @throws UndefinedFunctionException if {@code jiffleName} is not recognized
      */
-    public static FunctionInfo getInfo(String jiffleName, List<JiffleType> argTypes)
+    public static FunctionInfo getInfo(String jiffleName, JiffleType ...argTypes)
             throws UndefinedFunctionException {
 
         for (FunctionInfo info : lookup) {
@@ -155,12 +155,12 @@ public class FunctionLookup {
      * case of proxy (image info) functions.
      *
      * @param jiffleName the name of the function used in a Jiffle script
-     * @param argTypes argument types; null or empty for no-arg functions
+     * @param argTypes argument types (if present)
      *
      * @return the runtime source
      * @throws UndefinedFunctionException if {@code jiffleName} is not recognized
      */
-    public static String getRuntimeExpr(String jiffleName, List<JiffleType> argTypes)
+    public static String getRuntimeExpr(String jiffleName, JiffleType ...argTypes)
             throws UndefinedFunctionException {
         
         return getInfo(jiffleName, argTypes).getRuntimeExpr();
