@@ -101,29 +101,20 @@ range           : expression COLON expression
                 ;
 
 
-/*
- * The "con" function is treated separately from general
- * functions during compilation because we want to ensure lazy evaluation
- * of the alternatives.
- */
-conCall         : CON LPAR expressionList RPAR
-                ;
-
-
-expression      : atom
-                | expression POW<assoc=right> expression
-                | expression (INCR | DECR)
-                | (INCR | DECR | PLUS | MINUS) expression
-                | NOT expression
-                | expression (TIMES | DIV | MOD) expression
-                | expression (PLUS | MINUS) expression
-                | expression (GT | GE | LE | LT) expression
-                | expression (EQ | NE) expression
-                | expression AND expression
-                | expression OR expression
-                | expression XOR expression
-                | expression QUESTION expression COLON expression
-                | assignment
+expression      : atom                                              # atomExpr
+                | expression POW<assoc=right> expression            # powExpr
+                | expression (INCR | DECR)                          # postExpr
+                | (INCR | DECR | PLUS | MINUS) expression           # preExpr
+                | NOT expression                                    # notExpr
+                | expression (TIMES | DIV | MOD) expression         # timesDivModExpr
+                | expression (PLUS | MINUS) expression              # plusMinusExpr
+                | expression op=(GT | GE | LE | LT) expression      # compareExpr
+                | expression op=(EQ | NE) expression                # eqExpr
+                | expression AND expression                         # andExpr
+                | expression OR expression                          # orExpr
+                | expression XOR expression                         # xorExpr
+                | expression QUESTION expression COLON expression   # ternaryExpr
+                | assignment                                        # assignExpr
                 ;
 
 assignment      : ID
@@ -136,8 +127,6 @@ assignment      : ID
                   ) expression
                 ;
 
-parenExpression : LPAR expression RPAR
-                ;
 
 atom            : parenExpression
                 | literal
@@ -147,9 +136,17 @@ atom            : parenExpression
                 ;
 
 
+parenExpression : LPAR expression RPAR
+                ;
+
+
+conCall         : CON argumentList
+                ;
+
+
 identifiedAtom  : ID argumentList       # functionCall
                 | ID imagePos           # imageCall
-                | ID                    # var
+                | ID                    # varID
                 ;
 
 
@@ -171,8 +168,8 @@ bandSpecifier   : LSQUARE expression RSQUARE
                 ;
 
 
-pixelPos        : ABS_POS_PREFIX expression // absolute pos
-                | expression                // relative pos
+pixelPos        : ABS_POS_PREFIX expression     # absolutePixel
+                | expression                    # relativePixel
                 ;
 
 
@@ -236,13 +233,13 @@ APPEND  : '<<' ;
 INCR    : '++' ;
 DECR    : '--' ;
 
-NOT     : '' ;
 POW     : '^' ;
 TIMES   : '*' ;
 DIV     : '/' ;
 MOD     : '%' ;
 PLUS    : '+' ;
 MINUS   : '-' ;
+NOT     : '!' ;
 GT      : '>';
 GE      : '>=';
 LE      : '<=';
