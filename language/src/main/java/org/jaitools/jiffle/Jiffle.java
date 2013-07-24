@@ -1,5 +1,5 @@
 /* 
- *  Copyright (c) 2009-2011, Michael Bedward. All rights reserved. 
+ *  Copyright (c) 2009-2013, Michael Bedward. All rights reserved. 
  *   
  *  Redistribution and use in source and binary forms, with or without modification, 
  *  are permitted provided that the following conditions are met: 
@@ -30,32 +30,19 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
-
-import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.RecognitionException;
-import org.antlr.runtime.tree.CommonTree;
-import org.antlr.runtime.tree.CommonTreeNodeStream;
-
-import org.codehaus.janino.SimpleCompiler;
-
-import org.jaitools.CollectionFactory;
-import org.jaitools.jiffle.parser.CheckAssignments;
-import org.jaitools.jiffle.parser.CheckFunctionCalls;
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.TokenStream;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.jaitools.jiffle.parser.CompilerMessages;
+import org.jaitools.jiffle.parser.ImagesBlockWorker;
 import org.jaitools.jiffle.parser.JiffleLexer;
 import org.jaitools.jiffle.parser.JiffleParser;
-import org.jaitools.jiffle.parser.JiffleParserException;
-import org.jaitools.jiffle.parser.Message;
-import org.jaitools.jiffle.parser.MessageTable;
-import org.jaitools.jiffle.parser.OptionsBlockWorker;
-import org.jaitools.jiffle.parser.ParsingErrorReporter;
-import org.jaitools.jiffle.parser.RuntimeSourceGenerator;
-import org.jaitools.jiffle.parser.SourceGenerator;
-import org.jaitools.jiffle.parser.TagVars;
-import org.jaitools.jiffle.parser.TransformExpressions;
+import org.jaitools.jiffle.parser.JiffleParserErrorListener;
 import org.jaitools.jiffle.runtime.JiffleDirectRuntime;
 import org.jaitools.jiffle.runtime.JiffleIndirectRuntime;
 import org.jaitools.jiffle.runtime.JiffleRuntime;
@@ -154,8 +141,8 @@ public class Jiffle {
          * @return the contant or {@code null} if the class does not derive
          *         from a supported base class
          */
-        public static RuntimeModel get(Class<? extends JiffleRuntime> clazz) {
-            for (RuntimeModel t : RuntimeModel.values()) {
+        public static Jiffle.RuntimeModel get(Class<? extends JiffleRuntime> clazz) {
+            for (Jiffle.RuntimeModel t : Jiffle.RuntimeModel.values()) {
                 if (t.runtimeClass.isAssignableFrom(clazz)) {
                     return t;
                 }
@@ -188,14 +175,7 @@ public class Jiffle {
     private String name;
 
     private String theScript;
-    private CommonTree primaryAST;
-    private Map<String, String> scriptOptions;
-    private CommonTree finalAST;
-    private CommonTokenStream tokens;
-    private ParsingErrorReporter errorReporter;
-    
-    private Map<String, ImageRole> imageParams;
-    private MessageTable msgTable;
+    private Map<String, Jiffle.ImageRole> imageParams;
     
     /**
      * Creates a new instance.
@@ -221,9 +201,8 @@ public class Jiffle {
      * @throws JiffleException on compilation errors
      * 
      */
-    public Jiffle(String script, Map<String, ImageRole> params)
+    public Jiffle(String script, Map<String, Jiffle.ImageRole> params)
             throws JiffleException {
-
         init();
         setScript(script);
         setImageParams(params);
@@ -247,9 +226,8 @@ public class Jiffle {
      * 
      * @throws JiffleException on compilation errors
      */
-    public Jiffle(File scriptFile, Map<String, ImageRole> params)
+    public Jiffle(File scriptFile, Map<String, Jiffle.ImageRole> params)
             throws JiffleException {
-
         init();
         setScript(scriptFile);
         setImageParams(params);
@@ -268,9 +246,7 @@ public class Jiffle {
             throw new JiffleException("script is empty !");
         }
         
-        if (theScript != null) {
-            clearCompiledObjects();
-        }
+        clearCompiledObjects();
         
         // add extra new line just in case last statement hits EOF
         theScript = script + "\n";
@@ -331,7 +307,7 @@ public class Jiffle {
      * 
      * @param params the image parameters
      */
-    public final void setImageParams(Map<String, ImageRole> params) {
+    public final void setImageParams(Map<String, Jiffle.ImageRole> params) {
         imageParams.clear();
         imageParams.putAll(params);
     }
@@ -343,7 +319,7 @@ public class Jiffle {
      * @return image parameters or an empty {@code Map} if none
      *         are set
      */
-    public Map<String, ImageRole> getImageParams() {
+    public Map<String, Jiffle.ImageRole> getImageParams() {
         return Collections.unmodifiableMap(imageParams);
     }
 
@@ -378,15 +354,33 @@ public class Jiffle {
             throw new JiffleException("No script has been set");
         }
         
-        clearCompiledObjects();
-        buildPrimaryAST();
-        
-        if (imageParams.isEmpty()) {
-            throw new JiffleException("No image parameters set");
+        Jiffle.Result<ParseTree> parseResult = parseScript();
+        if (parseResult.messages.isError()) {
+            reportMessages(parseResult);
+            return;
         }
         
+        /*
+         * If image var parameters were provided by the caller we
+         * ignore any in the script. Otherwise, we look for an 
+         * images block in the script.
+         */
+        if (imageParams.isEmpty()) {
+            Jiffle.Result<Map<String, Jiffle.ImageRole>> r = getScriptImageParams(parseResult.result);
+            if (r.messages.isError()) {
+                reportMessages(r);
+                return;
+            }
+            if (r.result.isEmpty()) {
+                throw new JiffleException(
+                        "No image parameters provided and none found in script");
+            }
+            
+            setImageParams(r.result);
+        }
+        
+        
         checkOptions();
-        reportMessages();
         
         if (!transformAndCheckVars()) {
             throw new JiffleException(messagesToString());
@@ -400,7 +394,8 @@ public class Jiffle {
      *         {@code false} otherwise
      */
     public boolean isCompiled() {
-        return (finalAST != null);
+        // TODO
+        return false;
     }
     
     /**
@@ -421,9 +416,8 @@ public class Jiffle {
      *         occur in creating the runtime instance
      */
     public JiffleDirectRuntime getRuntimeInstance() throws JiffleException {
-        return (JiffleDirectRuntime) createRuntimeInstance(
-                RuntimeModel.DIRECT, 
-                JiffleProperties.DEFAULT_DIRECT_BASE_CLASS);
+        // TODO
+        return null;
     }
     
     /**
@@ -436,19 +430,9 @@ public class Jiffle {
      * @throws JiffleException  if the script has not been compiled or if errors
      *         occur in creating the runtime instance
      */
-    public JiffleRuntime getRuntimeInstance(RuntimeModel model) throws JiffleException {
-        switch (model) {
-            case DIRECT:
-                return createRuntimeInstance(model, 
-                        JiffleProperties.DEFAULT_DIRECT_BASE_CLASS);
-                
-            case INDIRECT:
-                return createRuntimeInstance(model, 
-                        JiffleProperties.DEFAULT_INDIRECT_BASE_CLASS);
-                
-            default:
-                throw new IllegalArgumentException("Invalid runtime class type: " + model);
-        }
+    public JiffleRuntime getRuntimeInstance(Jiffle.RuntimeModel model) throws JiffleException {
+        // TODO
+        return null;
     }
     
     /**
@@ -471,13 +455,8 @@ public class Jiffle {
      *         occur in creating the runtime instance
      */
     public <T extends JiffleRuntime> T getRuntimeInstance(Class<T> baseClass) throws JiffleException {
-        RuntimeModel model = RuntimeModel.get(baseClass);
-        if (model == null) {
-            throw new JiffleException(baseClass.getName() + 
-                    " does not implement a required Jiffle runtime interface");
-        }
-        
-        return (T) createRuntimeInstance(model, baseClass);
+        // TODO
+        return null;
     }
     
     /**
@@ -494,7 +473,9 @@ public class Jiffle {
      */
     public String getRuntimeSource(boolean scriptInDocs)
             throws JiffleException {
-        return getRuntimeSource(RuntimeModel.DIRECT, scriptInDocs);
+
+        // TODO
+        return null;
     }
         
     /**
@@ -510,20 +491,11 @@ public class Jiffle {
      *         occur in creating the runtime source code
      * 
      */
-    public String getRuntimeSource(RuntimeModel model, boolean scriptInDocs)
+    public String getRuntimeSource(Jiffle.RuntimeModel model, boolean scriptInDocs)
             throws JiffleException {
         
-        Class<? extends JiffleRuntime> baseClass = null;
-        switch (model) {
-            case DIRECT:
-                baseClass = JiffleProperties.DEFAULT_DIRECT_BASE_CLASS;
-                break;
-                
-            case INDIRECT:
-                baseClass = JiffleProperties.DEFAULT_INDIRECT_BASE_CLASS;
-                break;
-        }
-        return createRuntimeSource(model, baseClass.getName(), scriptInDocs);
+        // TODO
+        return null;
     }
     
     /**
@@ -531,75 +503,54 @@ public class Jiffle {
      */
     private void init() {
         Jiffle.refCount++ ;
-        name = JiffleProperties.get( JiffleProperties.NAME_KEY ) + refCount;
-        imageParams = CollectionFactory.map();
+        
+        // TODO - CollectionFactory
+        imageParams = new HashMap<String, Jiffle.ImageRole>();
     }
     
     /**
-     * Clears all compiler and runtime objects
+     * Clears all compiler and runtime objects.
      */
     private void clearCompiledObjects() {
-        primaryAST = null;
-        finalAST = null;
-        tokens = null;
-        errorReporter = null;
-        msgTable = new MessageTable();
+        // TODO if necessary
     }
     
-    private void reportMessages() throws JiffleException {
-        if (msgTable.hasErrors()) {
-            throw new JiffleException(messagesToString());
-        }
+    /**
+     * Builds the parse tree from the script.
+     */
+    private Jiffle.Result<ParseTree> parseScript() {
+        CharStream input = new ANTLRInputStream(theScript);
         
-        if (msgTable.hasWarnings()) {
-            Map<String, List<Message>> messages = msgTable.getMessages();
-            System.err.println(messagesToString());
-        }
+        JiffleLexer lexer = new JiffleLexer(input);
+        TokenStream tokens = new CommonTokenStream(lexer);
+        
+        JiffleParser parser = new JiffleParser(tokens);
+        parser.removeErrorListeners();
+        
+        JiffleParserErrorListener errListener = new JiffleParserErrorListener();
+        parser.addErrorListener(errListener);
+
+        ParseTree tree = parser.script();
+        return new Jiffle.Result(tree, errListener.messages);
+    }
+    
+    private Jiffle.Result<Map<String, Jiffle.ImageRole>> getScriptImageParams(ParseTree tree) {
+        ImagesBlockWorker reader = new ImagesBlockWorker(tree);
+        return new Jiffle.Result(reader.imageVars, reader.messages);
+    }
+
+    private void reportMessages(Jiffle.Result result) throws JiffleException {
+        // TODO
     }
     
     /**
      * Write error messages to a string
      */
     private String messagesToString() {
-        StringBuilder sb = new StringBuilder();
-        if (msgTable != null) {
-            Map<String, List<Message>> messages = msgTable.getMessages();
-            for (String key : messages.keySet()) {
-                for (Message msg : messages.get(key)) {
-                    sb.append(msg.toString());
-                    sb.append(": ");
-                    sb.append(key);
-                    sb.append("\n");
-                }
-            }
-        }
-        return sb.toString();
+        // TODO
+        return "";
     }
     
-    /**
-     * Build a preliminary AST from the jiffle script. Basic syntax and grammar
-     * checks are done at this stage.
-     * 
-     * @throws JiffleException
-     */
-    private void buildPrimaryAST() throws JiffleException {
-        try {
-            ANTLRStringStream input = new ANTLRStringStream(theScript);
-            JiffleLexer lexer = new JiffleLexer(input);
-            tokens = new CommonTokenStream(lexer);
-
-            JiffleParser parser = new JiffleParser(tokens);
-            primaryAST = (CommonTree) parser.prog().getTree();
-            
-            loadScriptImageParameters(parser.getImageParams());
-
-        } catch (RecognitionException ex) {
-            throw new JiffleException(
-                    "error in script at or around line:" +
-                    ex.line + " col:" + ex.charPositionInLine);
-        }
-    }
-
     /**
      * Sets the image parameters to those read from the script (if any). If any 
      * previous parameters were set using {@link #setImageParams(java.util.Map)}
@@ -607,7 +558,7 @@ public class Jiffle {
      * 
      * @param scriptImageParams parameters read from the script (may be empty)
      */
-    private void loadScriptImageParameters(Map<String, ImageRole> scriptImageParams) {
+    private void loadScriptImageParameters(Map<String, Jiffle.ImageRole> scriptImageParams) {
         if (!scriptImageParams.isEmpty()) {
             if (!imageParams.isEmpty()) {
                 LOGGER.warning("Image parameters read from script override those previously set");
@@ -618,10 +569,13 @@ public class Jiffle {
     }
     
     private void checkOptions() {
+        /* TODO
+         * 
         CommonTreeNodeStream nodes = new CommonTreeNodeStream(primaryAST);
         nodes.setTokenStream(tokens);
-        OptionsBlockWorker reader = new OptionsBlockWorker(nodes, msgTable);
+        OptionsBlockReader reader = new OptionsBlockReader(nodes, msgTable);
         reader.downup(primaryAST);
+        */
     }
 
     /**
@@ -632,44 +586,8 @@ public class Jiffle {
      * @throws JiffleException on unintercepted parser errors
      */
     private boolean transformAndCheckVars() throws JiffleException {
-        try {
-            CommonTree tree = primaryAST;
-
-            CommonTreeNodeStream nodes = new CommonTreeNodeStream(tree);
-            nodes.setTokenStream(tokens);
-            TagVars tag = new TagVars(nodes, imageParams, msgTable);
-            tree = (CommonTree) tag.start().getTree();
-            if (msgTable.hasErrors()) return false;
-
-            nodes = new CommonTreeNodeStream(tree);
-            nodes.setTokenStream(tokens);
-
-            CheckAssignments assignments = new CheckAssignments(nodes, msgTable);
-            assignments.start();
-            if (msgTable.hasErrors()) return false;
-
-            nodes = new CommonTreeNodeStream(tree);
-            nodes.setTokenStream(tokens);
-            TransformExpressions trexpr = new TransformExpressions(nodes);
-            tree = (CommonTree) trexpr.start().getTree();
-            
-            nodes = new CommonTreeNodeStream(tree);
-            nodes.setTokenStream(tokens);
-            CheckFunctionCalls calls = new CheckFunctionCalls(nodes, msgTable);
-            calls.downup(tree);
-            if (msgTable.hasErrors()) return false;
-            
-            finalAST = tree;
-            return true;
-
-        } catch (RecognitionException ex) {
-            throw new JiffleException(
-                    "error in script at or around line:" +
-                    ex.line + " col:" + ex.charPositionInLine);
-            
-        } catch (JiffleParserException ex) {
-            throw new JiffleException(ex);
-        }
+        // TODO
+        return true;
     }
 
     /**
@@ -679,42 +597,11 @@ public class Jiffle {
      * 
      * @throws Exception 
      */
-    private JiffleRuntime createRuntimeInstance(RuntimeModel model,
+    private JiffleRuntime createRuntimeInstance(Jiffle.RuntimeModel model,
             Class<? extends JiffleRuntime> baseClass) throws JiffleException {
-        if (!isCompiled()) {
-            throw new JiffleException("The script has not been compiled");
-        }
         
-        String runtimeSource = createRuntimeSource(model, baseClass.getName(), false);
-
-        try {
-            SimpleCompiler compiler = new SimpleCompiler();
-            compiler.cook(runtimeSource);
-            
-            StringBuilder sb = new StringBuilder();
-            sb.append(JiffleProperties.get(JiffleProperties.RUNTIME_PACKAGE_KEY)).append(".");
-            
-            switch (model) {
-                case DIRECT:
-                    sb.append(JiffleProperties.get(JiffleProperties.DIRECT_CLASS_KEY));
-                    break;
-                    
-                case INDIRECT:
-                    sb.append(JiffleProperties.get(JiffleProperties.INDIRECT_CLASS_KEY));
-                    break;
-                    
-                default:
-                    throw new IllegalArgumentException("Internal compiler error");
-            }
-            
-            Class<?> clazz = compiler.getClassLoader().loadClass(sb.toString());
-            JiffleRuntime runtime = (JiffleRuntime) clazz.newInstance();
-            runtime.setImageParams(imageParams);
-            return runtime;
-
-        } catch (Exception ex) {
-            throw new JiffleException("Runtime source error", ex);
-        }
+        // TODO
+        return null;
     }
     
     /**
@@ -725,20 +612,22 @@ public class Jiffle {
      * 
      * @throws JiffleException if an error occurs generating the source 
      */
-    private String createRuntimeSource(RuntimeModel model,
+    private String createRuntimeSource(Jiffle.RuntimeModel model,
             String baseClassName, boolean scriptInDocs) throws JiffleException {
-        
-        if (!isCompiled()) {
-            throw new JiffleException("This instance has not been compiled");
-        }
 
-        CommonTreeNodeStream nodes = new CommonTreeNodeStream(finalAST);
-        nodes.setTokenStream(tokens);
-        
-        SourceGenerator generator = new RuntimeSourceGenerator(nodes);
-        generator.setBaseClassName(baseClassName);
-        generator.setRuntimeModel(model);
-        String s = scriptInDocs ? null : theScript;
-        return generator.getSource(s);
+        // TODO
+        return null;
     }
+    
+    
+    private static class Result<T> {
+        final T result;
+        final CompilerMessages messages;
+
+        public Result(T result, CompilerMessages messages) {
+            this.result = result;
+            this.messages = messages;
+        }
+    }
+    
 }
