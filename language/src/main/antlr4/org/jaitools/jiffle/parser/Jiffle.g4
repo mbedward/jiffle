@@ -168,8 +168,8 @@ bandSpecifier   : LSQUARE expression RSQUARE
                 ;
 
 
-pixelPos        : ABS_POS_PREFIX expression     # absolutePixel
-                | expression                    # relativePixel
+pixelPos        : ABS_POS_PREFIX expression
+                | expression
                 ;
 
 

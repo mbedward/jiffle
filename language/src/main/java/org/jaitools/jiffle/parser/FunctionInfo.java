@@ -42,19 +42,16 @@ public class FunctionInfo {
      * Constants to indicate the runtime provider of a function
      */
     public enum Provider {
-
-        /**
-         * Indicates a function provided by JiffleFunctions class
-         */
+        /** A function provided by JiffleFunctions class. */
         JIFFLE("jiffle"),
-        /**
-         * Indicates a function provided by java.lang.Math
-         */
+        
+        /** A function provided by java.lang.Math. */
         MATH("math"),
-        /**
-         * Indicates a function that is a proxy for a runtime class variable
-         */
+        
+        /** A function that is a proxy for a runtime class 
+         * field or method. */
         PROXY("proxy");
+        
         private String name;
 
         private Provider(String name) {
@@ -78,6 +75,7 @@ public class FunctionInfo {
             return null;
         }
     }
+    
     private final String jiffleName;
     private final String runtimeName;
     private final Provider provider;
@@ -90,14 +88,13 @@ public class FunctionInfo {
      *
      * @param jiffleName name of the function used in Jiffle scripts
      *
-     * @param runtimeName Java name used in runtime class source
+     * @param runtimeName either Java name used in runtime class source
      *
      * @param provider the provider: one of {@link Provider#JIFFLE},
-     *        {@link Provider#MATH} or {@link Provider#PROXY}
+     *        {@link Provider#MATH}, {@link Provider#PROXY}
      *
      * @param isVolatile {@code true} if the function returns a new value on
-     * each invocation regardless of pixel position (e.g. rand()); {@code false}
-     * otherwise
+     * each invocation regardless of pixel position (e.g. rand())
      *
      * @param returnType function return type label
      *
@@ -157,15 +154,18 @@ public class FunctionInfo {
      *
      * @return runtime class source for the function
      */
-    public String getRuntimeExpr() {
+    public String getRuntimeName() {
         switch (provider) {
             case MATH:
                 return "Math." + runtimeName;
+                
             case JIFFLE:
                 // _FN is the instance of JiffleFunctions in AbstractJiffleRuntime
                 return "_FN." + runtimeName;
+                
             case PROXY:
                 return runtimeName;
+                
             default:
                 throw new IllegalStateException("Internal compiler error: getRuntimeExpr");
         }
@@ -175,7 +175,7 @@ public class FunctionInfo {
      * Tests if this function is volatile, ie. returns a different value on each
      * invocation regardless of image position.
      *
-     * @return {@code true} if volatile, {@code false} otherwise
+     * @return {@code true} if volatile
      */
     public boolean isVolatile() {
         return isVolatile;
@@ -191,11 +191,10 @@ public class FunctionInfo {
     }
 
     /**
-     * Tests if this is a proxy function, ie. one that is translated to a
-     * runtime class field defined by Jiffle. Examples are {@code x()} and
-     * {@code width()}.
-     *
-     * @return {@code true} is a proxy function; {@code false} otherwise
+     * Tests if this function is a proxy for a runtime
+     * class field or method.
+     * 
+     * @return {@code true} if a proxy function
      */
     public boolean isProxy() {
         return provider == Provider.PROXY;
@@ -216,7 +215,7 @@ public class FunctionInfo {
      * @param fnName function name used in scripts
      * @param fnArgTypes argument types; null or empty for no-arg functions
      *
-     * @return {@code true} if this object matches; {@code false} otherwise
+     * @return {@code true} if this object matches
      */
     public boolean matches(String fnName, JiffleType ...fnArgTypes) {
         if (!this.jiffleName.equals(fnName)) {

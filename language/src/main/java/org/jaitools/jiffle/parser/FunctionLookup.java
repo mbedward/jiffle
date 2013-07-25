@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.jaitools.CollectionFactory;
+import org.jaitools.jiffle.util.Strings;
 
 /**
  * Looks up function descriptions for the Jiffle parser.
@@ -143,9 +144,12 @@ public class FunctionLookup {
                 return info;
             }
         }
-        
-        // should never get here
-        throw new UndefinedFunctionException("Undefined function: " + jiffleName);
+
+        // undefined function
+        throw new UndefinedFunctionException( String.format(
+                "Undefined function: %s(%s)", 
+                jiffleName, Strings.commas(argTypes)
+                ));
     }
     
     /**
@@ -163,7 +167,7 @@ public class FunctionLookup {
     public static String getRuntimeExpr(String jiffleName, JiffleType ...argTypes)
             throws UndefinedFunctionException {
         
-        return getInfo(jiffleName, argTypes).getRuntimeExpr();
+        return getInfo(jiffleName, argTypes).getRuntimeName();
     }
     
     /**

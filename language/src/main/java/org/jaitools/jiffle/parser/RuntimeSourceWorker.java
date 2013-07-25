@@ -25,12 +25,12 @@
 
 package org.jaitools.jiffle.parser;
 
-import java.util.Arrays;
 import java.util.List;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
-import org.jaitools.jiffle.parser.JiffleParser.*;
+import static org.jaitools.jiffle.parser.JiffleParser.*;
+import static org.jaitools.jiffle.util.Strings.*;
 
 /**
  * Generates Java sources for the runtime class.
@@ -53,40 +53,6 @@ public class RuntimeSourceWorker extends BaseWorker {
      */
     private String get(ParseTree ctx) {
         return source.get(ctx);
-    }
-    
-    /*
-     * Concatenates strings with space delimiters.
-     */
-    private String cat(String ...strs) {
-        return cat(' ', strs);
-    }
-
-    /*
-     * Concatenates strings.
-     */
-    private String cat(char sep, String ...strs) {
-        int n = strs.length;
-        if (n == 0) {
-            return "";
-        }
-        
-        StringBuilder sb = new StringBuilder();
-        for (String s : strs) {
-            sb.append(s);
-            if (n-- > 1) {
-                sb.append(sep);
-            }
-        }
-        return sb.toString();
-    }
-    
-    /*
-     * Replacement for String.split that doesn't return
-     * empty tokens.
-     */
-    private String[] split(String s, String regex) {
-        return s.replaceFirst("^" + regex, "").split(regex);
     }
     
     /*
@@ -115,7 +81,7 @@ public class RuntimeSourceWorker extends BaseWorker {
         StringBuilder sb = new StringBuilder();
         sb.append(fnName);
         sb.append('(');
-        sb.append(cat(',', args));
+        sb.append(commas((Object[]) args));
         sb.append(')');
         return sb.toString();
     }
@@ -147,7 +113,7 @@ public class RuntimeSourceWorker extends BaseWorker {
         for (ExpressionContext ec : ecs) {
             ss[i++] = get(ec);
         }
-        set(ctx, cat(',', ss));
+        set(ctx, concat(',', ss));
     }
 
     @Override
@@ -188,7 +154,7 @@ public class RuntimeSourceWorker extends BaseWorker {
         String left = get(ctx.expression(0));
         String right = get(ctx.expression(1));
         String op = ctx.getChild(1).getText();
-        set(ctx, cat(left, op, right));
+        set(ctx, spaces(left, op, right));
     }
     
     @Override
@@ -196,7 +162,7 @@ public class RuntimeSourceWorker extends BaseWorker {
         String left = get(ctx.expression(0));
         String right = get(ctx.expression(1));
         String op = ctx.getChild(1).getText();
-        set(ctx, cat(left, op, right));
+        set(ctx, spaces(left, op, right));
     }
 
     @Override
@@ -262,7 +228,7 @@ public class RuntimeSourceWorker extends BaseWorker {
         String x = get(ctx.expression(0));
         String a = get(ctx.expression(1));
         String b = get(ctx.expression(2));
-        set(ctx, Sources.conCall(x, a, b));
+        set(ctx, DirectSources.conCall(x, a, b));
     }
 
     @Override
@@ -275,7 +241,7 @@ public class RuntimeSourceWorker extends BaseWorker {
         String left = ctx.ID().getText();
         String right = get(ctx.expression());
         String op = ctx.getChild(1).getText();
-        set(ctx, cat(left, op, right));
+        set(ctx, spaces(left, op, right));
     }
     
     @Override
@@ -289,12 +255,12 @@ public class RuntimeSourceWorker extends BaseWorker {
         String argList = get( ctx.argumentList() );
         String[] args = split(argList, "[(), ]+");
         
-        set( ctx, Sources.conCall(args) );
+        set( ctx, DirectSources.conCall(args) );
     }
 
     @Override
     public void exitParenExpression(ParenExpressionContext ctx) {
-        set( ctx, cat("(", get(ctx.expression()), ")") );
+        set( ctx, spaces("(", get(ctx.expression()), ")") );
     }
 
     @Override
@@ -340,6 +306,9 @@ public class RuntimeSourceWorker extends BaseWorker {
         set(ctx, x + ", " + y);
     }
 
+    /*
+     * TODO - grammar no longer has these
+     *
     @Override
     public void exitAbsolutePixel(AbsolutePixelContext ctx) {
         set( ctx, get(ctx.expression()) );
@@ -349,6 +318,9 @@ public class RuntimeSourceWorker extends BaseWorker {
     public void exitRelativePixel(RelativePixelContext ctx) {
         set( ctx, "+" + get(ctx.expression()) );
     }
+    * 
+    * 
+    */
 
     @Override
     public void exitVarID(VarIDContext ctx) {
@@ -366,15 +338,15 @@ public class RuntimeSourceWorker extends BaseWorker {
                 break;
                 
             case JiffleParser.TRUE:
-                set(ctx, Sources.trueValue());
+                set(ctx, DirectSources.trueValue());
                 break;
                 
             case JiffleParser.FALSE:
-                set(ctx, Sources.falseValue());
+                set(ctx, DirectSources.falseValue());
                 break;
                 
             case JiffleParser.NULL:
-                set(ctx, Sources.nanValue());
+                set(ctx, DirectSources.nanValue());
                 break;
                 
             default:
