@@ -26,33 +26,51 @@
 package org.jaitools.jiffle.parser;
 
 /**
- * Represents a symbol in a Jiffle script. Used by {@link SymbolScopeStack}
- * during script compilation.
+ * Represents a symbol in a Jiffle script.
+ * <p>
+ * Jiffle does not (yet) support user-defined functions in scripts,
+ * so all symbols are variables.
+ * <p>
+ * Adapted from "Language Implementation Patterns" by Terence Parr,
+ * published by The Pragmatic Bookshelf, 2010.
  * 
- * @author Michael Bedward
- * @since 0.1
- * @version $Id$
+ * @author michael
  */
 public class Symbol {
+    
+    public static enum Type {
+        /** General scalar user variable. */
+        SCALAR,
+        
+        /** A foreach loop variable. */
+        LOOP_VAR,
+        
+        /** A list variable. */
+        LIST,
+        
+        /** Source image. */
+        SOURCE_IMAGE,
+        
+        /** Destination image. */
+        DEST_IMAGE;
+    }
+
     private final String name;
-    private final SymbolType type;
-    private final ScopeType scopeType;
+    private final Type type;
 
     /**
      * Creates a new symbol.
      * 
-     * @param name name as used in the Jiffle script
-     * @param type type of symbol
-     * @param scopeType scope of symbol 
+     * @param name name in script
+     * @param type symbol type
      */
-    public Symbol(String name, SymbolType type, ScopeType scopeType) {
+    public Symbol(String name, Type type) {
         this.name = name;
         this.type = type;
-        this.scopeType = scopeType;
     }
 
     /**
-     * Gets this symbol's name.
+     * Gets the name.
      * 
      * @return symbol name
      */
@@ -61,51 +79,12 @@ public class Symbol {
     }
 
     /**
-     * Gets this symbol's type.
+     * Gets the type.
      * 
      * @return symbol type
      */
-    public SymbolType getType() {
+    public Type getType() {
         return type;
-    }
-    
-    /**
-     * Gets this symbol's scope type.
-     * 
-     * @return  symbol scope type
-     */
-    public ScopeType getScopeType() {
-        return scopeType;
-    }
-    
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Symbol other = (Symbol) obj;
-        if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
-            return false;
-        }
-        if (this.type != other.type) {
-            return false;
-        }
-        if (this.scopeType != other.scopeType) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 59 * hash + (this.name != null ? this.name.hashCode() : 0);
-        hash = 59 * hash + (this.type != null ? this.type.hashCode() : 0);
-        hash = 59 * hash + (this.scopeType != null ? this.scopeType.hashCode() : 0);
-        return hash;
     }
 
 }

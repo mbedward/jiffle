@@ -25,107 +25,97 @@
 
 package org.jaitools.jiffle.parser;
 
-import java.util.Collections;
-import java.util.List;
-
-import org.jaitools.CollectionFactory;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
- * Stores symbols in a Jiffle script at a single scope level. Used during
- * script compilation.
+ * Base class for symbol scope levels. 
+ * <p>
+ * Adapted from "Language Implementation Patterns" by Terence Parr,
+ * published by The Pragmatic Bookshelf, 2010.
  * 
- * @author Michael Bedward
- * @since 0.1
- * @version $Id$
+ * @author michael
  */
-public class SymbolScope {
-
-    private final String name;
-    private final List<Symbol> symbols;
+/**
+ * A symbol scope level. 
+ * <p>
+ * Adapted from "Language Implementation Patterns" by Terence Parr,
+ * published by The Pragmatic Bookshelf, 2010.
+ * 
+ * @author michael
+ */
+public abstract class SymbolScope {
+    
+    protected final String name;
+    
+    /** Parent scope or {@code null} if top level. */
+    protected final SymbolScope enclosingScope;
+    
+    /** Symbols defined within this scope, keyed by name. */
+    protected final Map<String, Symbol> symbols;
 
     /**
-     * Creates a new scope.
+     * Creates a new instance.
      * 
-     * @param name a scope label
+     * @param name label for this scope
+     * @param parent scope or {@code null} if top level
      */
-    public SymbolScope(String name) {
+    public SymbolScope(String name, SymbolScope enclosingScope) {
         this.name = name;
-        this.symbols = CollectionFactory.list();
+        this.enclosingScope = enclosingScope;
+        symbols = new LinkedHashMap<String, Symbol>();
     }
-
+    
     /**
-     * Gets the scope label.
-     * 
-     * @return scope label
+     * Gets the name of this scope instance.
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Gets the list of symbols in this scope. The list
-     * is returned as an unmodifiable view.
-     * 
-     * @return list of symbols
+     * Gets the parent scope or {@code null} if this is the
+     * top scope.
      */
-    public List<Symbol> getSymbols() {
-        return Collections.unmodifiableList(symbols);
-    }
-    
-    /**
-     * Tests if this scope is empty.
-     * 
-     * @return {@code true} if there are no symbols; {@code false} otherwise
-     */
-    public boolean isEmpty() {
-        return symbols.isEmpty();
-    }
-    
-    /**
-     * Gets the number of symbols in this scope.
-     * 
-     * @return number of symbols
-     */
-    public int size() {
-        return symbols.size();
-    }
-    
-    /**
-     * Adds a symbol to this scope.
-     * 
-     * @param symbol the symbol
-     * @throws IllegalArgumentException if {@code symbol} is {@code null}
-     */
-    public void add(Symbol symbol) {
-        if (symbol == null) {
-            throw new IllegalArgumentException("symbol must not be null");
-        }
-        symbols.add(symbol);
+    public SymbolScope getEnclosingScope() {
+        return enclosingScope;
     }
 
     /**
-     * Tests if this scope contains a symbol with the given name.
-     * 
-     * @param name symbol name
-     * @return {@code true} if a symbol with this name is found; 
-     *         {@code false} otherwise
+     * Adds a symbol to this scope.
      */
-    public boolean hasSymbolNamed(String name) {
-        return findSymbolNamed(name) != null;
+    public void add(Symbol symbol) {
+        symbols.put(symbol.getName(), symbol);
     }
     
     /**
-     * Gets the symbol with the given name if one exists.
-     * 
-     * @param name symbol name
-     * @return the symbol or {@code null} if not match was found
+     * Tests if a symbol is defined in this scope or any
+     * enclosing scope.
      */
-    public Symbol findSymbolNamed(String name) {
-        for (Symbol s : symbols) {
-            if (s.getName().equals(name)) {
-                return s;
-            }
+    public boolean has(String name) {
+        if (symbols.containsKey(name)) {
+            return true;
+        } else if (enclosingScope != null) {
+            return enclosingScope.has(name);
         }
-        return null;
+        return false;
+    }
+
+    /**
+     * Searches for a symbol in this scope and, if not found,
+     * any enclosing scopes.
+     * 
+     * @return the symbol
+     * @throws IllegalArgumentException if the symbol is not found
+     */
+    public Symbol get(String name) {
+        if (symbols.containsKey(name)) {
+            return symbols.get(name);
+        } else if (enclosingScope != null) {
+            return enclosingScope.get(name);
+        } else {
+            throw new IllegalArgumentException(
+                    "Missing symbol " + name + " in scope " + getName());
+        }
     }
 }

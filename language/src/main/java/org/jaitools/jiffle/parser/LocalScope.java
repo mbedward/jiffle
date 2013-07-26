@@ -1,5 +1,5 @@
 /* 
- *  Copyright (c) 2011-2013, Michael Bedward. All rights reserved. 
+ *  Copyright (c) 2013, Michael Bedward. All rights reserved. 
  *   
  *  Redistribution and use in source and binary forms, with or without modification, 
  *  are permitted provided that the following conditions are met: 
@@ -26,44 +26,17 @@
 package org.jaitools.jiffle.parser;
 
 /**
- * Constants representing the type of symbols tracked through scopes
- * during JIffle script compilation.
- * 
- * @author Michael Bedward
- * @since 0.1
- * @version $Id$
+ * A nested symbol scope level.
+ * <p>
+ * Adapted from "Language Implementation Patterns" by Terence Parr,
+ * published by The Pragmatic Bookshelf, 2010.
+ *
+ * @author michael
  */
-public enum SymbolType {
+public class LocalScope extends SymbolScope {
 
-    /** General scalar user variable. */
-    SCALAR("scalar", "General scalar user var"),
-    
-    /** A foreach loop variable. */
-    LOOP_VAR("loopvar", "Loop var"),
-    
-    /** A list variable. */
-    LIST("list", "List var");
-    
-    private final String name;
-    private final String desc;
-    
-    private SymbolType(String name, String desc) {
-        this.name = name;
-        this.desc = desc;
-    }
-    
-    /**
-     * Gets the description of this type.
-     * 
-     * @return the description
-     */
-    public String getDesc() {
-        return desc;
-    }
-    
-    @Override
-    public String toString() {
-        return "SymbolType{" + name + '}';
+    public LocalScope(String name, SymbolScope enclosingScope) {
+        super(name, enclosingScope);
     }
     
 }

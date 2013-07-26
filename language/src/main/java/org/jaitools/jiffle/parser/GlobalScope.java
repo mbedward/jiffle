@@ -1,5 +1,5 @@
 /* 
- *  Copyright (c) 2011-2013, Michael Bedward. All rights reserved. 
+ *  Copyright (c) 2013, Michael Bedward. All rights reserved. 
  *   
  *  Redistribution and use in source and binary forms, with or without modification, 
  *  are permitted provided that the following conditions are met: 
@@ -26,17 +26,17 @@
 package org.jaitools.jiffle.parser;
 
 /**
- * Constants for variable scope type.
- * 
- * @author Michael Bedward
- * @since 0.1
- * @version $Id$
+ * The top level symbol scope.
+ * <p>
+ * Adapted from "Language Implementation Patterns" by Terence Parr,
+ * published by The Pragmatic Bookshelf, 2010.
+ *
+ * @author michael
  */
-public enum ScopeType {
+public class GlobalScope extends SymbolScope {
+
+    public GlobalScope() {
+        super("global", null);
+    }
     
-    /** Pixel-scope variable. */
-    PIXEL,
-    
-    /** Image-scope variable. */
-    IMAGE;
 }

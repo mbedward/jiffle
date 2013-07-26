@@ -95,7 +95,7 @@ public class SymbolScopeStack {
      * @param scopeType symbol scope 
      * @throws IllegalArgumentException if no scope levels have been added
      */
-    public void addSymbol(String name, SymbolType type, ScopeType scopeType) {
+    public void addSymbol(String name, Symbol.Type type, ScopeType scopeType) {
         if (scopes.isEmpty()) {
             throw new IllegalStateException("Called addSymbol before adding any scope levels");
         }
@@ -140,7 +140,7 @@ public class SymbolScopeStack {
      * @param type symbol type
      * @return {@code true} if the symbol is found; {@code false} otherwise
      */
-    public boolean isDefined(String name, SymbolType type) {
+    public boolean isDefined(String name, Symbol.Type type) {
         Symbol symbol = findSymbol(name);
         if (symbol == null) {
             return false;
