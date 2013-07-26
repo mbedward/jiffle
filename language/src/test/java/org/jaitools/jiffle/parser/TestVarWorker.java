@@ -98,6 +98,13 @@ public class TestVarWorker {
     }
     
     @Test
+    public void assignmentToLoopVar() throws Exception {
+        assertScriptHasError(
+                "AssignmentToLoopVar.jfl",
+                Errors.ASSIGNMENT_TO_LOOP_VAR);
+    }
+    
+    @Test
     public void invalidAssignmentOpForDestinationImage() throws Exception {
         assertScriptHasError(
                 "InvalidAssignmentOpForDestinationImage.jfl", 

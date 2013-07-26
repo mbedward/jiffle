@@ -7,6 +7,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.jaitools.jiffle.Jiffle;
 import org.jaitools.jiffle.parser.JiffleParser.AssignmentContext;
 import org.jaitools.jiffle.parser.JiffleParser.BlockContext;
+import org.jaitools.jiffle.parser.JiffleParser.ForeachStmtContext;
 import org.jaitools.jiffle.parser.JiffleParser.InitBlockContext;
 import org.jaitools.jiffle.parser.JiffleParser.ScriptContext;
 import org.jaitools.jiffle.parser.JiffleParser.VarDeclarationContext;
@@ -76,18 +77,34 @@ public class VarWorker extends PropertyWorker<SymbolScope> {
 
     @Override
     public void enterBlock(BlockContext ctx) {
-        // push a new scope level
-        SymbolScope scope = new LocalScope("block", currentScope);
-        set(ctx, scope);
-        currentScope = scope;
+        pushScope("block");
     }
 
     @Override
     public void exitBlock(BlockContext ctx) {
-        // pop the scope level
-        currentScope = currentScope.getEnclosingScope();
+        popScope();
     }
 
+    @Override
+    public void enterForeachStmt(ForeachStmtContext ctx) {
+        // The foreach statement creates its own scope within
+        // which the loop variable is defined.
+        pushScope("foreach");
+        
+        // Loop var
+        Token tok = ctx.ID().getSymbol();
+        String name = tok.getText();
+
+        // Loop var is allowed to shadow any vars of the same name
+        // in enclosing scopes
+        currentScope.add(new Symbol(name, Symbol.Type.LOOP_VAR));
+    }
+    
+    @Override
+    public void exitForeachStmt(ForeachStmtContext ctx) {
+        popScope();
+    }
+    
     @Override
     public void exitAssignment(AssignmentContext ctx) {
         Token tok = ctx.ID().getSymbol();
@@ -119,49 +136,82 @@ public class VarWorker extends PropertyWorker<SymbolScope> {
         
     }
 
-    private void error(Token tok, Errors error, String varName) {
-        messages.error(tok, error + ": " + varName);
-    }
-    
-    /*
-     * Helper methods
-     */
-    private boolean isImage(String name) { 
-        return isSourceImage(name) || isDestImage(name);
-    }
-    
-    private boolean isSourceImage(String name) { 
-        if (!globalScope.has(name)) {
-            return false;
-        }
-        return globalScope.get(name).getType() == Symbol.Type.SOURCE_IMAGE;
-    }
-    
-    private boolean isDestImage(String name) { 
-        if (!globalScope.has(name)) {
-            return false;
-        }
-        return globalScope.get(name).getType() == Symbol.Type.DEST_IMAGE;
-    }
     
     private boolean isValidAssignment(AssignmentContext ctx) {
         Token tok = ctx.ID().getSymbol();
         String name = tok.getText();
+        
+        // Short-cut: scalar that is already defined is OK
+        if (currentScope.has(name) 
+                && currentScope.get(name).getType() == Symbol.Type.SCALAR) {
+            return true;
+        }
     
-        if (isSourceImage(name)) {
+        if (isLoopVar(name)) {
+            // Trying to assign to a loop var within loop scope
+            error(tok, Errors.ASSIGNMENT_TO_LOOP_VAR, name);
+            
+        } else if (isSourceImage(name)) {
+            // Trying to write to a source image
             error(tok, Errors.WRITING_TO_SOURCE_IMAGE, name);
             return false;
             
         } else if (isDestImage(name) && ctx.ASSIGN() == null) {
+            // Using operator other than simple assignment (=) with 
+            // destination image
             error(tok, Errors.INVALID_ASSIGNMENT_OP_WITH_DEST_IMAGE, name);
             return false;
         
         } else if (ConstantLookup.isDefined(name)) {
+            // Trying to write to a built-in constant
             error(tok, Errors.ASSIGNMENT_TO_CONSTANT, name);
             return false;
         }
         
         return true;
+    }
+    
+
+    private void pushScope(String newScopeLabel) {
+        SymbolScope newScope = new LocalScope(newScopeLabel, currentScope);
+        currentScope = newScope;
+    }
+    
+    private void popScope() {
+        currentScope = currentScope.getEnclosingScope();
+    }
+    
+    private void error(Token tok, Errors error, String varName) {
+        messages.error(tok, error + ": " + varName);
+    }
+    
+    private boolean isImage(String name) { 
+        return isSourceImage(name) || isDestImage(name);
+    }
+    
+    private boolean isSourceImage(String name) { 
+        if (globalScope.has(name)) {
+            return globalScope.get(name).getType() == Symbol.Type.SOURCE_IMAGE;
+        }
+        return false;
+    }
+    
+    private boolean isDestImage(String name) { 
+        if (globalScope.has(name)) {
+            return globalScope.get(name).getType() == Symbol.Type.DEST_IMAGE;
+        }
+        return false;
+    }
+    
+    private boolean isLoopVar(String name) {
+        if (currentScope.has(name)) {
+            return currentScope.get(name).getType() == Symbol.Type.LOOP_VAR;
+        }
+        return false;
+    }
+    
+    private boolean isFunction(String name) {
+        return FunctionLookup.isDefined(name);
     }
     
 }

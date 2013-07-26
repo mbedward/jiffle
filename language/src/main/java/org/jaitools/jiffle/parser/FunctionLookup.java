@@ -28,6 +28,7 @@ package org.jaitools.jiffle.parser;
 import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.jaitools.CollectionFactory;
@@ -45,7 +46,8 @@ public class FunctionLookup {
     private static final String PROPERTIES_FILE = 
             "META-INF/org/jaitools/jiffle/FunctionLookup.properties";
 
-    private static final List<FunctionInfo> lookup = CollectionFactory.list();
+    // lists of function info keyed by function name 
+    private static final Map<String, List<FunctionInfo>> lookup = CollectionFactory.map();
     
     // Indices of attributes in properties file record
     private static final int JIFFLE_NAME = 0;
@@ -92,9 +94,19 @@ public class FunctionLookup {
                     argTypes[i] = attr[k];
                 }
 
-                lookup.add( new FunctionInfo(
-                        attr[JIFFLE_NAME], attr[RUNTIME_NAME], 
-                        provider, isVolatile, attr[RETURN], argTypes) );
+                List<FunctionInfo> fns;
+                String fname = attr[JIFFLE_NAME];
+                if (lookup.containsKey(fname)) {
+                    fns = lookup.get(fname);
+                } else {
+                    fns = CollectionFactory.list();
+                    lookup.put(fname, fns);
+                }
+                
+                fns.add(new FunctionInfo(
+                            attr[JIFFLE_NAME], attr[RUNTIME_NAME], 
+                            provider, isVolatile, attr[RETURN], argTypes) 
+                        );
             }
 
         } catch (Exception ex) {
@@ -110,12 +122,23 @@ public class FunctionLookup {
     }
     
     /**
+     * Checks if a function of the given name is defined.
+     * 
+     * @param jiffleName the name of the function used in a Jiffle script
+     * 
+     * @return {@code true} if defined
+     */
+    public static boolean isDefined(String jiffleName) {
+        return lookup.containsKey(jiffleName);
+    }
+    
+    /**
      * Checks if a function is defined.
      *
      * @param jiffleName the name of the function used in a Jiffle script
      * @param argTypes argument types; null or empty for no-arg functions
      *
-     * @return {@code true} if defined; {@code false} otherwise
+     * @return {@code true} if defined
      */
     public static boolean isDefined(String jiffleName, JiffleType ...argTypes) {
         try {
@@ -139,16 +162,19 @@ public class FunctionLookup {
     public static FunctionInfo getInfo(String jiffleName, JiffleType ...argTypes)
             throws UndefinedFunctionException {
 
-        for (FunctionInfo info : lookup) {
-            if (info.matches(jiffleName, argTypes)) {
-                return info;
+        List<FunctionInfo> fns = lookup.get(jiffleName);
+        if (fns != null) {
+            for (FunctionInfo info : fns) {
+                if (info.matches(jiffleName, argTypes)) {
+                    return info;
+                }
             }
         }
 
         // undefined function
         throw new UndefinedFunctionException( String.format(
                 "Undefined function: %s(%s)", 
-                jiffleName, Strings.commas(argTypes)
+                jiffleName, Strings.commas((Object[])argTypes)
                 ));
     }
     
@@ -181,10 +207,9 @@ public class FunctionLookup {
      * @throws UndefinedFunctionException if the name is not matched 
      */
     public static JiffleType getReturnType(String jiffleName) throws UndefinedFunctionException {
-        for (FunctionInfo info : lookup) {
-            if (info.getJiffleName().equals(jiffleName)) {
-                return info.getReturnType();
-            }
+        List<FunctionInfo> fns = lookup.get(jiffleName);
+        if (fns != null) {
+            return fns.get(0).getReturnType();
         }
         
         throw new UndefinedFunctionException("Undefined function: " + jiffleName);

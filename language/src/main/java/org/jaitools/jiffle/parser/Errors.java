@@ -10,8 +10,10 @@ package org.jaitools.jiffle.parser;
  */
 public enum Errors {
     
-    ASSIGNMENT_TO_CONSTANT("Attempting to assign a value to a constant"),
-
+    ASSIGNMENT_TO_CONSTANT("Attempting to assign a value to constant"),
+    
+    ASSIGNMENT_TO_LOOP_VAR("Cannot assign a new value to loop variable"),
+    
     DUPLICATE_VAR_DECL("Duplicate variable declaration"),
     
     IMAGE_VAR_INIT_BLOCK("Image variable cannot be used in init block"),
