@@ -34,7 +34,7 @@ import org.antlr.v4.runtime.Recognizer;
  * @author michael
  */
 public class JiffleParserErrorListener extends BaseErrorListener {
-    public CompilerMessages messages = new CompilerMessages();
+    public Messages messages = new Messages();
     
     @Override
     public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {

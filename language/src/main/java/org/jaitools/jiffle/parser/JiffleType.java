@@ -16,7 +16,10 @@ public enum JiffleType {
     D("D"),
     
     /** List */
-    L("LIST");
+    LIST("LIST"),
+    
+    /** Not known (a placeholder type for the compiler). */
+    UNKNOWN("Unknown");
     
     private final String label;
     

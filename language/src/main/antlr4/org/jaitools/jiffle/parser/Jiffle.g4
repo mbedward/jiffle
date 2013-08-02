@@ -27,7 +27,7 @@
 
 grammar Jiffle;
 
-script          : specialBlock* statement+ 
+script          : specialBlock* body 
                 ;
 
 specialBlock    : optionsBlock
@@ -72,6 +72,10 @@ varDeclaration  : ID (ASSIGN expression)? SEMI
 
 
 block           : LCURLY statement* RCURLY
+                ;
+
+
+body            : statement+
                 ;
 
 

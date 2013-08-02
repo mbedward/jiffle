@@ -36,9 +36,15 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
  */
 public abstract class BaseWorker extends JiffleBaseListener {
     
-    public CompilerMessages messages = new CompilerMessages();
+    public Messages messages = new Messages();
     
-    protected void walkTree(ParseTree tree) {
+    protected final ParseTree tree;
+
+    public BaseWorker(ParseTree tree) {
+        this.tree = tree;
+    }
+    
+    protected void walkTree() {
         new ParseTreeWalker().walk(this, tree);
     }
     

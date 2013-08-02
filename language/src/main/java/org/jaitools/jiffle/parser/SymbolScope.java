@@ -82,9 +82,23 @@ public abstract class SymbolScope {
     }
 
     /**
-     * Adds a symbol to this scope.
+     * Adds a symbol to this scope. If a symbol with the
+     * same name is already defined, an exception is thrown.
      */
     public void add(Symbol symbol) {
+        add(symbol, false);
+    }
+
+    /**
+     * Adds a symbol to this scope, optionally allowing 
+     * replacement of any existing symbol with the same name.
+     */
+    public void add(Symbol symbol, boolean allowReplacement) {
+        if (symbols.containsKey(symbol.getName()) && !allowReplacement) {
+            throw new IllegalArgumentException(
+                    "Symbol " + symbol.getName() + " is already defined");
+        }
+        
         symbols.put(symbol.getName(), symbol);
     }
     
@@ -115,7 +129,8 @@ public abstract class SymbolScope {
             return enclosingScope.get(name);
         } else {
             throw new IllegalArgumentException(
-                    "Missing symbol " + name + " in scope " + getName());
+                    "Unknown symbol " + name + " in scope " + getName());
         }
     }
+    
 }

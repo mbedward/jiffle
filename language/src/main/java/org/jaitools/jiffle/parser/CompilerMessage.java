@@ -28,31 +28,23 @@ package org.jaitools.jiffle.parser;
 import org.antlr.v4.runtime.Token;
 
 /**
+ * A message relating to a position in an input script.
  *
  * @author michael
  */
-public class CompilerMessage {
+public class CompilerMessage extends Message {
 
-    public static enum Level {
-        ERROR,
-        WARNING,
-        INFO;
-    }
-    
-    final Level level;
-    final int line;
-    final int pos;
-    final String msg;
+    final private int line;
+    final private int pos;
 
     public CompilerMessage(Level level, Token tok, String msg) {
         this(level, tok.getLine(), tok.getCharPositionInLine() + 1, msg);
     }
     
     public CompilerMessage(Level level, int line, int charPos, String msg) {
-        this.level = level;
+        super(level, msg);
         this.line = line;
         this.pos = charPos;
-        this.msg = msg;
     }
     
     @Override

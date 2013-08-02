@@ -7,8 +7,10 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.jaitools.jiffle.Jiffle;
 import org.jaitools.jiffle.parser.JiffleParser.AssignmentContext;
 import org.jaitools.jiffle.parser.JiffleParser.BlockContext;
+import org.jaitools.jiffle.parser.JiffleParser.BodyContext;
 import org.jaitools.jiffle.parser.JiffleParser.ForeachStmtContext;
 import org.jaitools.jiffle.parser.JiffleParser.InitBlockContext;
+import org.jaitools.jiffle.parser.JiffleParser.ListLiteralContext;
 import org.jaitools.jiffle.parser.JiffleParser.ScriptContext;
 import org.jaitools.jiffle.parser.JiffleParser.VarDeclarationContext;
 import org.jaitools.jiffle.parser.JiffleParser.VarIDContext;
@@ -25,7 +27,7 @@ import org.jaitools.jiffle.parser.JiffleParser.VarIDContext;
  */
 public class VarWorker extends PropertyWorker<SymbolScope> {
 
-    final GlobalScope globalScope;
+    private final GlobalScope globalScope;
     private SymbolScope currentScope;
     
     
@@ -33,11 +35,13 @@ public class VarWorker extends PropertyWorker<SymbolScope> {
             ParseTree tree, 
             Map<String, Jiffle.ImageRole> imageParams) {
         
+        super(tree);
         this.globalScope = new GlobalScope();
         this.currentScope = globalScope;
         
         addImageVarsToGlobal(imageParams);
-        walkTree(tree);
+        walkTree();
+        set(tree, globalScope);
     }
     
     private void addImageVarsToGlobal(Map<String, Jiffle.ImageRole> imageParams) {
@@ -52,8 +56,21 @@ public class VarWorker extends PropertyWorker<SymbolScope> {
     }
 
     @Override
-    public void enterScript(ScriptContext ctx) {
+    public void exitScript(ScriptContext ctx) {
+        // All done. Annotate the root tree node.
         set(ctx, globalScope);
+    }
+
+    @Override
+    public void enterBody(BodyContext ctx) {
+        // All variables that first appear in the bocy of the 
+        // script should have pixel-level scope.
+        pushScope(ctx, "pixel");
+    }
+    
+    @Override
+    public void exitBody(BodyContext ctx) {
+        popScope();
     }
     
     @Override
@@ -73,11 +90,12 @@ public class VarWorker extends PropertyWorker<SymbolScope> {
                 currentScope.add(new Symbol(name, Symbol.Type.SCALAR));
             }
         }
+        
     }
 
     @Override
     public void enterBlock(BlockContext ctx) {
-        pushScope("block");
+        pushScope(ctx, "block");
     }
 
     @Override
@@ -89,7 +107,7 @@ public class VarWorker extends PropertyWorker<SymbolScope> {
     public void enterForeachStmt(ForeachStmtContext ctx) {
         // The foreach statement creates its own scope within
         // which the loop variable is defined.
-        pushScope("foreach");
+        pushScope(ctx, "foreach");
         
         // Loop var
         Token tok = ctx.ID().getSymbol();
@@ -112,28 +130,33 @@ public class VarWorker extends PropertyWorker<SymbolScope> {
         if (isValidAssignment(ctx)) {
             String name = tok.getText();
 
-            // Add the symbol if this is its first appearance
+            // Add the symbol if this is its first appearance.
+            // We won't know its type yet - could be scalar or list.
             if (!currentScope.has(name)) {
-                currentScope.add(new Symbol(name, Symbol.Type.SCALAR));
+                currentScope.add(new Symbol(name, Symbol.Type.UNKNOWN));
             }
         }
     }
     
     @Override
     public void exitVarID(VarIDContext ctx) {
-        /*
-         * We are in an expression (but not LHS) to get here.
-         */
         Token tok = ctx.ID().getSymbol();
         String name = tok.getText();
         
         if (!currentScope.has(name)) {
+             // To get here we must be processing the RHS of
+             // an expression, so any vars should be defined.
             error(tok, Errors.VAR_UNDEFINED, name);
             
         } else if (isDestImage(name)) {
             error(tok, Errors.READING_FROM_DEST_IMAGE, name);
         }
         
+    }
+
+    @Override
+    public void exitListLiteral(ListLiteralContext ctx) {
+        super.exitListLiteral(ctx);
     }
 
     
@@ -172,9 +195,14 @@ public class VarWorker extends PropertyWorker<SymbolScope> {
     }
     
 
-    private void pushScope(String newScopeLabel) {
-        SymbolScope newScope = new LocalScope(newScopeLabel, currentScope);
-        currentScope = newScope;
+    /*
+     * Pushes a new scope and sets it as a property of the parse
+     * tree node.
+     */
+    private void pushScope(ParseTree ctx, String newScopeLabel) {
+        SymbolScope scope = new LocalScope(newScopeLabel, currentScope);
+        set(ctx, scope);
+        currentScope = scope;
     }
     
     private void popScope() {

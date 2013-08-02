@@ -28,7 +28,6 @@ package org.jaitools.jiffle.parser;
 import java.util.List;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import static org.jaitools.jiffle.parser.JiffleParser.*;
 import static org.jaitools.jiffle.util.Strings.*;
 
@@ -37,23 +36,7 @@ import static org.jaitools.jiffle.util.Strings.*;
  *
  * @author michael
  */
-public class RuntimeSourceWorker extends BaseWorker {
-    
-    public ParseTreeProperty<String> source = new ParseTreeProperty<String>();
-    
-    /*
-     * Sugar to set a node property
-     */
-    private void set(ParseTree ctx, String node) {
-        source.put(ctx, node);
-    }
-    
-    /*
-     * Sugar to get a node property
-     */
-    private String get(ParseTree ctx) {
-        return source.get(ctx);
-    }
+public class RuntimeSourceWorker extends PropertyWorker<String> {
     
     /*
      * Formats a semi-colon terminated source line;
@@ -87,13 +70,14 @@ public class RuntimeSourceWorker extends BaseWorker {
     }
 
     public RuntimeSourceWorker(ParseTree tree) {
-        walkTree(tree);
+        super(tree);
+        walkTree();
     }
 
     @Override
     public void exitScript(ScriptContext ctx) {
         StringBuilder sb = new StringBuilder();
-        for (StatementContext stmt : ctx.statement()) {
+        for (StatementContext stmt : ctx.body().statement()) {
             sb.append(get(stmt));
         }
         

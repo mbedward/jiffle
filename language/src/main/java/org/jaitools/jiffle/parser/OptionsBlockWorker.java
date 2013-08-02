@@ -16,8 +16,9 @@ public class OptionsBlockWorker extends BaseWorker {
     private boolean readBlock = false;
 
     public OptionsBlockWorker(ParseTree tree) {
+        super(tree);
         options = new HashMap<String, String>();
-        walkTree(tree);
+        walkTree();
     }
 
     @Override

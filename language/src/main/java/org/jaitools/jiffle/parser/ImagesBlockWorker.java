@@ -50,8 +50,9 @@ public class ImagesBlockWorker extends BaseWorker {
      * @param tree a parse tree
      */
     public ImagesBlockWorker(ParseTree tree) {
+        super(tree);
         imageVars = new HashMap<String, Jiffle.ImageRole>();
-        walkTree(tree);
+        walkTree();
     }
 
     @Override

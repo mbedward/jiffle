@@ -6,18 +6,23 @@ import java.util.List;
 import org.antlr.v4.runtime.Token;
 
 /**
- * A holder for compiler messages.
+ * Holds a collection of messages and provides short-cut methods to
+ * create them.
  *
  * @author michael
  */
-public class CompilerMessages {
-    private List<CompilerMessage> messages = new ArrayList<CompilerMessage>();
+public class Messages {
+    private List<Message> messages = new ArrayList<Message>();
     private boolean error;
     private boolean warning;
     
     public void error(Token tok, String msg) {
         messages.add(new CompilerMessage(CompilerMessage.Level.ERROR, tok, msg));
         error = true;
+    }
+    
+    public void error(Token tok, Errors error) {
+        messages.add(new CompilerMessage(CompilerMessage.Level.ERROR, tok, error.toString()));
     }
     
     public void error(int line, int charPos, String msg) {
@@ -35,7 +40,7 @@ public class CompilerMessages {
         warning = true;
     }
 
-    public List<CompilerMessage> getMessages() {
+    public List<Message> getMessages() {
         return Collections.unmodifiableList(messages);
     }
 

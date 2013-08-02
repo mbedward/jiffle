@@ -37,7 +37,7 @@ package org.jaitools.jiffle.parser;
  * @author michael
  */
 public class Symbol {
-    
+
     public static enum Type {
         /** General scalar user variable. */
         SCALAR,
@@ -52,7 +52,10 @@ public class Symbol {
         SOURCE_IMAGE,
         
         /** Destination image. */
-        DEST_IMAGE;
+        DEST_IMAGE,
+        
+        /** A placeholder type used by the compiler. */
+        UNKNOWN;
     }
 
     private final String name;
@@ -87,4 +90,9 @@ public class Symbol {
         return type;
     }
 
+    @Override
+    public String toString() {
+        return "Symbol{" + "name=" + name + ", type=" + type + '}';
+    }
+    
 }

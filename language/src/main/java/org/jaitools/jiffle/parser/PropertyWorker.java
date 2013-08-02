@@ -1,21 +1,21 @@
 package org.jaitools.jiffle.parser;
 
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.ParseTreeProperty;
 
 /**
  *
  * @author michael
  */
 public abstract class PropertyWorker<T> extends BaseWorker {
-    protected final ParseTreeProperty<T> properties;
+    protected final TreeNodeProperties<T> properties;
     
-    public PropertyWorker() {
-        this.properties = new ParseTreeProperty<T>();
+    public PropertyWorker(ParseTree tree) {
+        super(tree);
+        this.properties = new TreeNodeProperties<T>();
     }
 
-    public PropertyWorker(ParseTreeProperty<T> properties) {
-        this.properties = properties;
+    public TreeNodeProperties<T> getProperties() {
+        return new TreeNodeProperties<T>(properties);
     }
     
     protected T get(ParseTree ctx) {
