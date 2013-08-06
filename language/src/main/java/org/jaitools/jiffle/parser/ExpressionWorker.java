@@ -243,7 +243,7 @@ public class ExpressionWorker extends PropertyWorker<JiffleType> {
     @Override
     public void exitVarID(VarIDContext ctx) {
         // We should be processing the RHS of an expression to
-        // be here, so the var type should be known.
+        // be here
         String name = ctx.ID().getText();
         SymbolScope scope = getScope(ctx);
         

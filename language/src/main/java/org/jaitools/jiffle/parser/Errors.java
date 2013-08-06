@@ -29,6 +29,8 @@ public enum Errors {
     INVALID_ASSIGNMENT_OP_WITH_DEST_IMAGE(
             "Invalid assignment operator with destination image variable"),
     
+    INVALID_BINARY_EXPRESSION("Invalid binary expression"),
+    
     LIST_AS_TERNARY_CONDITION("A list variable cannot be used as a condition in a ternary expression"),
     
     LIST_IN_RANGE("A range specifier must have scalar end-points, not list"),
@@ -38,6 +40,8 @@ public enum Errors {
     POW_EXPR_WITH_LIST_EXPONENT("A list variable cannot be used as the exponent in a power expression"),
     
     READING_FROM_DEST_IMAGE("Attempting to read from destination image"),
+    
+    UNKNOWN_FUNCTION("Uknown function"),
     
     VAR_UNDEFINED("Variable not initialized prior to use"),
     

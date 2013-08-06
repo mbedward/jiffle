@@ -5,7 +5,7 @@ package org.jaitools.jiffle.parser.node;
  * @author michael
  */
 public class Band implements Node {
-    public static Band DEFAULT = new Band(new IntLiteralNode("0"));
+    public static Band DEFAULT = new Band(new IntLiteral("0"));
     
     private final Expression index;
 
@@ -15,10 +15,10 @@ public class Band implements Node {
 
     @Override
     public String toString() {
-        if (index instanceof IntLiteralNode) {
+        if (index instanceof IntLiteral) {
             return index.toString();
         } else {
-            return "(int)(" + index.toString() + ")";
+            return "(int)(" + index + ")";
         }
     }
     

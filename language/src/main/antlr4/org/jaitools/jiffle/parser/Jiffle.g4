@@ -110,8 +110,8 @@ expression      : atom                                              # atomExpr
                 | expression (INCR | DECR)                          # postExpr
                 | (INCR | DECR | PLUS | MINUS) expression           # preExpr
                 | NOT expression                                    # notExpr
-                | expression (TIMES | DIV | MOD) expression         # timesDivModExpr
-                | expression (PLUS | MINUS) expression              # plusMinusExpr
+                | expression op=(TIMES | DIV | MOD) expression      # timesDivModExpr
+                | expression op=(PLUS | MINUS) expression           # plusMinusExpr
                 | expression op=(GT | GE | LE | LT) expression      # compareExpr
                 | expression op=(EQ | NE) expression                # eqExpr
                 | expression AND expression                         # andExpr

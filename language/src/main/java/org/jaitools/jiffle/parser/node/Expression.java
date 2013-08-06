@@ -8,5 +8,13 @@ import org.jaitools.jiffle.parser.JiffleType;
  */
 public abstract class Expression implements Node {
     
-    public abstract JiffleType getType();
+    private final JiffleType type;
+
+    protected Expression(JiffleType type) {
+        this.type = type;
+    }
+    
+    public JiffleType getType() {
+        return type;
+    }
 }

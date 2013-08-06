@@ -6,7 +6,7 @@ import org.jaitools.jiffle.parser.JiffleType;
  *
  * @author michael
  */
-public class IntLiteralNode extends LiteralNode {
+public class IntLiteral extends ScalarLiteral {
     
     private static String checkValue(String value) {
         // will throw a NumberFormatException if not a valid integer
@@ -14,19 +14,8 @@ public class IntLiteralNode extends LiteralNode {
         return value;
     }
 
-    public IntLiteralNode(String value) {
+    public IntLiteral(String value) {
         super(checkValue(value));
     }
 
-    @Override
-    public JiffleType getType() {
-        return JiffleType.D;
-    }
-
-    @Override
-    public String toString() {
-        return value;
-    }
-    
-    
 }

@@ -1,6 +1,8 @@
 package org.jaitools.jiffle.parser;
 
 import java.util.Arrays;
+import org.jaitools.jiffle.Jiffle;
+import org.jaitools.jiffle.parser.node.ImagePos;
 
 /**
  *
@@ -8,14 +10,22 @@ import java.util.Arrays;
  */
 public class DirectSources {
 
-    public static String falseValue() { return "0.0"; }
-    
-    public static String trueValue() { return "1.0"; }
-    
-    public static String nanValue() { 
-        return String.valueOf(ConstantLookup.getValue("NAN")); 
+    public static String setDestValue(
+            Jiffle.RuntimeModel runtimeModel, String destVar, String expr) {
+        
+        switch (runtimeModel) {
+            case DIRECT:
+                return String.format("writeToImage(%s, %s, %s)",
+                        destVar, ImagePos.DEFAULT, expr);
+                
+            case INDIRECT:
+                return "return " + expr;
+                
+            default:
+                throw new IllegalArgumentException("Invalid runtime model: " + runtimeModel);
+        }
     }
-    
+
     public static String conCall(String ...args) {
         if (args == null || args.length < 1) {
             throw new IllegalArgumentException("No args provided");
@@ -59,4 +69,5 @@ public class DirectSources {
                 + "(_stk.peek() == 0 ? (%s) : (%s))))",
                 x, a, b, c);
     }
+
 }

@@ -1,8 +1,5 @@
 package org.jaitools.jiffle.parser.node;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.jaitools.jiffle.parser.UndefinedFunctionException;
 import org.jaitools.jiffle.util.Strings;
 
 /**
@@ -11,12 +8,15 @@ import org.jaitools.jiffle.util.Strings;
  */
 public class Pixel implements Node {
     public static final Pixel DEFAULT;
+    
     static {
         try {
-            DEFAULT = new Pixel( new Function("x"), new Function("y"));
-        } catch (UndefinedFunctionException ex) {
-            // something awful must have happened to get here
-            throw new IllegalStateException(ex);
+            DEFAULT = new Pixel( FunctionCall.of("x"), FunctionCall.of("y") );
+            
+        } catch (NodeException ex) {
+            // Getting here means something must be wrong with
+            // the function lookup
+            throw new ExceptionInInitializerError();
         }
     }
     

@@ -6,13 +6,14 @@ import org.jaitools.jiffle.parser.JiffleType;
  *
  * @author michael
  */
-public class ImageRead extends Expression {
+public class GetSourceValue extends Expression {
     private static String fmt = "readFromImage(%s,%s)";
     
     private final String varName;
     private final ImagePos pos;
 
-    public ImageRead(String varName, ImagePos pos) {
+    public GetSourceValue(String varName, ImagePos pos) {
+        super(JiffleType.D);
         this.varName = varName;
         this.pos = pos;
     }
