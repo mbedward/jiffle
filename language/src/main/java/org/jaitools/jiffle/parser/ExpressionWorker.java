@@ -26,31 +26,7 @@
 package org.jaitools.jiffle.parser;
 
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.jaitools.jiffle.parser.JiffleParser.AndExprContext;
-import org.jaitools.jiffle.parser.JiffleParser.AssignExprContext;
-import org.jaitools.jiffle.parser.JiffleParser.AssignmentContext;
-import org.jaitools.jiffle.parser.JiffleParser.AtomContext;
-import org.jaitools.jiffle.parser.JiffleParser.AtomExprContext;
-import org.jaitools.jiffle.parser.JiffleParser.CompareExprContext;
-import org.jaitools.jiffle.parser.JiffleParser.ConCallContext;
-import org.jaitools.jiffle.parser.JiffleParser.EqExprContext;
-import org.jaitools.jiffle.parser.JiffleParser.ExpressionContext;
-import org.jaitools.jiffle.parser.JiffleParser.FunctionCallContext;
-import org.jaitools.jiffle.parser.JiffleParser.ImageCallContext;
-import org.jaitools.jiffle.parser.JiffleParser.ListLiteralContext;
-import org.jaitools.jiffle.parser.JiffleParser.LiteralContext;
-import org.jaitools.jiffle.parser.JiffleParser.NotExprContext;
-import org.jaitools.jiffle.parser.JiffleParser.OrExprContext;
-import org.jaitools.jiffle.parser.JiffleParser.ParenExpressionContext;
-import org.jaitools.jiffle.parser.JiffleParser.PlusMinusExprContext;
-import org.jaitools.jiffle.parser.JiffleParser.PostExprContext;
-import org.jaitools.jiffle.parser.JiffleParser.PowExprContext;
-import org.jaitools.jiffle.parser.JiffleParser.PreExprContext;
-import org.jaitools.jiffle.parser.JiffleParser.RangeContext;
-import org.jaitools.jiffle.parser.JiffleParser.TernaryExprContext;
-import org.jaitools.jiffle.parser.JiffleParser.TimesDivModExprContext;
-import org.jaitools.jiffle.parser.JiffleParser.VarIDContext;
-import org.jaitools.jiffle.parser.JiffleParser.XorExprContext;
+import org.jaitools.jiffle.parser.JiffleParser.*;
 
 /**
  * Labels expression nodes with their Jiffle types. Expects that
@@ -60,17 +36,21 @@ import org.jaitools.jiffle.parser.JiffleParser.XorExprContext;
  */
 public class ExpressionWorker extends PropertyWorker<JiffleType> {
     private final TreeNodeProperties<SymbolScope> scopes;
-    private SymbolScope currentScope;
 
     public ExpressionWorker(ParseTree tree, VarWorker vw) {
         super(tree);
-        
         this.scopes = vw.getProperties();
-        currentScope = scopes.get(tree);
-        
         walkTree();
     }
 
+    /**
+     * Gets the scope annotations, which may have been modified when
+     * this worker walked the parse tree.
+     */
+    public TreeNodeProperties<SymbolScope> getScopes() {
+        return scopes;
+    }
+    
     @Override
     public void exitRange(RangeContext ctx) {
         // both left and right must be scalar

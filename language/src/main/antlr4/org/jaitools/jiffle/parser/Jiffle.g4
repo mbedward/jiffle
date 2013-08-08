@@ -122,12 +122,12 @@ expression      : atom                                              # atomExpr
                 ;
 
 assignment      : ID
-                  ( ASSIGN<assoc=right>
-                  | TIMESEQ<assoc=right>
-                  | DIVEQ<assoc=right>
-                  | MODEQ<assoc=right>
-                  | PLUSEQ<assoc=right>
-                  | MINUSEQ<assoc=right>
+                  op=( ASSIGN
+                  | TIMESEQ
+                  | DIVEQ
+                  | MODEQ
+                  | PLUSEQ
+                  | MINUSEQ
                   ) expression
                 ;
 

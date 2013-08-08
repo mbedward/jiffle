@@ -66,15 +66,13 @@ public class BinaryExpression extends Expression {
         }
     }
 
-    public BinaryExpression(int opType, Expression left, Expression right) 
+    public BinaryExpression(int opCode, Expression left, Expression right) 
             throws NodeException {
         
         super(getReturnType(left, right));
         
-        this.op = Operator.get(opType);
+        this.op = Operator.get(opCode);
         if (op == Operator.UNKNOWN) {
-            // This is probably an internal error rather than a 
-            // user script error
             throw new NodeException(Errors.INVALID_BINARY_EXPRESSION);
         }
 

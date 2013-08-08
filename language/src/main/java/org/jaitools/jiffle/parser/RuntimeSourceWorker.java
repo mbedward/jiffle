@@ -33,27 +33,7 @@ import org.jaitools.CollectionFactory;
 import org.jaitools.jiffle.Jiffle;
 import org.jaitools.jiffle.Jiffle.RuntimeModel;
 import static org.jaitools.jiffle.parser.JiffleParser.*;
-import org.jaitools.jiffle.parser.node.Band;
-import org.jaitools.jiffle.parser.node.BinaryExpression;
-import org.jaitools.jiffle.parser.node.ConFunction;
-import org.jaitools.jiffle.parser.node.ConstantLiteral;
-import org.jaitools.jiffle.parser.node.DoubleLiteral;
-import org.jaitools.jiffle.parser.node.Expression;
-import org.jaitools.jiffle.parser.node.FunctionCall;
-import org.jaitools.jiffle.parser.node.ImagePos;
-import org.jaitools.jiffle.parser.node.GetSourceValue;
-import org.jaitools.jiffle.parser.node.SetDestValue;
-import org.jaitools.jiffle.parser.node.IntLiteral;
-import org.jaitools.jiffle.parser.node.ListVar;
-import org.jaitools.jiffle.parser.node.Node;
-import org.jaitools.jiffle.parser.node.NodeException;
-import org.jaitools.jiffle.parser.node.ParenExpression;
-import org.jaitools.jiffle.parser.node.Pixel;
-import org.jaitools.jiffle.parser.node.PostfixUnaryExpression;
-import org.jaitools.jiffle.parser.node.PrefixUnaryExpression;
-import org.jaitools.jiffle.parser.node.ScalarVar;
-import org.jaitools.jiffle.parser.node.Statement;
-import org.jaitools.jiffle.parser.node.StatementList;
+import org.jaitools.jiffle.parser.node.*;
 
 /**
  * Generates Java sources for the runtime class.
@@ -66,14 +46,21 @@ public class RuntimeSourceWorker extends PropertyWorker<Node> {
     private final TreeNodeProperties<SymbolScope> scopes;
     private final RuntimeModel runtimeModel;
     
+    // Set to a non-null reference if an init block is found
+    private InitBlockContext initBlockContext = null;
+    
+    /**
+     * Labels the parse tree with Node objects representing elements
+     * of the runtime code. Expects that the tree has been previously
+     * annotated by an ExpressionWorker.
+     */
     public RuntimeSourceWorker(ParseTree tree, 
-            TreeNodeProperties<SymbolScope> scopes,
-            TreeNodeProperties<JiffleType> types,
+            ExpressionWorker ew,
             Jiffle.RuntimeModel runtimeModel) {
         
         super(tree);
-        this.scopes = scopes;
-        this.types = types;
+        this.types = ew.getProperties();
+        this.scopes = ew.getScopes();
         this.runtimeModel = runtimeModel;
         
         walkTree();
@@ -81,13 +68,53 @@ public class RuntimeSourceWorker extends PropertyWorker<Node> {
 
     @Override
     public void exitScript(ScriptContext ctx) {
+        StatementList stmts = getAsType(ctx.body(), StatementList.class);
+        
+        GlobalVars globals = initBlockContext == null ?
+                new GlobalVars() : getAsType(initBlockContext, GlobalVars.class);
+        
+        set(ctx, new Script(globals, stmts));
+    }
+    
+    @Override
+    public void exitBody(BodyContext ctx) {
         List<Statement> statements = CollectionFactory.list();
         
-        for (StatementContext sctx : ctx.body().statement()) {
+        for (StatementContext sctx : ctx.statement()) {
             statements.add( getAsType(sctx, Statement.class) );
         }
         
         set(ctx, new StatementList(statements));
+    }
+
+    @Override
+    public void exitInitBlock(InitBlockContext ctx) {
+        List<BinaryExpression> inits = CollectionFactory.list();
+        
+        List<VarDeclarationContext> decls = ctx.varDeclaration();
+        if (decls != null) {
+            try {
+                for (VarDeclarationContext dc : decls) {
+                    String name = dc.ID().getText();
+                    ExpressionContext exprCtx = dc.expression();
+
+                    final Expression value;
+                    if (exprCtx == null) {
+                        value = new DefaultScalarValue();
+                    } else {
+                        value = getAsType(exprCtx, Expression.class);
+                    }
+
+                    inits.add(new BinaryExpression(ASSIGN, new ScalarVar(name), value));
+                }
+                
+            } catch (NodeException ex) {
+                messages.error(ctx.getStart(), ex.getError());
+            }
+        }
+
+        set(ctx, new GlobalVars(inits));
+        initBlockContext = ctx;
     }
 
     @Override
@@ -233,13 +260,33 @@ public class RuntimeSourceWorker extends PropertyWorker<Node> {
     @Override
     public void exitAssignment(AssignmentContext ctx) {
         String varName = ctx.ID().getText();
-        Expression expr = getAsType(ctx.expression(), Expression.class);
-        String op = ctx.getChild(1).getText();
+        Symbol symbol = getScope(ctx).get(varName);
         
-        Symbol symbol = scopes.get(ctx).get(varName);
-        switch (symbol.getType()) {
-            case DEST_IMAGE:
-                set(ctx, new SetDestValue(runtimeModel, varName, expr));
+        int opType = ctx.op.getType();
+        
+        Expression expr = getAsType(ctx.expression(), Expression.class);
+        
+        try {
+            switch (symbol.getType()) {
+                case DEST_IMAGE:
+                    set(ctx, new SetDestValue(runtimeModel, varName, expr));
+                    break;
+
+                case LIST:
+                    set(ctx, new BinaryExpression(opType, new ListVar(varName), expr));
+                    break;
+
+                case SCALAR:
+                    set(ctx, new BinaryExpression(opType, new ScalarVar(varName), expr));
+                    break;
+                    
+                default:
+                    // Invalid RHS var type. This should have been caught
+                    // in an earlier stage.
+                    throw new InternalCompilerException("Invalid assignment to " + varName);
+            }
+        } catch (NodeException ex) {
+            messages.error(ctx.getStart(), ex.getError());
         }
     }
     

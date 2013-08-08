@@ -24,6 +24,8 @@ public enum Errors {
     
     DUPLICATE_VAR_DECL("Duplicate variable declaration"),
     
+    EXPECTED_SCALAR("Expected a scalar value or expression (e.g. 42)"),
+    
     IMAGE_VAR_INIT_BLOCK("Image variable cannot be used in init block"),
     
     INVALID_ASSIGNMENT_OP_WITH_DEST_IMAGE(

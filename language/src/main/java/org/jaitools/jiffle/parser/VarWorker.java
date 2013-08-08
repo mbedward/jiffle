@@ -5,15 +5,7 @@ import java.util.Map;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.jaitools.jiffle.Jiffle;
-import org.jaitools.jiffle.parser.JiffleParser.AssignmentContext;
-import org.jaitools.jiffle.parser.JiffleParser.BlockContext;
-import org.jaitools.jiffle.parser.JiffleParser.BodyContext;
-import org.jaitools.jiffle.parser.JiffleParser.ForeachStmtContext;
-import org.jaitools.jiffle.parser.JiffleParser.InitBlockContext;
-import org.jaitools.jiffle.parser.JiffleParser.ListLiteralContext;
-import org.jaitools.jiffle.parser.JiffleParser.ScriptContext;
-import org.jaitools.jiffle.parser.JiffleParser.VarDeclarationContext;
-import org.jaitools.jiffle.parser.JiffleParser.VarIDContext;
+import static org.jaitools.jiffle.parser.JiffleParser.*;
 
 /**
  * Inspects variables in the parse tree, labels their type and checks 
@@ -236,10 +228,6 @@ public class VarWorker extends PropertyWorker<SymbolScope> {
             return currentScope.get(name).getType() == Symbol.Type.LOOP_VAR;
         }
         return false;
-    }
-    
-    private boolean isFunction(String name) {
-        return FunctionLookup.isDefined(name);
     }
     
 }

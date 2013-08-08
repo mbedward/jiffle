@@ -18,18 +18,18 @@ public class TestNodes {
     
     @Test
     public void intLiteral() throws Exception {
-        Node node = new IntLiteralNode("42");
+        Node node = new IntLiteral("42");
         assertThat( node.toString(), is("42") );
     }
     
     @Test(expected=IllegalArgumentException.class)
     public void intLiteralRejectsFloatArg() throws Exception {
-        Node node = new IntLiteralNode("1.2");
+        Node node = new IntLiteral("1.2");
     }
     
     @Test(expected=IllegalArgumentException.class)
     public void intLiteralRejectsNonNumericArg() throws Exception {
-        Node node = new IntLiteralNode("foo");
+        Node node = new IntLiteral("foo");
     }
     
     @Test
@@ -39,7 +39,7 @@ public class TestNodes {
     
     @Test
     public void bandWithIntLiteral() throws Exception {
-        Band b = new Band( new IntLiteralNode("1") );
+        Band b = new Band( new IntLiteral("1") );
         assertThat( b.toString(), is("1") );
     }
     
@@ -50,8 +50,8 @@ public class TestNodes {
     
     @Test
     public void pixel() throws Exception {
-        Expression x = new IntLiteralNode("42");
-        Expression y = new Function("y");
+        Expression x = new IntLiteral("42");
+        Expression y = FunctionCall.of("y");
         Pixel p = new Pixel(x, y);
         
         String expected = Strings.commas(x, y);
@@ -63,7 +63,7 @@ public class TestNodes {
         String name = "xres";
         FunctionInfo info = getFnInfo(name);
         
-        Function fn = new Function(name);
+        FunctionCall fn = FunctionCall.of(name);
         assertThat(fn.toString(), is(info.getRuntimeName()));
     }
 
@@ -74,7 +74,7 @@ public class TestNodes {
         Expression[] args = { mockDExpr("a"), mockDExpr("b") };
         JiffleType[] argTypes = { JiffleType.D, JiffleType.D };
         
-        Function fn = new Function(name, args);
+        FunctionCall fn = FunctionCall.of(name, args);
         FunctionInfo info = getFnInfo(name, argTypes);
         
         String expected = info.getRuntimeName() + 
@@ -95,7 +95,7 @@ public class TestNodes {
     
     @Test
     public void imageRead() throws Exception {
-        Expression e = new ImageRead("src", ImagePos.DEFAULT);
+        Expression e = new GetSourceValue("src", ImagePos.DEFAULT);
         assertThat(e.toString(), is("readFromImage(src,_x,_y,0)"));
     }
 
@@ -109,12 +109,7 @@ public class TestNodes {
     }
     
     private Expression mockDExpr(final String name) {
-        return new Expression() {
-            @Override
-            public JiffleType getType() {
-                return JiffleType.D;
-            }
-
+        return new Expression(JiffleType.D) {
             @Override
             public String toString() {
                 return name;

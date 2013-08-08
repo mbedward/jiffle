@@ -1,12 +1,10 @@
 package org.jaitools.jiffle.parser;
 
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.jaitools.jiffle.Jiffle;
+import static org.hamcrest.CoreMatchers.*;
+import org.jaitools.jiffle.util.Pair;
 import static org.junit.Assert.*;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
@@ -21,8 +19,6 @@ public class TestVarWorker {
     
     private static final boolean PRINT_WORKER_MESSAGES = true;
     
-    private Map<String, Jiffle.ImageRole> imageParams;
-    
     @Rule
     public TestRule watcher = new TestWatcher() {
         @Override
@@ -31,17 +27,28 @@ public class TestVarWorker {
         }
     };
     
-    @Before
-    public void setup() {
-        imageParams = new HashMap<String, Jiffle.ImageRole>();
-    }
-    
 
     @Test
-    public void imageVarsInGlobalScope() throws Exception {
-        VarWorker worker = parseAndWork("ValidScript.jfl");
+    public void scriptNodeIsAnnotatedWithGlobalScope() throws Exception {
+        Pair<ParseTree, VarWorker> result = parseAndVarWorker("ValidScript.jfl");
+
+        ParseTree tree = result.elem1();
+        VarWorker worker = result.elem2();
         
-        SymbolScope scope = worker.globalScope;
+        SymbolScope scope = worker.getProperties().get(tree);
+        assertThat(scope, is(GlobalScope.class));
+    }
+    
+    @Test
+    public void imageVarsInGlobalScope() throws Exception {
+        Pair<ParseTree, VarWorker> result = parseAndVarWorker("ValidScript.jfl");
+
+        ParseTree tree = result.elem1();
+        VarWorker worker = result.elem2();
+        assertFalse(worker.messages.isError());
+        
+        SymbolScope scope = worker.getProperties().get(tree);
+        
         String[] names = { "src", "dest" };
         Symbol.Type[] types = { Symbol.Type.SOURCE_IMAGE, Symbol.Type.DEST_IMAGE };
         
@@ -54,10 +61,14 @@ public class TestVarWorker {
     
     @Test
     public void initBlockVarsInGlobalScope() throws Exception {
-        VarWorker worker = parseAndWork("InitBlockFooBar.jfl");
+        Pair<ParseTree, VarWorker> result = parseAndVarWorker("InitBlockFooBar.jfl");
+
+        ParseTree tree = result.elem1();
+        VarWorker worker = result.elem2();
         assertFalse(worker.messages.isError());
         
-        SymbolScope scope = worker.globalScope;
+        SymbolScope scope = worker.getProperties().get(tree);
+        
         assertTrue( scope.has("foo") );
         assertTrue( scope.has("bar") );
     }
@@ -111,21 +122,17 @@ public class TestVarWorker {
                 Errors.INVALID_ASSIGNMENT_OP_WITH_DEST_IMAGE);
     }
     
+    
     private void assertScriptHasError(String scriptFileName, Errors error) throws Exception {
-        VarWorker worker = parseAndWork(scriptFileName);
-        assertTrue(hasError(worker, error));
+        Pair<ParseTree, VarWorker> result = parseAndVarWorker(scriptFileName);
+        assertTrue(hasError(result.elem2(), error));
     }
 
-    private VarWorker parseAndWork(String scriptFileName) throws Exception {
+    private Pair<ParseTree, VarWorker> parseAndVarWorker(String scriptFileName) throws Exception {
         InputStream input = getClass().getResourceAsStream(scriptFileName);
         ParseTree tree = ParseHelper.parse(input);
-        loadImageParams(tree);
-        return new VarWorker(tree, imageParams);
-    }
-
-    private void loadImageParams(ParseTree tree) {
         ImagesBlockWorker ib = new ImagesBlockWorker(tree);
-        imageParams.putAll(ib.imageVars);
+        return Pair.of(tree, new VarWorker(tree, ib.imageVars));
     }
 
     private boolean hasError(VarWorker worker, Errors error) {
@@ -134,7 +141,7 @@ public class TestVarWorker {
         }
         
         boolean found = false;
-        for (CompilerMessage cm : worker.messages.getMessages()) {
+        for (Message cm : worker.messages.getMessages()) {
             if (PRINT_WORKER_MESSAGES) {
                 System.out.println(cm);
             }
