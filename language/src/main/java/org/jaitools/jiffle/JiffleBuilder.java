@@ -273,7 +273,8 @@ public class JiffleBuilder {
     
     /**
      * Associates a variable name with a source image and coordinate transform.
-     * The image will be stored by the builder as a weak reference.
+     * The image can be stored by the builder as either a weak or reference
+     * strong reference.
      *
      * @param varName variable name
      * @param sourceImage the source image
