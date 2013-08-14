@@ -270,6 +270,28 @@ public class JiffleBuilder {
         transforms.put(varName, transform);
         return this;
     }
+    
+    /**
+     * Associates a variable name with a source image and coordinate transform.
+     * The image will be stored by the builder as a weak reference.
+     *
+     * @param varName variable name
+     * @param sourceImage the source image
+     * @param transform the transform to convert world coordinates to this image's
+     *        pixel coordinates
+     * @param weak whether to hold this image as weak reference or not
+     * 
+     * @return the instance of this class to allow method chaining
+     */
+    public JiffleBuilder source(String varName, RenderedImage sourceImage,
+            CoordinateTransform transform, boolean weak) {
+        
+        imageParams.put(varName, Jiffle.ImageRole.SOURCE);
+        // store as weak reference
+        images.put(varName, new ImageRef(sourceImage, weak));
+        transforms.put(varName, transform);
+        return this;
+    }
 
     /**
      * Creates a new destination image and associates it with a variable name
